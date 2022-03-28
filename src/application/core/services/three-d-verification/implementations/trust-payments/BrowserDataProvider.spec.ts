@@ -8,11 +8,13 @@ import { environment } from '../../../../../../environments/environment';
 import { SentryService } from '../../../../../../shared/services/sentry/SentryService';
 import { RequestTimeoutError } from '../../../../../../shared/services/sentry/RequestTimeoutError';
 import { TimeoutDetailsType } from '../../../../../../shared/services/sentry/RequestTimeout';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { IBrowserData } from './data/IBrowserData';
 
 describe('BrowserDataProvider', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
+  let messageBusMock: IMessageBus;
   let sut: BrowserDataProvider;
   let sentryServiceMock: SentryService;
   const browserData: BrowserDataInterface = {
@@ -31,7 +33,8 @@ describe('BrowserDataProvider', () => {
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     sentryServiceMock = mock(SentryService);
-    sut = new BrowserDataProvider(instance(interFrameCommunicatorMock), instance(sentryServiceMock));
+    messageBusMock = mock<IMessageBus>();
+    sut = new BrowserDataProvider(instance(interFrameCommunicatorMock), instance(sentryServiceMock), instance(messageBusMock));
   });
 
   it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {

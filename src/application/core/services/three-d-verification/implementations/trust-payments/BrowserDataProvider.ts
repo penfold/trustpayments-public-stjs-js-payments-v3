@@ -10,15 +10,22 @@ import { environment } from '../../../../../../environments/environment';
 import { RequestTimeoutError } from '../../../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../../../shared/services/sentry/SentryService';
 import { TimeoutDetailsType } from '../../../../../../shared/services/sentry/RequestTimeout';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
+import { ofType } from '../../../../../../shared/services/message-bus/operators/ofType';
+import { SentryBreadcrumbsCategories } from '../../../../../../shared/services/sentry/SentryBreadcrumbsCategories';
 import { IBrowserData } from './data/IBrowserData';
 
 @Service()
 export class BrowserDataProvider {
   private readonly browserData3dsServerUrl = environment.BROWSER_DATA_URLS;
 
-  constructor(private interFrameCommunicator: InterFrameCommunicator, private sentryService: SentryService) {}
-
-  private stringify = (value: unknown) => (value === undefined ? value : String(value));
+  constructor(
+    private interFrameCommunicator: InterFrameCommunicator,
+    private sentryService: SentryService,
+    private messageBus: IMessageBus
+  ) {
+    this.listenToLogs();
+  }
 
   getBrowserData$(): Observable<IBrowserData> {
     const urls = this.extendUrlsWithRandomNumbers();
@@ -62,6 +69,12 @@ export class BrowserDataProvider {
     });
   }
 
+  private listenToLogs(): void {
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA_LOG))?.subscribe(log => {
+      this.sentryService.addBreadcrumb(SentryBreadcrumbsCategories.THREE_DS, log.data?.type + ': ' + log.data?.message);
+    });
+  }
+
   private sendErrorMessage(requestUrl: string[]) {
     this.sentryService.sendCustomMessage(
       new RequestTimeoutError('Get browser data error', {
@@ -69,5 +82,9 @@ export class BrowserDataProvider {
         requestUrl: requestUrl.join(', '),
       })
     );
+  }
+
+  private stringify(value: unknown) {
+    return value === undefined ? value : String(value);
   }
 }
