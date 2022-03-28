@@ -31,16 +31,24 @@ describe('BrowserDataProvider', () => {
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     sentryServiceMock = mock(SentryService);
-
     sut = new BrowserDataProvider(instance(interFrameCommunicatorMock), instance(sentryServiceMock));
   });
 
-  it.skip('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
+  it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
+
+    const extendedUrls = [
+      environment.BROWSER_DATA_URLS[0] + '?123456',
+      environment.BROWSER_DATA_URLS[1] + '/123456',
+      environment.BROWSER_DATA_URLS[2] + '/123456',
+    ];
+
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URLS,
+      data: extendedUrls,
     };
 
+    // @ts-ignore
+    sut.extendUrlsWithRandomNumbers = jest.fn().mockReturnValue(extendedUrls);
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserData);
 
     sut.getBrowserData$().subscribe((result: IBrowserData) => {
@@ -61,16 +69,26 @@ describe('BrowserDataProvider', () => {
   });
 
   describe('send error if no customerIp', () => {
+    const extendedUrls = [
+      environment.BROWSER_DATA_URLS[0] + '?123456',
+      environment.BROWSER_DATA_URLS[1] + '/123456',
+      environment.BROWSER_DATA_URLS[2] + '/123456',
+    ];
+
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URLS,
+      data: extendedUrls,
     };
+
     const browserDataLocal: BrowserDataInterface = {
       ...browserData,
       browserIP: '',
     };
 
-    it.skip('without query parameter', done => {
+    it('without query parameter', done => {
+
+      // @ts-ignore
+      sut.extendUrlsWithRandomNumbers = jest.fn().mockReturnValue(extendedUrls);
       when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserDataLocal);
 
       sut.getBrowserData$().subscribe(() => {

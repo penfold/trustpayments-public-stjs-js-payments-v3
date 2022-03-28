@@ -18,18 +18,10 @@ export class BrowserDataProvider {
 
   constructor(private interFrameCommunicator: InterFrameCommunicator, private sentryService: SentryService) {}
 
+  private stringify = (value: unknown) => (value === undefined ? value : String(value));
+
   getBrowserData$(): Observable<IBrowserData> {
-    const stringify = (value: unknown) => (value === undefined ? value : String(value));
-    const random = Math.trunc(100000 + Math.random() * 900000).toString();
-    const urls: string[] = this.browserData3dsServerUrl.map(url => {
-      const u = new URL(url);
-      if (u.pathname.indexOf('browserData') !== -1) {
-        u.searchParams.append('id', random);
-      } else {
-        u.pathname = u.pathname + '/' + random;
-      }
-      return stringify(u);
-    });
+    const urls = this.extendUrlsWithRandomNumbers();
 
     const queryEvent: IMessageBusEvent<string[]> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
@@ -43,18 +35,31 @@ export class BrowserDataProvider {
         }
       }),
       map((browserData: BrowserDataInterface) => ({
-        browsercolordepth: stringify(browserData.browserColorDepth),
-        browserjavaenabled: stringify(browserData.browserJavaEnabled),
-        browserjavascriptenabled: stringify(browserData.browserJavascriptEnabled),
-        browserlanguage: stringify(browserData.browserLanguage),
-        browserscreenheight: stringify(browserData.browserScreenHeight),
-        browserscreenwidth: stringify(browserData.browserScreenWidth),
-        browsertz: stringify(browserData.browserTZ),
-        useragent: stringify(browserData.browserUserAgent),
-        accept: stringify(browserData.browserAcceptHeader),
-        customerip: stringify(browserData.browserIP),
+        browsercolordepth: this.stringify(browserData.browserColorDepth),
+        browserjavaenabled: this.stringify(browserData.browserJavaEnabled),
+        browserjavascriptenabled: this.stringify(browserData.browserJavascriptEnabled),
+        browserlanguage: this.stringify(browserData.browserLanguage),
+        browserscreenheight: this.stringify(browserData.browserScreenHeight),
+        browserscreenwidth: this.stringify(browserData.browserScreenWidth),
+        browsertz: this.stringify(browserData.browserTZ),
+        useragent: this.stringify(browserData.browserUserAgent),
+        accept: this.stringify(browserData.browserAcceptHeader),
+        customerip: this.stringify(browserData.browserIP),
       }))
     );
+  }
+
+  private extendUrlsWithRandomNumbers(): string[] {
+    const random = Math.trunc(100000 + Math.random() * 900000).toString();
+    return this.browserData3dsServerUrl.map(url => {
+      const u = new URL(url);
+      if (u.pathname.indexOf('browserData') !== -1) {
+        u.searchParams.append('id', random);
+      } else {
+        u.pathname = u.pathname + '/' + random;
+      }
+      return this.stringify(u);
+    });
   }
 
   private sendErrorMessage(requestUrl: string[]) {
