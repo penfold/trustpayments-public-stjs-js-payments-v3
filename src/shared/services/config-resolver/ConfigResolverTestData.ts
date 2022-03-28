@@ -2,6 +2,7 @@ import { LoggingLevel, ChallengeDisplayMode, ProcessingScreenMode } from '@trust
 import { IConfig } from '../../model/config/IConfig';
 import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 
 export const config: IConfig = {
   analytics: true,
@@ -103,6 +104,7 @@ export const config: IConfig = {
       displayName: 'My Test Site',
     },
   },
+  [TokenizedCardPaymentConfigName]: undefined,
   [threeDSecureConfigName]: {
     loggingLevel: undefined,
     challengeDisplayMode: undefined,
@@ -226,6 +228,7 @@ export const configResolved: IConfig = {
     },
   },
   [GooglePayConfigName]: undefined,
+  [TokenizedCardPaymentConfigName]: undefined,
   [threeDSecureConfigName]: {
     loggingLevel: LoggingLevel.ERROR,
     challengeDisplayMode: ChallengeDisplayMode.POPUP,
@@ -263,6 +266,7 @@ export const minimalDefaultConfigResolve: IConfig = {
   errorReporting: true,
   fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
   formId: 'st-form',
+  [TokenizedCardPaymentConfigName]: undefined,
   [GooglePayConfigName]: undefined,
   init: {
     cachetoken: '',

@@ -11,14 +11,14 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
 import { IStyle } from '../../../shared/model/config/IStyle';
 import {
-  TOKENIZED_SECURITY_CODE_INPUT_ID,
-  TOKENIZED_SECURITY_CODE_LABEL,
-  TOKENIZED_SECURITY_CODE_MESSAGE,
-  TOKENIZED_SECURITY_CODE_WRAPPER,
   TOKENIZED_SECURITY_CODE_DISABLED_CLASS,
+  TOKENIZED_SECURITY_CODE_INPUT_ID,
   TOKENIZED_SECURITY_CODE_INPUT_SELECTOR,
-  TOKENIZED_SECURITY_CODE_PATTERN,
+  TOKENIZED_SECURITY_CODE_LABEL,
   TOKENIZED_SECURITY_CODE_LENGTH,
+  TOKENIZED_SECURITY_CODE_MESSAGE,
+  TOKENIZED_SECURITY_CODE_PATTERN,
+  TOKENIZED_SECURITY_CODE_WRAPPER,
 } from '../../core/models/constants/SecurityCodeTokenized';
 import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
@@ -41,13 +41,10 @@ export class SecurityCodeTokenized extends Input {
     this.resetInputListener();
     this.setDisableListener();
     this.initInputStyle();
-    super.setEventListener(MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE);
 
-    this.validation.backendValidation(
-      this.inputElement,
-      this.messageElement,
-      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
-    );
+    this.messageBus.subscribeType(MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE, () => {
+      this.validation.validate(this.inputElement, this.messageElement);
+    });
   }
 
   getLabel(): string {
@@ -78,11 +75,14 @@ export class SecurityCodeTokenized extends Input {
   }
 
   protected onKeyPress(event: KeyboardEvent): void {
-    super.onKeyPress(event);
+    if(Validation.isEnter(event)) {
+      event.preventDefault();
+      this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_START_PAYMENT_METHOD });
+    }
   }
 
-  private resetInputListener(){
-    this.messageBus.subscribeType(PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT , () => {
+  private resetInputListener() {
+    this.messageBus.subscribeType(PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT, () => {
       this.resetInput();
     });
   }

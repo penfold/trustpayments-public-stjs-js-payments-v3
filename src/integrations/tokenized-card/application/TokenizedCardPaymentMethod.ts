@@ -148,10 +148,6 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   }
 
   private startPaymentEvent() {
-    if(!this.cvv?.validity) {
-      return;
-    }
-
     this.messageBus.publish({
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
       data: FormState.BLOCKED,
