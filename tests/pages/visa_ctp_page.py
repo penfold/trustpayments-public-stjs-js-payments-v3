@@ -1,8 +1,3 @@
-import re
-import time
-
-from assertpy import assert_that
-
 import random
 import re
 import time
@@ -12,9 +7,6 @@ from assertpy import assert_that
 from pages.base_page import BasePage
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
-from utils.enums.shared_dict_keys import SharedDictKey
-from utils.helpers import gmail_service
-from utils.enums.card import Card
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
 from utils.helpers.random_data_generator import get_string
@@ -194,7 +186,8 @@ class VisaClickToPayPage(BasePage):
 
     def get_masked_card_number_from_visa_ctp_popup(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
-        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number_on_visa_popup)[-4:]
+        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number_on_visa_popup)[
+                             -4:]
         return masked_card_number
 
     def confirm_user_address(self):
@@ -282,11 +275,6 @@ class VisaClickToPayPage(BasePage):
 
     def click_add_new_card_on_vctp_popup(self):
         self._actions.click(VisaClickToPayLocators.add_new_card_btn)
-
-    def confirm_user_address(self):
-        self._waits.wait_for_element_visibility(VisaClickToPayLocators.continue_btn)
-        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
-        self._actions.click(VisaClickToPayLocators.continue_btn)
 
     def clik_remove_card(self):
         self._actions.click(VisaClickToPayLocators.delete_card_upon_editing_btn)

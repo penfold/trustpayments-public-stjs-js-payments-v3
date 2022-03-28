@@ -1,10 +1,8 @@
 # type: ignore[no-redef]
 
 from assertpy import assert_that
-from behave import use_step_matcher, step, when
-
-from assertpy import assert_that
 from behave import use_step_matcher, step
+from behave import when
 
 from pages.page_factory import Pages
 from utils.enums.card import Card
@@ -86,7 +84,7 @@ def step_impl(context, otp):
         vctp_page.click_submit_otp_btn()
 
 
-#TODO
+# TODO
 @step('User will see that VISA_CTP checkout is (?P<param>.+)')
 def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -98,6 +96,7 @@ def step_impl(context, param):
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'ERROR')
     elif param in 'cancelled':
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'CANCEL')
+
 
 @step('User selects (?P<card>.+) card from cards list view')
 def step_impl(context, card):
@@ -225,12 +224,15 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
     vctp_page.is_card_validation_message_visible(expected_text)
+
+
 @step('User will not see previously added card in card list')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     masked_card_number = vctp_page.get_masked_card_number_from_card_list()
     expected_card_number = context.pan[-4:]
     assert_that(expected_card_number).is_not_equal_to(masked_card_number)
+
 
 @step('User clicks Not you button')
 def step_impl(context):
@@ -312,6 +314,7 @@ def step_impl(context):
     vctp_page.click_first_masked_address_on_the_list()
     vctp_page.click_add_new_card_on_vctp_popup()
 
+
 @step("User changes expiration date, and security code to (?P<expiration_date>.+), (?P<security_code>.+)")
 def step_impl(context, expiration_date, security_code):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -325,7 +328,7 @@ def step_impl(context):
     vctp_page.click_switch_address_btn()
 
 
-@step("User chooses different address")
+@step("User chooses card address from the list of available addresses")
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.switch_address_from_list(False)
@@ -342,4 +345,9 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_address_menu_btn()
+
+
+@step("User confirms address deletion")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_remove_address()

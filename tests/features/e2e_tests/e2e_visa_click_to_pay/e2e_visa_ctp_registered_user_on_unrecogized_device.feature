@@ -249,14 +249,11 @@ Feature: Visa Click To Pay
     When User selects Edit card on VISA_CTP popup
     And User changes expiration date, and security code to 0524, 123
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP checkout is completed
+    Then User will see that VISA_CTP checkout is completed
     And User will see following callback type called only once
       | callback_type |
       | success       |
       | submit        |
-    And User selects Look up my cards
-    And User login to VISA_CTP account with valid credentials
-    Then User see previously added card in card list
 
 
   Scenario: Switch card
@@ -302,6 +299,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
     Then User selects Delete address on VISA_CTP popup
+    And User confirms address deletion
 
   Scenario: Switch address
     Given JS library configured by inline config BASIC_CONFIG
@@ -314,7 +312,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
     When User selects Switch address on VISA_CTP popup
-    And User chooses different address
+    And User chooses card address from the list of available addresses
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
 
