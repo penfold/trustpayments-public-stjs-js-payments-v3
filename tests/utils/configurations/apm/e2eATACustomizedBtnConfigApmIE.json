@@ -1,12 +1,8 @@
 {
-  "successRedirectUrl": "https://this_is_not_existing_page_success_redirect.com",
-  "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect.com",
-  "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
     {
       "name": "ATA",
-      "returnUrl": "https://this_is_not_existing_page_error_redirect_override.com",
       "button": {
         "text": "A2A Payment",
         "backgroundColor": "black",
