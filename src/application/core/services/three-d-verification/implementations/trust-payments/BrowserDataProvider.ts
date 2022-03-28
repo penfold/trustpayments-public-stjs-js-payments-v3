@@ -20,12 +20,14 @@ export class BrowserDataProvider {
 
   getBrowserData$(): Observable<IBrowserData> {
     const stringify = (value: unknown) => (value === undefined ? value : String(value));
-    const random = Math.trunc(Math.random() * 100000).toString();
+    const random = Math.trunc(100000 + Math.random() * 900000).toString();
     const urls: string[] = this.browserData3dsServerUrl.map(url => {
       const u = new URL(url);
-      u.pathname.indexOf('browserData') !== -1
-        ? u.searchParams.append('id', random)
-        : (u.pathname = u.pathname + '/' + random);
+      if (u.pathname.indexOf('browserData') !== -1) {
+        u.searchParams.append('id', random);
+      } else {
+        u.pathname = u.pathname + '/' + random;
+      }
       return stringify(u);
     });
 

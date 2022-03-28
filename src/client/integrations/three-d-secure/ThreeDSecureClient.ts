@@ -96,7 +96,7 @@ export class ThreeDSecureClient {
       },
     };
 
-    return this.threeDSecure.init$(updatedConfig)
+    return this.threeDSecure.init$(updatedConfig);
   }
 
   private run3DSMethod$({
