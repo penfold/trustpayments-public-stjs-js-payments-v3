@@ -30,7 +30,6 @@ export class RequestProcessingInitializer {
   }
 
   private initProcessingService(requestTypes: RequestType[], gatewayClient?: IGatewayClient): Observable<IRequestProcessingService> {
-    console.log( this.jsInitResponseService)
     return this.jsInitResponseService.getJsInitResponse(gatewayClient).pipe(
       switchMap(jsInitResponse => {
         const requestProcessingService = this.requestProcessingServiceProvider.getRequestProcessingService(
