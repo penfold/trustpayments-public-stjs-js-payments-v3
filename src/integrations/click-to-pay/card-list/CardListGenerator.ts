@@ -258,5 +258,4 @@ export class CardListGenerator {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
   }
-
 }
