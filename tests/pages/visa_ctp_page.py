@@ -294,7 +294,7 @@ class VisaClickToPayPage(BasePage):
     def edit_expiration_date_and_cvv_on_popup(self, expiration_date, security_code):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.edit_expiration_date_input)
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.edit_security_code_input)
-        for i in range(5):
+        for _ in range(5):
             self._actions.delete_on_input(VisaClickToPayLocators.edit_expiration_date_input)
         self._actions.delete_on_input(VisaClickToPayLocators.edit_security_code_input)
         self._actions.send_keys(VisaClickToPayLocators.edit_expiration_date_input, expiration_date)

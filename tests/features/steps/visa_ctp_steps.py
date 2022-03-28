@@ -315,39 +315,39 @@ def step_impl(context):
     vctp_page.click_add_new_card_on_vctp_popup()
 
 
-@step("User changes expiration date, and security code to (?P<expiration_date>.+), (?P<security_code>.+)")
+@step('User changes expiration date, and security code to (?P<expiration_date>.+), (?P<security_code>.+)')
 def step_impl(context, expiration_date, security_code):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.edit_expiration_date_and_cvv_on_popup(expiration_date, security_code)
 
 
-@when("User selects Switch address on VISA_CTP popup")
+@when('User selects Switch address on VISA_CTP popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_address_menu_btn()
     vctp_page.click_switch_address_btn()
 
 
-@step("User chooses card address from the list of available addresses")
+@step('User chooses card address from the list of available addresses')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.switch_address_from_list(False)
 
 
-@step("User removes card from VISA_CTP wallet")
+@step('User removes card from VISA_CTP wallet')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.clik_remove_card()
 
 
-@step("User selects Delete address on VISA_CTP popup")
+@step('User selects Delete address on VISA_CTP popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_address_menu_btn()
 
 
-@step("User confirms address deletion")
+@step('User confirms address deletion')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_remove_address()

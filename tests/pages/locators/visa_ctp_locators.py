@@ -56,11 +56,11 @@ class VisaClickToPayLocators:
     def get_selected_card_locator_from_cards_list(cls, value) -> By.XPATH:
         return By.XPATH, f'//div[@class=\'st-card\'][{value}]//input'
 
-    # Visa Checkout view
     @classmethod
     def get_address_field_locator_from_visa_popup(cls, address_field) -> By.ID:
         return By.ID, address_field
 
+    # Visa Checkout view
     vctp_iframe: By = (By.ID, 'vcop-dcf')
     continue_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
     masked_card_number_on_visa_popup: By = (By.XPATH, '//section[@class=\'card-info-container\']//span[2]')
@@ -87,8 +87,10 @@ class VisaClickToPayLocators:
     cancel_card_editing_btn: By = (By.ID, 'btnCancel')
     delete_card_upon_editing_btn: By = (By.ID, 'btnDelete')
     confirm_card_delete_upon_editing_btn: By = (By.ID, 'btnContinue')
-    card_update_success_message: By = (By.XPATH, '//*[@id="app"]/div/div[2]/div/div/section/main/div[1]/section//div/p/span[2][contains(text(), \'success\')]')
-    address_success_delete_message: By = (By.XPATH, '//*[@id="app"]//section/main/div[1]/section//span[contains(text(), \'Your address was deleted successfully\')]')
+    card_update_success_message: By = (By.XPATH,
+                                       '//*[@id="app"]//section/main/div[1]/section//div/p/span[2][contains(text(), \'success\')]')
+    address_success_delete_message: By = (By.XPATH,
+                                          '//*[@id="app"]//section/main/div[1]/section//span[contains(text(), \'Your address was deleted successfully\')]')
     add_address_popup_btn: By = (By.XPATH, '//button[@aria-label=\'Add Address\']')
 
     @classmethod
