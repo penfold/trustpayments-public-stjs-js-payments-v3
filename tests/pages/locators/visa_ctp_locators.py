@@ -79,3 +79,4 @@ class VisaClickToPayLocators:
     add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
     add_new_address_plus_btn: By = (By.XPATH, '//button[@aria-label=\'Add new\']')
     order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
+    cvv_input_on_visa_popup: By = (By.ID, 'code')

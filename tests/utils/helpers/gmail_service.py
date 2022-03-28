@@ -50,7 +50,6 @@ def get_last_five_email_ids():
 
 def get_verification_code_from_email_subject(mail_id):
     mail = gmail_login()
-    time.sleep(1)
     data = mail.fetch(str(mail_id), '(RFC822)')
     email_txt = str(data[1][0][1], 'utf-8')
     msg = email.message_from_string(email_txt)
@@ -62,6 +61,7 @@ def get_verification_code_from_email_subject(mail_id):
 
 def get_unseen_mail_ids_with_wait(max_seconds):
     # pylint: disable=invalid-name
+    time.sleep(2)
     while max_seconds:
         try:
             return get_unseen_email_ids()

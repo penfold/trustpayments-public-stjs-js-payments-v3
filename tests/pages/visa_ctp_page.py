@@ -13,6 +13,7 @@ from utils.helpers.request_executor import add_to_shared_dict
 
 
 class VisaClickToPayPage(BasePage):
+    # pylint: disable=too-many-public-methods
 
     def fill_payment_form(self, card_number, expiry_date, cvv):
         self._actions.send_keys(VisaClickToPayLocators.card_number_input, card_number)
@@ -77,20 +78,19 @@ class VisaClickToPayPage(BasePage):
 
     def fill_otp_field_and_check(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(10)
-        self.get_code_and_fill_otp_field(mail_ids)
-        if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
-            mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
-            self.get_code_and_fill_otp_field(mail_ids)
 
-    def get_code_and_fill_otp_field(self, mail_ids):
-        mail_index = len(mail_ids)
-        while mail_index and self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
-            code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[mail_index - 1])))
+        self.get_code_and_fill_otp_field()
+        # if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
+        #     mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
+        #     self.get_code_and_fill_otp_field(mail_ids)
+
+    def get_code_and_fill_otp_field(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
+        while self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
+            code = self.get_last_unseen_otp()
             self.fill_otp_field(code)
             self.click_submit_otp_btn()
-            mail_index -= 1
-            time.sleep(4)
+            time.sleep(3)
 
     def fill_otp_field(self, one_time_code):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
@@ -146,7 +146,8 @@ class VisaClickToPayPage(BasePage):
         self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
 
     def get_masked_card_number_from_card_list(self, number):
-        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.get_masked_card_number_locator_from_cards_list(number))[-4:]
+        masked_card_number = self._actions.get_text_with_wait(
+            VisaClickToPayLocators.get_masked_card_number_locator_from_cards_list(number))[-4:]
         return masked_card_number
 
     def is_first_card_auto_selected(self):
@@ -192,6 +193,11 @@ class VisaClickToPayPage(BasePage):
     def confirm_payment(self):
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
+
+    def fill_cvv_field_on_visa_popup(self):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup):
+            self._actions.send_keys(VisaClickToPayLocators.cvv_input_on_visa_popup, '123')
+            self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_pay_now_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)

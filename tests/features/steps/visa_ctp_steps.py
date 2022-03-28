@@ -1,8 +1,7 @@
 # type: ignore[no-redef]
-import time
 
 from assertpy import assert_that
-from behave import use_step_matcher, step, then
+from behave import use_step_matcher, step
 
 from pages.page_factory import Pages
 from utils.enums.card import Card
@@ -37,7 +36,7 @@ def step_impl(context):
     vctp_page.click_look_up_my_cards_btn()
 
 
-@step("User chooses to register his card with Visa")
+@step('User chooses to register his card with Visa')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_register_card_checkbox()
@@ -175,16 +174,20 @@ def step_impl(context, register):
     if register in 'and confirm with remember me':
         vctp_page.click_remember_me_checkbox(True)
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for registered user
     elif register in 'and continues payment':
         vctp_page.click_pay_now_btn()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
     elif register in 'and confirm payment':
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
     if register in 'and confirm without remember me':
         vctp_page.click_remember_me_checkbox(False)
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     elif register in 'and cancels payment':
         vctp_page.click_cancel_checkout_btn()
 
@@ -221,7 +224,7 @@ def step_impl(context):
     vctp_page.is_card_validation_message_visible(expected_text)
 
 
-@step("User clicks Not you button")
+@step('User clicks Not you button')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_not_you_btn()
