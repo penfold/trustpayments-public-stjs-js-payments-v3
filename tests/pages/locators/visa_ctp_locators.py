@@ -35,7 +35,7 @@ class VisaClickToPayLocators:
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
-    cards_section: By = (By.ID, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
+    cards_section: By = (By.XPATH, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
     card_number_modal_input: By = (By.ID, 'pan')
     expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
     expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
@@ -61,7 +61,6 @@ class VisaClickToPayLocators:
     def get_address_field_locator_from_visa_popup(cls, address_field) -> By.ID:
         return By.ID, address_field
 
-    # Visa popup
     vctp_iframe: By = (By.ID, 'vcop-dcf')
     continue_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
     masked_card_number_on_visa_popup: By = (By.XPATH, '//section[@class=\'card-info-container\']//span[2]')
@@ -71,17 +70,18 @@ class VisaClickToPayLocators:
     remember_me_checkbox: By = (By.XPATH, '//label[@for=\'remember-me\']')
     cancel_checkout_btn: By = (By.XPATH, '//button[@aria-label=\'Cancel and return to merchant\']')
     card_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-card-row\']//button[contains(@id,\'menubutton\')]')
-    switch_card_btn: By = (By.XPATH, '//button[@aria-label=\'Switch Card\']')
+    switch_card_btn: By = (By.XPATH, '//button[@aria-label=\'Switch card\']')
     edit_card_btn: By = (By.XPATH, '//button[@aria-label=\'Edit Card\']')
     add_card_btn: By = (By.XPATH, '//button[@aria-label=\'Add Card\']')
     address_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-address-row\']//button[contains(@id,\'menubutton\')]')
     switch_address_btn: By = (By.XPATH, '//button[@aria-label=\'Switch Delivery Address\']')
-    available_addresses_container: By = (
-        By.XPATH, '//*[@id="app"]/div//section/main//div[contains(@aria-label, \'Address\')]')
     delete_address_btn: By = (By.XPATH, '//button[@aria-label=\'Delete Delivery Address\']')
     add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
     add_new_address_plus_btn: By = (By.XPATH, '//button[@aria-label=\'Add new\']')
     order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
+    cvv_input_on_visa_popup: By = (By.ID, 'code')
+    available_addresses_container: By = (
+        By.XPATH, '//*[@id="app"]/div//section/main//div[contains(@aria-label, \'Address\')]')
     edit_expiration_date_input: By = (By.ID, 'exp-date')
     edit_security_code_input: By = (By.ID, 'cvv')
     cancel_card_editing_btn: By = (By.ID, 'btnCancel')

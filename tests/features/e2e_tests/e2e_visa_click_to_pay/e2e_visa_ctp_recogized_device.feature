@@ -13,42 +13,44 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
+    And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
-    And User will see that VISA_CTP checkout was successful
+    Then User will see that VISA_CTP checkout is completed
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP checkout was successful
+    Then User will see that VISA_CTP checkout is completed
     And User will see following callback type called only once
       | callback_type |
       | success       |
       | submit        |
 
-  Scenario: Error checkout - Registered VISA CTP user on recognized device with saved credit cards
-    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-    And User opens example page VISA_CTP
-    And User selects Look up my cards
-    And User login to VISA_CTP account with valid credentials
-    And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and confirm with remember me
-    And User will see that VISA_CTP checkout was successful
-    When User opens example page VISA_CTP
-    And User see that first card on the list is auto-selected
-    #TODO - card with rejected status
-    And User selects VISA_V21_FRICTIONLESS card from cards list view by number
-    And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP checkout was rejected
-    And User will see following callback type called only once
-      | callback_type |
-      | error         |
-      | submit        |
+    #TODO - currently there is no test card with error status
+#  Scenario: Error checkout - Registered VISA CTP user on recognized device with saved credit cards
+#    Given JS library configured by inline config BASIC_CONFIG
+##    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value |
+#      | requesttypedescriptions | AUTH  |
+#    And User opens example page VISA_CTP
+#    And User selects Look up my cards
+#    And User login to VISA_CTP account with valid credentials
+#    And User clicks Pay Securely button
+#    And User reviews VISA_CTP checkout page and confirm with remember me
+#    Then User will see that VISA_CTP checkout is completed
+#    When User opens example page VISA_CTP
+#    And User see that first card on the list is auto-selected
+#    #TODO - card with rejected status
+#    And User selects VISA_V21_FRICTIONLESS card from cards list view by number
+#    And User clicks Pay Securely button
+#    And User reviews VISA_CTP checkout page and continues payment
+#    Then User will see that VISA_CTP checkout is rejected
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | error         |
+#      | submit        |
 
   Scenario: Cancel checkout - Registered VISA CTP user on recognized device
     Given JS library configured by inline config BASIC_CONFIG
@@ -59,18 +61,19 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
+    And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
-    And User will see that VISA_CTP checkout was successful
+    Then User will see that VISA_CTP checkout is completed
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
-    #TODO - card with rejected status
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and cancels payment
-    Then User will see that VISA_CTP checkout was rejected
+    Then User will see that VISA_CTP checkout is cancelled
     And User will see following callback type called only once
       | callback_type |
       | cancel        |
+      | submit        |
 
   Scenario: Successful checkout - Unregistered VISA CTP user on recognized device
     Given JS library configured by inline config BASIC_CONFIG
@@ -84,38 +87,39 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     And User fills billing address form on Visa checkout popup
     And User reviews VISA_CTP checkout page confirm payment
-    And User will see that VISA_CTP checkout was successful
+    Then User will see that VISA_CTP checkout is completed
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP checkout was successful
+    Then User will see that VISA_CTP checkout is completed
     And User will see following callback type called only once
       | callback_type |
       | success       |
       | submit        |
 
-  Scenario: Error checkout - Unregistered VISA CTP user on recognized device
-    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-    And User opens example page VISA_CTP
-    And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
-    And User chooses to register his card with Visa
-    And User clicks Pay Securely button
-    And User fills billing address form on Visa checkout popup
-    And User reviews VISA_CTP checkout page confirm payment
-    And User will see that VISA_CTP checkout was successful
-    When User opens example page VISA_CTP
-    And User see that first card on the list is auto-selected
-    #TODO - card with error status
-    And User selects VISA_V21_FRICTIONLESS card from cards list view by number
-    And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP checkout was rejected
-    And User will see following callback type called only once
-      | callback_type |
-      | error         |
-      | submit        |
+    #TODO - currently there is no test card with error status
+#  Scenario: Error checkout - Unregistered VISA CTP user on recognized device
+#    Given JS library configured by inline config BASIC_CONFIG
+##    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value |
+#      | requesttypedescriptions | AUTH  |
+#    And User opens example page VISA_CTP
+#    And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+#    And User chooses to register his card with Visa
+#    And User clicks Pay Securely button
+#    And User fills billing address form on Visa checkout popup
+#    And User reviews VISA_CTP checkout page confirm payment
+#    Then User will see that VISA_CTP checkout is completed
+#    When User opens example page VISA_CTP
+#    And User see that first card on the list is auto-selected
+#    #TODO - card with error status
+#    And User selects VISA_V21_FRICTIONLESS card from cards list view by number
+#    And User clicks Pay Securely button
+#    And User reviews VISA_CTP checkout page and continues payment
+#    Then User will see that VISA_CTP checkout is rejected
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | error         |
+#      | submit        |

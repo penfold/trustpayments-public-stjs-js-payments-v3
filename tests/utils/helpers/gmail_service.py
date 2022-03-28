@@ -62,6 +62,7 @@ def get_verification_code_from_email_subject(mail_id):
 
 def get_unseen_mail_ids_with_wait(max_seconds):
     # pylint: disable=invalid-name
+    time.sleep(2)
     while max_seconds:
         try:
             return get_unseen_email_ids()

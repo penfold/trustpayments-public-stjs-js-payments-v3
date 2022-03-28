@@ -140,6 +140,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   }
 
   private handleCheckoutResponse(response: ICheckoutResponse) {
+    if (response.dcfActionCode === 'CHANGE_CARD') {
+      this.showCardList();
+    }
+
     if (response.dcfActionCode === 'ADD_CARD') {
       this.cardListGenerator.openNewCardForm();
     }

@@ -3,6 +3,9 @@
 from assertpy import assert_that
 from behave import use_step_matcher, step, when
 
+from assertpy import assert_that
+from behave import use_step_matcher, step
+
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
@@ -36,7 +39,7 @@ def step_impl(context):
     vctp_page.click_look_up_my_cards_btn()
 
 
-@step("User chooses to register his card with Visa")
+@step('User chooses to register his card with Visa')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_register_card_checkbox()
@@ -83,7 +86,7 @@ def step_impl(context, otp):
         vctp_page.click_submit_otp_btn()
 
 
-# TODO
+#TODO
 @step('User will see that VISA_CTP checkout is (?P<param>.+)')
 def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -95,7 +98,6 @@ def step_impl(context, param):
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'ERROR')
     elif param in 'cancelled':
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'CANCEL')
-
 
 @step('User selects (?P<card>.+) card from cards list view')
 def step_impl(context, card):
@@ -175,16 +177,20 @@ def step_impl(context, register):
     if register in 'and confirm with remember me':
         vctp_page.click_remember_me_checkbox(True)
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for registered user
     elif register in 'and continues payment':
         vctp_page.click_pay_now_btn()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
     elif register in 'and confirm payment':
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
     if register in 'and confirm without remember me':
         vctp_page.click_remember_me_checkbox(False)
         vctp_page.confirm_payment()
+        vctp_page.fill_cvv_field_on_visa_popup()
     elif register in 'and cancels payment':
         vctp_page.click_cancel_checkout_btn()
 
@@ -214,6 +220,11 @@ def step_impl(context):
     assert_that(expected_card_number).is_equal_to(masked_card_number)
 
 
+@step('User will see VISA_CTP card validation message')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
+    vctp_page.is_card_validation_message_visible(expected_text)
 @step('User will not see previously added card in card list')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -221,15 +232,7 @@ def step_impl(context):
     expected_card_number = context.pan[-4:]
     assert_that(expected_card_number).is_not_equal_to(masked_card_number)
 
-
-@step('User will see VISA_CTP card validation message')
-def step_impl(context):
-    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
-    vctp_page.is_card_validation_message_visible(expected_text)
-
-
-@step("User clicks Not you button")
+@step('User clicks Not you button')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_not_you_btn()
@@ -299,8 +302,8 @@ def step_impl(context):
 @step('User is not recognized by VISA_CTP')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_cards_section_displayed(), 'Cards list is displayed but should not be').is_false()
     assert_that(vctp_page.is_look_up_my_cards_btn_displayed()).is_true()
+    assert_that(vctp_page.is_cards_section_displayed(), 'Cards list is displayed but should not be').is_false()
 
 
 @step('User selects address for new card')
@@ -308,7 +311,6 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_first_masked_address_on_the_list()
     vctp_page.click_add_new_card_on_vctp_popup()
-
 
 @step("User changes expiration date, and security code to (?P<expiration_date>.+), (?P<security_code>.+)")
 def step_impl(context, expiration_date, security_code):

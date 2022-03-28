@@ -30,6 +30,7 @@ export class CardListGenerator {
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
+    container.innerHTML = '';
     cardList.forEach((card, index) => {
       const cardContent = this.cardContent(card, index === 0);
       const cardRow = document.createElement('div');
@@ -257,5 +258,4 @@ export class CardListGenerator {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
   }
-
 }

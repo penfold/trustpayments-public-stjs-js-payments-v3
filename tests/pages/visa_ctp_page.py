@@ -1,3 +1,8 @@
+import re
+import time
+
+from assertpy import assert_that
+
 import random
 import re
 import time
@@ -7,6 +12,8 @@ from assertpy import assert_that
 from pages.base_page import BasePage
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
+from utils.enums.shared_dict_keys import SharedDictKey
+from utils.helpers import gmail_service
 from utils.enums.card import Card
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
@@ -15,6 +22,7 @@ from utils.helpers.request_executor import add_to_shared_dict
 
 
 class VisaClickToPayPage(BasePage):
+    # pylint: disable=too-many-public-methods
 
     def fill_payment_form(self, card_number, expiry_date, cvv):
         self._actions.send_keys(VisaClickToPayLocators.card_number_input, card_number)
@@ -23,11 +31,11 @@ class VisaClickToPayPage(BasePage):
         self._actions.send_keys(VisaClickToPayLocators.security_code_input, cvv)
 
     def click_pay_securely_button(self):
+
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.pay_securely_btn)
         self._actions.click(VisaClickToPayLocators.pay_securely_btn)
 
     def click_look_up_my_cards_btn(self):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.look_up_my_cards_btn)
         self._actions.click(VisaClickToPayLocators.look_up_my_cards_btn)
 
     def is_look_up_my_cards_btn_displayed(self):
@@ -81,20 +89,19 @@ class VisaClickToPayPage(BasePage):
 
     def fill_otp_field_and_check(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(10)
-        self.get_code_and_fill_otp_field(mail_ids)
-        if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
-            mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
-            self.get_code_and_fill_otp_field(mail_ids)
 
-    def get_code_and_fill_otp_field(self, mail_ids):
-        mail_index = len(mail_ids)
-        while mail_index and self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
-            code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[mail_index - 1])))
+        self.get_code_and_fill_otp_field()
+        # if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
+        #     mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
+        #     self.get_code_and_fill_otp_field(mail_ids)
+
+    def get_code_and_fill_otp_field(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
+        while self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
+            code = self.get_last_unseen_otp()
             self.fill_otp_field(code)
             self.click_submit_otp_btn()
-            mail_index -= 1
-            time.sleep(4)
+            time.sleep(3)
 
     def fill_otp_field(self, one_time_code):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
@@ -185,30 +192,9 @@ class VisaClickToPayPage(BasePage):
                                     value)
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
-    def get_logs(self, expected_name, max_try=5):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
-        logs = ''
-        while max_try:
-            logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
-            if expected_name in logs:
-                break
-            max_try -= 1
-            time.sleep(1)
-        result = re.findall(f'"{expected_name}": "(.*)"', logs)
-        return result
-
-    def check_if_value_is_present_in_logs(self, expected_name, expected_value):
-        logs = self.get_logs(expected_name)
-        assertion_message = f'{expected_value} step is not present in {expected_name} logs'
-        if 'should not be none' in expected_value:
-            assert_that(logs, f'Missing value for {expected_name}').is_not_empty()
-        else:
-            assert expected_value in logs, assertion_message
-
     def get_masked_card_number_from_visa_ctp_popup(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
-        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number_on_visa_popup)[
-                             -4:]
+        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number_on_visa_popup)[-4:]
         return masked_card_number
 
     def confirm_user_address(self):
@@ -219,6 +205,11 @@ class VisaClickToPayPage(BasePage):
     def confirm_payment(self):
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
+
+    def fill_cvv_field_on_visa_popup(self):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup):
+            self._actions.send_keys(VisaClickToPayLocators.cvv_input_on_visa_popup, '123')
+            self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_pay_now_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
@@ -240,13 +231,6 @@ class VisaClickToPayPage(BasePage):
     def click_add_card_btn(self):
         self._actions.click(VisaClickToPayLocators.add_card_btn)
 
-    def clik_remove_card(self):
-        self._actions.click(VisaClickToPayLocators.delete_card_upon_editing_btn)
-        self._actions.click(VisaClickToPayLocators.confirm_card_delete_upon_editing_btn)
-
-    def click_cancel_card_editing_on_popup(self):
-        self._actions.click(VisaClickToPayLocators.cancel_card_editing_btn)
-
     def click_edit_card_details(self):
         self._actions.click(VisaClickToPayLocators.edit_card_btn)
 
@@ -254,29 +238,10 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.switch_card_btn)
 
     def click_address_menu_btn(self):
-        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.address_menu_btn)
-
-    def click_switch_address_btn(self):
-        self._actions.click(VisaClickToPayLocators.switch_address_btn)
 
     def click_add_address_btn(self):
         self._actions.click(VisaClickToPayLocators.add_address_btn)
-
-    def click_add_address_on_popup_btn(self):
-        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
-        self._actions.click(VisaClickToPayLocators.add_address_popup_btn)
-
-    def click_remove_address(self):
-        self._actions.click(VisaClickToPayLocators.delete_address_btn)
-        self._actions.click(VisaClickToPayLocators.confirm_card_delete_upon_editing_btn)
-        assert self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.address_success_delete_message)
-
-    def click_first_masked_address_on_the_list(self):
-        self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
-
-    def click_add_new_card_on_vctp_popup(self):
-        self._actions.click(VisaClickToPayLocators.add_new_card_btn)
 
     def click_add_new_address_plus_btn(self):
         self._actions.click(VisaClickToPayLocators.add_new_address_plus_btn)
@@ -291,6 +256,52 @@ class VisaClickToPayPage(BasePage):
                             f' should be {expected_text} but is {actual_text}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_text == expected_text, assertion_message
+
+    def get_logs(self, expected_name, max_try=5):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
+        logs = ''
+        while max_try:
+            logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
+            if expected_name in logs:
+                break
+            max_try -= 1
+            time.sleep(1)
+        result = re.findall(f'"{expected_name}": "(.*)"', logs)
+        return result
+
+    def check_if_value_is_present_in_logs(self, expected_name, expected_value):
+        logs = self.get_logs(expected_name)
+        assertion_message = f'{expected_value} step is not present in {expected_name} logs'
+        if 'should not be none' in expected_value:
+            assert_that(logs, f'Missing value for {expected_name}').is_not_empty()
+        else:
+            assert expected_value in logs, assertion_message
+
+    def click_first_masked_address_on_the_list(self):
+        self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
+
+    def click_add_new_card_on_vctp_popup(self):
+        self._actions.click(VisaClickToPayLocators.add_new_card_btn)
+
+    def confirm_user_address(self):
+        self._waits.wait_for_element_visibility(VisaClickToPayLocators.continue_btn)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
+        self._actions.click(VisaClickToPayLocators.continue_btn)
+
+    def clik_remove_card(self):
+        self._actions.click(VisaClickToPayLocators.delete_card_upon_editing_btn)
+        self._actions.click(VisaClickToPayLocators.confirm_card_delete_upon_editing_btn)
+
+    def click_cancel_card_editing_on_popup(self):
+        self._actions.click(VisaClickToPayLocators.cancel_card_editing_btn)
+
+    def click_switch_address_btn(self):
+        self._actions.click(VisaClickToPayLocators.switch_address_btn)
+
+    def click_remove_address(self):
+        self._actions.click(VisaClickToPayLocators.delete_address_btn)
+        self._actions.click(VisaClickToPayLocators.confirm_card_delete_upon_editing_btn)
+        assert self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.address_success_delete_message)
 
     def edit_expiration_date_and_cvv_on_popup(self, expiration_date, security_code):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.edit_expiration_date_input)
