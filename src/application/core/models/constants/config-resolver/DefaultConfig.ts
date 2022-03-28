@@ -2,7 +2,6 @@ import { ChallengeDisplayMode, LoggingLevel, ProcessingScreenMode } from '@trust
 import { environment } from '../../../../../environments/environment';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { MERCHANT_FORM_SELECTOR } from '../Selectors';
-import { TokenizedCardPaymentConfigName } from '../../../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 import { DefaultFieldsToSubmit } from './DefaultFieldsToSubmit';
 import { DefaultSubmitFields } from './DefaultSubmitFields';
 import { DefaultComponentsIds } from './DefaultComponentsIds';
@@ -46,5 +45,4 @@ export const DefaultConfig: IConfig = {
     translations: {},
     processingScreenMode: ProcessingScreenMode.OVERLAY,
   },
-  [TokenizedCardPaymentConfigName]: null,
 };

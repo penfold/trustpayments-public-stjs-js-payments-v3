@@ -1,4 +1,4 @@
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { of } from 'rxjs';
 import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
@@ -32,10 +32,11 @@ describe('RequestProcessingInitializer', () => {
     requestProcessingInitializer = new RequestProcessingInitializer(
       instance(jsInitResponseServiceMock),
       instance(requestProcessingServiceProviderMock),
-      instance(remainingRequestTypesProviderMock),
+      instance(remainingRequestTypesProviderMock)
     );
 
-    when(jsInitResponseServiceMock.getJsInitResponse()).thenReturn(of(jsInitResponse));
+    when(jsInitResponseServiceMock.getJsInitResponse(undefined)).thenReturn(of(jsInitResponse));
+    when(jsInitResponseServiceMock.getJsInitResponse(anything())).thenReturn(of(jsInitResponse));
     when(requestProcessingServiceProviderMock.getRequestProcessingService(anything(), anything())).thenReturn(requestProcessingService);
     when(requestProcessingServiceProviderMock.getRequestProcessingServiceWithout3D()).thenReturn(requestProcessingService);
     when(requestProcessingServiceMock.init(anything())).thenReturn(of(undefined));
@@ -46,12 +47,25 @@ describe('RequestProcessingInitializer', () => {
     it('initializes selected processing service based on JSINIT response', done => {
       requestProcessingInitializer.initialize().subscribe(result => {
         expect(result).toBe(requestProcessingService);
-        verify(jsInitResponseServiceMock.getJsInitResponse()).once();
-        // verify(requestProcessingServiceProviderMock.getRequestProcessingService(
-        //   deepEqual([RequestType.THREEDQUERY, RequestType.AUTH]),
-        //   jsInitResponse),
-        // ).once();
-        // verify(requestProcessingServiceMock.init(jsInitResponse)).once();
+        verify(jsInitResponseServiceMock.getJsInitResponse(undefined)).once();
+        verify(requestProcessingServiceProviderMock.getRequestProcessingService(
+          deepEqual([RequestType.THREEDQUERY, RequestType.AUTH]),
+          jsInitResponse)
+        ).once();
+        verify(requestProcessingServiceMock.init(jsInitResponse)).once();
+        done();
+      });
+    });
+
+    it('initializes selected processing service based on JSINIT response with gatewayClient', done => {
+      requestProcessingInitializer.initialize().subscribe(result => {
+        expect(result).toBe(requestProcessingService);
+        verify(jsInitResponseServiceMock.getJsInitResponse(anything())).once();
+        verify(requestProcessingServiceProviderMock.getRequestProcessingService(
+          deepEqual([RequestType.THREEDQUERY, RequestType.AUTH]),
+          jsInitResponse)
+        ).once();
+        verify(requestProcessingServiceMock.init(jsInitResponse)).once();
         done();
       });
     });
