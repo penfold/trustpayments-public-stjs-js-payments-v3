@@ -96,7 +96,7 @@ export class SecurityCodeTokenized extends Input {
   }
 
   private initInputStyle() {
-    this.configProvider.getConfig$().subscribe((config: IConfig) => {
+    this.configProvider.getConfig$(true).subscribe((config: IConfig) => {
       const inputStyle: IStyle = config[TokenizedCardPaymentConfigName]?.style || config?.styles?.securityCode;
       this.setAttributes({
         pattern: TOKENIZED_SECURITY_CODE_PATTERN,
@@ -119,7 +119,7 @@ export class SecurityCodeTokenized extends Input {
 
       if(styler.hasSpecificStyle('outline-input', inputStyle)) {
         const outlineValue = inputStyle['outline-input'];
-        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+        const outlineSize = Number(String(outlineValue).replace(/\D/g, ''));
 
         styler.addStyles([
           {
@@ -190,7 +190,6 @@ export class SecurityCodeTokenized extends Input {
   private toggleSecurityCode(state: FormState): void {
     if(state !== FormState.AVAILABLE) {
       this.disableInput();
-      this.resetInput();
 
       return;
     }

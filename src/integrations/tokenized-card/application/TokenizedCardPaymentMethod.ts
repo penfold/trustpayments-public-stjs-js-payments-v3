@@ -144,25 +144,31 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
         type: MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE,
       });
 
-        // this.startPaymentEvent();
+        this.startPaymentEvent();
 
     });
   }
 
   private startPaymentEvent() {
+    if(!this.cvv?.value){
+      return
+    }
+
     this.messageBus.publish({
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
       data: FormState.BLOCKED,
     },  EventScope.ALL_FRAMES);
 
-    this.messageBus.publish({
-        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-        data: {
-          name: TokenizedCardPaymentMethodName,
-          data: {
-            securitycode: this.cvv?.value || '',
-          },
-        },
-      });
+    console.log('TOKEN Payment method started', this.cvv)
+
+    // this.messageBus.publish({
+    //     type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+    //     data: {
+    //       name: TokenizedCardPaymentMethodName,
+    //       data: {
+    //         securitycode: this.cvv?.value || '',
+    //       },
+    //     },
+    //   });
   }
 }
