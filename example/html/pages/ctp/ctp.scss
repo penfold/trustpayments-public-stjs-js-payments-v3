@@ -20,6 +20,11 @@
 
 .st-form__group--submit {
   margin-left: auto;
+  flex-direction: column;
+  
+  #merchant-submit-label {
+    margin-top: 10px;
+  }
 }
 
 .st-form__button {

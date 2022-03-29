@@ -129,6 +129,15 @@ export class CardListGenerator {
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
 
+    if (checked) {
+      this.hppUpdateViewCallback.callUpdateViewCallback({ 
+        submitButtonLabel: { 
+          pan: card.panLastFour, 
+          name: card.srcName.toLowerCase(),
+        },
+      });
+    }
+
     return `
       <span class="st-card__checkbox">${
         card.isActive
@@ -206,6 +215,9 @@ export class CardListGenerator {
   }
 
   private handleAddCardButtonClick(): void {
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      submitButtonLabel: false,
+    });
     this.openForm();
     this.clearSelection();
   }
