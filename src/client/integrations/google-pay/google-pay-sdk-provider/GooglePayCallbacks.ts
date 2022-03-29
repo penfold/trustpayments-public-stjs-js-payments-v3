@@ -11,7 +11,7 @@ export class GooglePayCallbacks {
     return this.configProvider.getConfig$().pipe(
       map((config: IConfig) => ({
         onPaymentAuthorized: this.onPaymentAuthorized(config),
-        onPaymentDataChanged: this.onPaymentDataChanged(config)
+        onPaymentDataChanged: this.onPaymentDataChanged(config, this.calculateNewTransactionInfo)
       })
     ))
   }
@@ -56,7 +56,7 @@ export class GooglePayCallbacks {
   }
 
   private calculateNewTransactionInfo(shippingOptionId, intermediatePaymentData) {
-    console.warn(33, shippingOptionId);
+    console.warn(1, intermediatePaymentData);
     let newTransactionInfo = intermediatePaymentData.transactionInfo;
   
     let shippingCost = "1.00";
@@ -66,15 +66,19 @@ export class GooglePayCallbacks {
       price: shippingCost,
       status: "FINAL"
     });
+
+    console.warn('newTransactionInfo 1', newTransactionInfo);
   
     let totalPrice = 0.00;
     newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
     newTransactionInfo.totalPrice = totalPrice.toString();
+
+    console.warn('newTransactionInfo 2', newTransactionInfo);
   
     return newTransactionInfo;
   }
 
-  onPaymentDataChanged(config: any) {
+  onPaymentDataChanged(config: any, calculateNewTransactionInfo) {
     const { googlePay: { defaultSelectedOptionId, shippingOptions }} = config;
     return (intermediatePaymentData: any) => {
       return new Promise(function(resolve, reject) {
@@ -84,10 +88,10 @@ export class GooglePayCallbacks {
         if (intermediatePaymentData.callbackTrigger == "INITIALIZE" || intermediatePaymentData.callbackTrigger == "SHIPPING_ADDRESS") {
           (paymentDataRequestUpdate as any).newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
           let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
-          (paymentDataRequestUpdate as any).newTransactionInfo = this.calculateNewTransactionInfo(selectedShippingOptionId);
+          (paymentDataRequestUpdate as any).newTransactionInfo = calculateNewTransactionInfo(selectedShippingOptionId, intermediatePaymentData);
         }
         else if (intermediatePaymentData.callbackTrigger == "SHIPPING_OPTION") {
-          (paymentDataRequestUpdate as any).newTransactionInfo = this.calculateNewTransactionInfo(shippingOptionData.id);
+          (paymentDataRequestUpdate as any).newTransactionInfo = calculateNewTransactionInfo(shippingOptionData.id, intermediatePaymentData);
         }
 
         resolve(paymentDataRequestUpdate);
