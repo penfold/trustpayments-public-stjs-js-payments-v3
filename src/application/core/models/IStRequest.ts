@@ -12,4 +12,5 @@ export interface IStRequest {
   md?: string;
   walletsource?: string;
   wallettoken?: string;
+  paymenttypedescription?: string;
 }
