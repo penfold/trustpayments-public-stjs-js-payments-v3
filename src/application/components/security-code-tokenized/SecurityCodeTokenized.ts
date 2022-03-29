@@ -77,10 +77,18 @@ export class SecurityCodeTokenized extends Input {
   protected onKeyPress(event: KeyboardEvent): void {
     if(Validation.isEnter(event)) {
       event.preventDefault();
+      this.validation.validate(this.inputElement, this.messageElement);
+      this.sendState();
       this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_START_PAYMENT_METHOD });
     }
   }
-
+  protected onKeydown(event: KeyboardEvent): void {
+    super.onKeydown(event);
+    if (Validation.isEnter(event)) {
+      this.validation.validate(this.inputElement, this.messageElement);
+      this.sendState();
+    }
+  }
   private resetInputListener() {
     this.messageBus.subscribeType(PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT, () => {
       this.resetInput();

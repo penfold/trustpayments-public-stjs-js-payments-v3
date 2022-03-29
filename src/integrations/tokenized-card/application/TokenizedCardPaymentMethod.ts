@@ -143,7 +143,9 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
       this.messageBus.publish({
         type: MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE,
       });
-      this.startPaymentEvent();
+
+        // this.startPaymentEvent();
+
     });
   }
 
@@ -158,7 +160,7 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
         data: {
           name: TokenizedCardPaymentMethodName,
           data: {
-            securitycode: this.cvv.value,
+            securitycode: this.cvv?.value || '',
           },
         },
       });
