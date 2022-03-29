@@ -1,6 +1,6 @@
 {
   "iat": 1592298893548,
-  "iss": "jsmanualjwt",
+  "iss": "test",
   "secret": "test",
   "payload": {
     "baseamount": "70000",

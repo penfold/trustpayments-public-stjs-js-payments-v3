@@ -328,9 +328,15 @@
       }
 
       function getNotInlineTokenizedJwt(selectedCard) {
-        return window.configJWT('<%= CONFIG_URL %>/' + selectedCard + '-tokenizedJwtData.json');
+        return window.configJWT('<%= CONFIG_URL %>/' + selectedCard + '-tokenizedJwtData.json')
+          .then(function (jwt) {
+            return Promise.resolve(jwt);
+          })
+          .catch(function (error) {
+            console.log('Fail to load initial JWT data file.');
+            return Promise.resolve('');
+          });
       }
-
 
       function addNewCardOption(cardName) {
         var newCardOption = document.createElement('option');
