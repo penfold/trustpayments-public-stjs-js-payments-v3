@@ -138,7 +138,7 @@ export class CardListGenerator {
           name: card.srcName.toLowerCase(),
         },
         displayCardForm: false,
-        displaySubmitForm: true,
+        displaySubmitButton: true,
       });
     }
 
@@ -222,7 +222,7 @@ export class CardListGenerator {
     this.hppUpdateViewCallback.callUpdateViewCallback({ 
       submitButtonLabel: false,
       displayCardForm: false,
-      displaySubmitForm: true,
+      displaySubmitButton: true,
     });
     this.openForm();
     this.clearSelection();
@@ -255,7 +255,7 @@ export class CardListGenerator {
         name: selectedCard[0].srcName.toLowerCase(),
       },
       displayCardForm: false,
-      displaySubmitForm: true,
+      displaySubmitButton: true,
     });
   }
 
@@ -274,7 +274,7 @@ export class CardListGenerator {
 
   private hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true, submitButtonLabel: false });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitButton: true, submitButtonLabel: false });
   }
 
   private showValidationStatus(id: string, message: string) {

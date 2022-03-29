@@ -16,7 +16,7 @@ describe('HHP', () => {
   });
 
   it('should save provided onViewUpdateCallback in private field', () => {
-    const updateData = { displayCardForm: true, displaySubmitForm: true };
+    const updateData = { displayCardForm: true, displaySubmitButton: true };
     sut.init(testInitParams.onUpdateView);
     sut.callUpdateViewCallback(updateData);
     expect(testInitParams.onUpdateView).toHaveBeenCalledWith(updateData);
