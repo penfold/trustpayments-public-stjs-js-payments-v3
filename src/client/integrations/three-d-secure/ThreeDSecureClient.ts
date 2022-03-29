@@ -1,9 +1,10 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { Service } from 'typedi';
 import {
   ThreeDSecureInterface,
   ChallengeResultInterface,
   ConfigInterface,
+  LogInterface,
   MethodURLResultInterface,
   ThreeDSecureFactory,
   CardType,
@@ -16,6 +17,8 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
 
@@ -29,6 +32,7 @@ export class ThreeDSecureClient {
     private threeDSecureFactory: ThreeDSecureFactory,
     private translator: Translator,
     private messageBus: IMessageBus,
+    private sentryService: SentryService
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -50,7 +54,7 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA)
-      .thenRespond((event: IMessageBusEvent<string>) => (this.threeDSecure.getBrowserData$(event.data) as unknown as Observable<unknown>));
+      .thenRespond((event: IMessageBusEvent<string[]>) => (this.threeDSecure.getBrowserData$(event.data) as unknown as Observable<unknown>));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW)
@@ -75,7 +79,9 @@ export class ThreeDSecureClient {
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
     if (config.translations && config.translations.cancel) {
-      return this.threeDSecure.init$(config);
+      return this.threeDSecure.init$(config).pipe(
+        tap(() => this.initLogs$())
+      );
     }
 
     const updatedConfig = {
@@ -85,7 +91,18 @@ export class ThreeDSecureClient {
       },
     };
 
-    return this.threeDSecure.init$(updatedConfig);
+    return this.threeDSecure.init$(updatedConfig).pipe(
+      tap(() => this.initLogs$())
+    );
+  }
+
+  private initLogs$(): void {
+    this.threeDSecure.logs$.subscribe((log: LogInterface) => {
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA_LOG,
+        data: log,
+      }, EventScope.ALL_FRAMES);
+    })
   }
 
   private run3DSMethod$({

@@ -12,7 +12,8 @@ class InlineConfigBuilder:
                         'billingpremise', 'billingpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
                         'customercountryiso2a', 'expirydate', 'iban', 'locale',
                         'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
-                        'threedbypasspaymenttypes']
+                        'threedbypasspaymenttypes', 'successfulurlredirect', 'errorurlredirect', 'cancelurlredirect',
+                        'returnurl']
 
         for prop in properties:
             key = prop['key']
