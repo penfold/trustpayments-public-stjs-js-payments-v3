@@ -56,7 +56,7 @@ apple-pay-component-tests-part-1-review:
     - .apple-pay-component-tests-part-2
     - .rules-extended-tests-release
 
-apple-pay-component-tests-part-2-review:
+.apple-pay-component-tests-part-2-review:
   extends:
     - .apple-pay-component-tests-part-2
     - .rules-extended-tests-review
