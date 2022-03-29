@@ -1,7 +1,12 @@
 import {
-  CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
+  CardType,
+  ChallengeDisplayMode,
+  ConfigInterface,
+  LoggingLevel,
+  ResultActionCode,
   ThreeDSecureFactory,
-  ThreeDSecureInterface, ThreeDSecureVersion,
+  ThreeDSecureInterface,
+  ThreeDSecureVersion,
 } from '@trustpayments/3ds-sdk-js';
 import { Observable, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
@@ -12,15 +17,18 @@ import { Translator } from '../../../application/core/shared/translator/Translat
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { ThreeDSecureClient } from './ThreeDSecureClient';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
 import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureClient', () => {
+  let logsMock;
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let threeDSecureFactoryMock: ThreeDSecureFactory;
   let threeDSecureMock: ThreeDSecureInterface;
+  let sentryServiceMock: SentryService;
   let sut: ThreeDSecureClient;
   let translator: Translator;
   let translationProvider: TranslationProvider;
@@ -65,6 +73,12 @@ describe('ThreeDSecureClient', () => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     threeDSecureFactoryMock = mock(ThreeDSecureFactory);
     threeDSecureMock = mock<ThreeDSecureInterface>();
+    logsMock = {
+      type: 'warning',
+      message: 'Warning message',
+      time: new Date(),
+    };
+    sentryServiceMock = mock<SentryService>();
     communicationCallbacks = new Map();
     translationProvider = new TranslationProvider();
     translator = new Translator(translationProvider);
@@ -80,8 +94,11 @@ describe('ThreeDSecureClient', () => {
 
     when(threeDSecureFactoryMock.create()).thenReturn(instance(threeDSecureMock));
     when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
+    when(threeDSecureMock.logs$).thenReturn(of(logsMock));
     when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
-    when(threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything(), anything(), anything())).thenReturn(of(challengeResultMock));
+    when(
+      threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything(), anything(), anything())
+    ).thenReturn(of(challengeResultMock));
     when(threeDSecureMock.getBrowserData$(anything())).thenReturn(of(browserDataMock));
 
     sut = new ThreeDSecureClient(
@@ -89,6 +106,7 @@ describe('ThreeDSecureClient', () => {
       instance(threeDSecureFactoryMock),
       translator,
       messageBusMock,
+      instance(sentryServiceMock)
     );
 
     sut.init();
@@ -113,11 +131,13 @@ describe('ThreeDSecureClient', () => {
       };
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL, data: methodUrlData }).subscribe(result => {
-        verify(threeDSecureMock.run3DSMethod$(
-          methodUrlData.transactionId,
-          methodUrlData.notificationUrl,
-          methodUrlData.methodUrl,
-        )).once();
+        verify(
+          threeDSecureMock.run3DSMethod$(
+            methodUrlData.transactionId,
+            methodUrlData.notificationUrl,
+            methodUrlData.methodUrl
+          )
+        ).once();
         expect(result).toBe(methodUrlResultMock);
         done();
       });
@@ -154,14 +174,16 @@ describe('ThreeDSecureClient', () => {
       };
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_CHALLENGE, data: challengeData }).subscribe(result => {
-        verify(threeDSecureMock.doChallenge$(
-          deepEqual(new ThreeDSecureVersion(challengeData.version)),
-          challengeData.payload,
-          challengeData.challengeURL,
-          challengeData.cardType,
-          challengeData.termURL,
-          challengeData.merchantData,
-        )).once();
+        verify(
+          threeDSecureMock.doChallenge$(
+            deepEqual(new ThreeDSecureVersion(challengeData.version)),
+            challengeData.payload,
+            challengeData.challengeURL,
+            challengeData.cardType,
+            challengeData.termURL,
+            challengeData.merchantData
+          )
+        ).once();
         expect(result).toBe(challengeResultMock);
         done();
       });

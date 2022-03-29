@@ -22,15 +22,10 @@ describe('APMPaymentMethod', () => {
   const APMConfigMock: IAPMConfig = {
     apmList: [APMName.ZIP],
     placement: 'st-apm',
-    errorRedirectUrl: 'errorRedirectUrl',
-    cancelRedirectUrl: 'cancelRedirectUrl',
-    successRedirectUrl: 'successRedirectUrl',
   };
 
   const APMItemConfigMock: IAPMItemConfig = {
     name: APMName.ZIP,
-    successRedirectUrl: 'successRedirectUrlAdditional',
-    errorRedirectUrl: 'errorRedirectUrlAdditional',
   };
 
   let messageBusMock: IMessageBus;
@@ -44,7 +39,7 @@ describe('APMPaymentMethod', () => {
       frameQueryingServiceMock,
       instance(apmRequestProcessingServiceMock),
       instance(messageBusMock),
-      instance(requestPayloadFactoryMock),
+      instance(requestPayloadFactoryMock)
     );
 
     when(apmRequestProcessingServiceMock.init(null)).thenReturn(new Observable<void>(subscriber => {
@@ -69,7 +64,7 @@ describe('APMPaymentMethod', () => {
         verify(apmRequestProcessingServiceMock.init(null)).once();
         verify(frameQueryingServiceSpy.query(
           deepEqual({ type: PUBLIC_EVENTS.APM_INIT_CLIENT, data: APMConfigMock }),
-          MERCHANT_PARENT_FRAME,
+          MERCHANT_PARENT_FRAME
         )).once();
         done();
       });
@@ -84,8 +79,6 @@ describe('APMPaymentMethod', () => {
     it('performs request processing with noThreeDSRequestProcessingService, returns the gateway response with errorcode !==0', done => {
       const request = {
         paymenttypedescription: APMItemConfigMock.name,
-        successfulurlredirect: APMItemConfigMock.successRedirectUrl,
-        errorurlredirect: APMItemConfigMock.errorRedirectUrl,
       };
 
       when(requestPayloadFactoryMock.create(anything())).thenReturn(request);
