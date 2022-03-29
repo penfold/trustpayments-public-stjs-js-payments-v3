@@ -1,8 +1,8 @@
 export interface IUpdateView {
-  displayCardForm?: boolean;
-  displaySubmitForm?: boolean;
+  displayCardForm: boolean;
+  displaySubmitForm: boolean;
   submitButtonLabel?: { 
-    pan: number, 
+    pan: string | number, 
     name: string,
   } | boolean;
 }

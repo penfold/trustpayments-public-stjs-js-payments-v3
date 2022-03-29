@@ -6,4 +6,5 @@ export interface ICorrelatedMaskedCard extends IMaskedCard {
   idToken: string;
   srcName: SrcName;
   isActive: boolean;
+  panLastFour: string | number;
 }

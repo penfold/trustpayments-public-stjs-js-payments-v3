@@ -34,6 +34,13 @@
   padding: 1.6rem 3.5em;
   margin: 20px 0 0 auto;
   transition: .3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  #ctp-logo {
+    margin: 0 5px;
+  }
 
   &:hover {
     background-color: rgba(231, 27, 89, 0.8);
