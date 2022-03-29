@@ -64,7 +64,6 @@ export class SecurityCodeTokenized extends Input {
   protected onInput(event: Event): void {
     super.onInput(event);
     this.setInputValue();
-    this.validation.keepCursorsPosition(this.inputElement);
     this.sendState();
   }
 
@@ -194,7 +193,6 @@ export class SecurityCodeTokenized extends Input {
       return;
     }
     this.enableSecurityCode();
-    this.inputElement.classList.remove(TOKENIZED_SECURITY_CODE_DISABLED_CLASS);
   }
 
 }
