@@ -85,6 +85,24 @@ describe('HPPCheckoutDataProvider()', () => {
         expect(submitEvent.preventDefault).toHaveBeenCalled();
       });
 
+      it('should prevent onsubmit form callback from being called', ()=> {
+        const submitCallback = jest.fn();
+        testForm.onsubmit = submitCallback;
+        sut.getCheckoutData(testFormId).subscribe();
+        testForm.dispatchEvent(submitEvent);
+        testForm.submit();
+        expect(submitCallback).not.toHaveBeenCalled();
+      });
+
+      it('should prevent onclick submit input callback from being called', ()=> {
+        const clickCallback = jest.fn();
+        const submitInput = testForm.querySelector('input[type="submit"]') as HTMLElement;
+        submitInput.onclick = clickCallback;
+        sut.getCheckoutData(testFormId).subscribe();
+        submitInput.dispatchEvent(new Event('click'));
+        expect(clickCallback).not.toHaveBeenCalled();
+      });
+
       it('should return an observable with checkout data captured from form', (done) => {
         // TODO add test cases with some billing form  fields being empty
         sut.getCheckoutData(testFormId).subscribe(capturedData => {
@@ -145,7 +163,7 @@ describe('HPPCheckoutDataProvider()', () => {
       });
 
       sut.getCheckoutData(testFormId).subscribe(capturedData => {
-        expect(capturedData.newCardData.billingAddress).toBeNull()
+        expect(capturedData.newCardData.billingAddress).toBeNull();
         done();
       });
       testForm.dispatchEvent(submitEvent);
@@ -156,10 +174,27 @@ describe('HPPCheckoutDataProvider()', () => {
         registerCheckbox.checked = false;
       });
 
-      it('should capture and stop submit event', () => {
+      it('should not capture submit event', () => {
         sut.getCheckoutData(testFormId).subscribe();
         testForm.dispatchEvent(submitEvent);
         expect(submitEvent.preventDefault).not.toHaveBeenCalled();
+      });
+
+      it('should not prevent onsubmit form callback from being called', ()=> {
+        const submitCallback = jest.fn();
+        testForm.onsubmit = submitCallback;
+        sut.getCheckoutData(testFormId).subscribe();
+        testForm.submit();
+        expect(submitCallback).toHaveBeenCalled();
+      });
+
+      it('should not prevent onclick submit input callback from being called', ()=> {
+        const clickCallback = jest.fn();
+        const submitInput = testForm.querySelector('input[type="submit"]') as HTMLElement;
+        submitInput.onclick = clickCallback;
+        sut.getCheckoutData(testFormId).subscribe();
+        submitInput.dispatchEvent(new Event('click'));
+        expect(clickCallback).toHaveBeenCalled();
       });
     });
   });
@@ -178,6 +213,7 @@ function generateTestFormHTML(testFormId: string): HTMLFormElement {
 <input type="checkbox" name="${HPPFormFieldName.register}">
 ${Object.values(HPPFormFieldName).filter(key => key !== HPPFormFieldName.register).map(fieldName => `<input type="text" name="${fieldName}">`).join('\n')}
 `;
+  testForm.innerHTML += '<input type="submit" value="Submit form">';
 
   return testForm;
 }
