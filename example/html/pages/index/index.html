@@ -248,14 +248,18 @@
             document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
           });
 
-          tokenizedCardsSelect.addEventListener('change', (e) => {
+          tokenizedCardsSelect.addEventListener('change', function (e) {
             var selectedCard = tokenizedCardsSelect.value;
             if (selectedCard === 'inline') {
-              tokenizedCardPaymentAdapter.then(adapter => adapter.updateTokenizedJWT(inlineTokenizedJwt));
+              tokenizedCardPaymentAdapter.then(function (adapter) {
+                adapter.updateTokenizedJWT(inlineTokenizedJwt);
+              });
             } else {
               getNotInlineTokenizedJwt(selectedCard)
                 .then(function (jwt) {
-                  tokenizedCardPaymentAdapter.then(adapter => adapter.updateTokenizedJWT(jwt));
+                  tokenizedCardPaymentAdapter.then(function (adapter) {
+                    adapter.updateTokenizedJWT(jwt);
+                  });
                 });
             }
           });
