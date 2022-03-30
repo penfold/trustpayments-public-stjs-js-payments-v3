@@ -15,6 +15,7 @@ export class HPPCheckoutDataProvider {
 
   getCheckoutData(formId: string): Observable<IInitialCheckoutData> {
     this.formElement = document.querySelector(`form#${formId}`);
+    this.preventExistingCallbacks();
 
     return this.captureCheckoutDataOnSubmit();
   }
@@ -169,6 +170,31 @@ export class HPPCheckoutDataProvider {
     }
 
     return normalizedData;
+  }
+
+  private preventExistingCallbacks() {
+    const existingOnSubmitCallback = this.formElement.onsubmit;
+    const submitInput: HTMLElement = this.formElement.querySelector('input[type="submit"]');
+    const existingSubmitClickCallback = submitInput?.onclick;
+
+    if (existingOnSubmitCallback) {
+      this.formElement.onsubmit = () => {
+        if (this.shouldClickToPayBeUsed()) {
+          return true;
+        }
+        existingOnSubmitCallback.call(window);
+      };
+    }
+
+    if (existingSubmitClickCallback) {
+      submitInput.onclick = () => {
+        if (this.shouldClickToPayBeUsed()) {
+          return true;
+        }
+        existingSubmitClickCallback.call(window);
+      };
+    }
+
   }
 }
 

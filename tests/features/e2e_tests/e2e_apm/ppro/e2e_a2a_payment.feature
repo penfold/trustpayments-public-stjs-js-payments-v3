@@ -8,7 +8,7 @@ Feature: E2E A2A Payments
 
 #TODO Currently A2A tests can run against BB6.
 # Uncomment these tests when site ref dedicated for prod env will be prepared
-  
+
 #  Scenario Outline: Successful trigger of payment with accepted values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
@@ -34,16 +34,17 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value               |
-#      | requesttypedescriptions | AUTH                |
-#      | currencyiso3a           | EUR                 |
-#      | billingcountryiso2a     | GB                  |
-#      | baseamount              | 123                 |
-#      | billingfirstname        | <billingfirstname>  |
-#      | billinglastname         | <billinglastname>   |
-#      | billingprefixname       | <billingprefixname> |
-#      | billingmiddlename       | <billingmiddlename> |
-#      | billingsuffixname       | <billingsuffixname> |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | currencyiso3a           | EUR                                                   |
+#      | billingcountryiso2a     | GB                                                    |
+#      | baseamount              | 123                                                   |
+#      | billingfirstname        | <billingfirstname>                                    |
+#      | billinglastname         | <billinglastname>                                     |
+#      | billingprefixname       | <billingprefixname>                                   |
+#      | billingmiddlename       | <billingmiddlename>                                   |
+#      | billingsuffixname       | <billingsuffixname>                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    When User chooses ATA from APM list
@@ -62,13 +63,14 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                 |
-#      | requesttypedescriptions | AUTH                  |
-#      | baseamount              | 70                    |
-#      | billingfirstname        | FirstName             |
-#      | billingemail            | FirstName@email.pl    |
-#      | billingcountryiso2a     | <billingcountryiso2a> |
-#      | currencyiso3a           | <currencyiso3a>       |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingemail            | FirstName@email.pl                                    |
+#      | billingcountryiso2a     | <billingcountryiso2a>                                 |
+#      | currencyiso3a           | <currencyiso3a>                                       |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    When User opens example page WITH_APM
 #    And User waits for Pay button to be active
 #    And User focuses on APM payment methods section
@@ -85,12 +87,13 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value     |
-#      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 70        |
-#      | billingfirstname        | FirstName |
-#      | billingcountryiso2a     | GB        |
-#      | currencyiso3a           | GBP       |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
 #      | key                     | value           |
 #      | requesttypedescriptions | AUTH            |
@@ -108,12 +111,13 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value     |
-#      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 70        |
-#      | billingfirstname        | FirstName |
-#      | billingcountryiso2a     | GB        |
-#      | currencyiso3a           | GBP       |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
 #      | key                     | value            |
 #      | requesttypedescriptions | AUTH             |
@@ -131,12 +135,14 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value    |
-#      | requesttypedescriptions | AUTH     |
-#      | baseamount              | 70       |
-#      | billinglastname         | LastName |
-#      | billingcountryiso2a     | GB       |
-#      | currencyiso3a           | GBP      |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billinglastname         | LastName                                              |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
+#
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
 #      | key                     | value       |
 #      | requesttypedescriptions | THREEDQUERY |
@@ -154,29 +160,31 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value        |
-#      | requesttypedescriptions | ACCOUNTCHECK |
-#      | baseamount              | 70           |
-#      | billingfirstname        | FirstName    |
-#      | billingcountryiso2a     | GB           |
-#      | currencyiso3a           | GBP          |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | ACCOUNTCHECK                                          |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    When User chooses ATA from APM list
 #    Then User will see notification frame text: "Invalid requesttype"
 #
 #
-#  Scenario: successRedirectUrl and parameters verification
+#  Scenario: successfulurlredirect and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value     |
-#      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 70        |
-#      | billingfirstname        | FirstName |
-#      | billingcountryiso2a     | GB        |
-#      | currencyiso3a           | GBP       |
-#      | orderreference          | 123456    |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | orderreference          | 123456                                                |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list
@@ -191,17 +199,18 @@ Feature: E2E A2A Payments
 #      | orderreference       | 123456             |
 #
 #
-#  Scenario: errorRedirectUrl and parameters verification
+#  Scenario: errorurlredirect and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value     |
-#      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 70        |
-#      | billingfirstname        | FirstName |
-#      | billingcountryiso2a     | GB        |
-#      | currencyiso3a           | GBP       |
-#      | orderreference          | 123456    |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | orderreference          | 123456                                                |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list
@@ -220,12 +229,13 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs ATA_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value     |
-#      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 1000     |
-#      | billingfirstname        | FirstName |
-#      | billingcountryiso2a     | GB        |
-#      | currencyiso3a           | GBP       |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 1000                                                  |
+#      | billingfirstname        | FirstName                                             |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list - override placement
