@@ -75,7 +75,12 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitButton: true } as IUpdateView))).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ 
+          displayCardForm: false, 
+          displaySubmitButton: true,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        } as IUpdateView))).once();
         done();
       });
     promptClosedMock.next(false);
@@ -86,7 +91,12 @@ describe('HPPUserIdentificationService', () => {
       emailResultMock.next(false);
       codeResultMock.next(true);
       sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitButton: false } as IUpdateView))).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ 
+          displayCardForm: false, 
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        } as IUpdateView))).once();
         done();
       });
     });

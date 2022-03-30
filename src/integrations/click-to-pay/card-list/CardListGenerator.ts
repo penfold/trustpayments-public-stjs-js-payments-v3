@@ -133,10 +133,8 @@ export class CardListGenerator {
 
     if (checked) {
       this.hppUpdateViewCallback.callUpdateViewCallback({ 
-        submitButtonLabel: { 
-          pan: card.panLastFour, 
-          name: card.srcName.toLowerCase(),
-        },
+        displayMaskedCardNumber: card.panLastFour.toString(),
+        displayCardType: card.srcName.toLowerCase(),
         displayCardForm: false,
         displaySubmitButton: true,
       });
@@ -220,7 +218,8 @@ export class CardListGenerator {
 
   private handleAddCardButtonClick(): void {
     this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      submitButtonLabel: false,
+      displayMaskedCardNumber: null,
+      displayCardType: null,
       displayCardForm: false,
       displaySubmitButton: true,
     });
@@ -250,10 +249,8 @@ export class CardListGenerator {
     const selectedCard = this.cardList.filter(card => card.srcDigitalCardId === id)
 
     this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      submitButtonLabel: { 
-        pan: selectedCard[0].panLastFour, 
-        name: selectedCard[0].srcName.toLowerCase(),
-      },
+      displayMaskedCardNumber: selectedCard[0].panLastFour.toString(),
+      displayCardType: selectedCard[0].srcName.toLowerCase(),
       displayCardForm: false,
       displaySubmitButton: true,
     });
@@ -274,7 +271,12 @@ export class CardListGenerator {
 
   private hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitButton: true, submitButtonLabel: false });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayCardForm: true, 
+      displaySubmitButton: true, 
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+    });
   }
 
   private showValidationStatus(id: string, message: string) {
