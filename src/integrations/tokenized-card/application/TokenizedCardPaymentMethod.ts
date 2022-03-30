@@ -150,7 +150,7 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   }
 
   private startPaymentEvent() {
-    if(!this.cvv?.value){
+    if(!this.cvv?.validity){
       return
     }
 

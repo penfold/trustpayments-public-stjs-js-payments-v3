@@ -60,6 +60,7 @@ import {
   TokenizedCardPaymentMethodName,
 } from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
+import { DefaultConfig } from '../../application/core/models/constants/config-resolver/DefaultConfig';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
@@ -294,9 +295,14 @@ export class ST {
     });
   }
 
-  TokenizedCardPayment( tokenizedCardPaymentConfig: ITokenizedCardPaymentConfig, jwtCard: string): Promise<TokenizedCardPaymentAdapter>{
-    if(!jwtCard || !tokenizedCardPaymentConfig){
+  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter>{
+    if(!jwtCard){
       return
+    }
+
+    tokenizedCardPaymentConfig = {
+      ...DefaultConfig[TokenizedCardPaymentConfigName],
+      ...tokenizedCardPaymentConfig,
     }
 
     console.log('TOKEN ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
