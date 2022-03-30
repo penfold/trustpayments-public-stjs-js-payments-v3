@@ -20,6 +20,8 @@ import {
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { PayButtonFactory } from '../../../client/pay-button/PayButtonFactory';
+import { IStyles } from '../../../shared/model/config/IStyles';
+import { IStyle } from '../../../shared/model/config/IStyle';
 
 @Service()
 export class TokenizedCardClient {
@@ -38,7 +40,7 @@ export class TokenizedCardClient {
 
   init(config: ITokenizedCardPaymentConfig): Observable<ITokenizedCardPaymentConfig> {
     if(!config) {
-      return;
+      return of(undefined);
     }
 
     this.insertSecurityCodeFrame(config);
@@ -68,7 +70,7 @@ export class TokenizedCardClient {
     const securityCodeIframe = this.iframeFactory.create(
       TOKENIZED_SECURITY_CODE_COMPONENT_NAME,
       TOKENIZED_SECURITY_CODE_IFRAME,
-      this.getStyles(store.initialConfig.config.styles),
+      this.getStyles(store.initialConfig.config.styles) as IStyle,
       {
         locale: this.jwtDecoder.decode<IStJwtPayload>(store.initialConfig.config.jwt).payload.locale || 'en_GB',
         origin: store.initialConfig.config.origin,
@@ -77,13 +79,13 @@ export class TokenizedCardClient {
     securityCodeSlot.appendChild(securityCodeIframe);
   }
 
-  private getStyles(styles: any) {
+  private getStyles(styles: IStyles): IStyles {
     for(const key in styles){
       if(styles[key] instanceof Object) {
         return styles;
       }
     }
-    styles = { defaultStyles: styles };
+    styles = { defaultStyles: styles as  IStyle };
     return styles;
   }
 

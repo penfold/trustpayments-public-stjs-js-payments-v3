@@ -7,7 +7,6 @@
     "accounttypedescription": "ECOM",
     "currencyiso3a": "GBP",
     "locale": "en_GB",
-    "sitereference": "test_jsmanualcardinal91921",
     "requesttypedescriptions": [
       "THREEDQUERY",
       "AUTH"
