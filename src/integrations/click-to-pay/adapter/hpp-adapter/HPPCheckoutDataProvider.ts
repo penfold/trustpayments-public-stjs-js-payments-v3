@@ -182,7 +182,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingOnSubmitCallback.call(window);
+        existingOnSubmitCallback.call(window,window);
       };
     }
 
@@ -191,7 +191,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingSubmitClickCallback.call(window);
+        existingSubmitClickCallback.call(window,window);
       };
     }
 

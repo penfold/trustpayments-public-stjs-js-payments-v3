@@ -33,7 +33,6 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
 
   setInitParams(initParams: IHPPClickToPayAdapterInitParams) {
     this.initParams = initParams;
-    this.hppUpdateViewCallback.init(initParams.onUpdateView);
   }
 
   identifyUser(

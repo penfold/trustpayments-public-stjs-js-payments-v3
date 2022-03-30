@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, firstValueFrom, NEVER, Observable, of } from 'rxjs';
+import { BehaviorSubject, distinctUntilKeyChanged, firstValueFrom, NEVER, Observable, of } from 'rxjs';
 import { filter, mapTo, switchMap, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
@@ -17,9 +17,13 @@ import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdenti
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { ICheckoutResponse } from '../../digital-terminal/ISrc';
+import { untilDestroy } from '../../../../shared/services/message-bus/operators/untilDestroy';
+import { IUpdateView } from '../interfaces/IUpdateView';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
+import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
+import { HPPFormFieldName } from './HPPFormFieldName';
 
 @Service()
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
@@ -32,12 +36,19 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     private userIdentificationService: HPPUserIdentificationService,
     private srcNameFinder: SrcNameFinder,
     private cardListGenerator: CardListGenerator,
-    private hppCheckoutDataProvider: HPPCheckoutDataProvider
+    private hppCheckoutDataProvider: HPPCheckoutDataProvider,
+    private hppUpdateViewCallback: HPPUpdateViewCallback
   ) {
   }
 
   init(initParams: IHPPClickToPayAdapterInitParams): Promise<HPPClickToPayAdapter> {
     this.initParams = initParams;
+    this.hppUpdateViewCallback.init(initParams.onUpdateView);
+    this.hppUpdateViewCallback.getUpdateViewState()
+      .pipe(
+        distinctUntilKeyChanged<IUpdateView>('displayCardForm'),
+        untilDestroy<IUpdateView>(this.messageBus)
+      ).subscribe(updateData => this.disableHiddenFormFields(updateData));
     this.startPaymentMethodInit(initParams);
     return this.completePaymentMethodInit(initParams);
   }
@@ -136,5 +147,26 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
+  }
+
+  private disableHiddenFormFields(updateData: IUpdateView) {
+    const formElement: HTMLFormElement = document.querySelector(`form#${this.initParams.formId}`);
+    const cardFieldNames: HPPFormFieldName[] = [
+      HPPFormFieldName.pan,
+      HPPFormFieldName.cardExpiryMonth,
+      HPPFormFieldName.cardExpiryYear,
+      HPPFormFieldName.cardSecurityCode,
+    ];
+
+    if (!formElement) {
+      return;
+    }
+
+    if (updateData.displayCardForm === true) {
+      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.removeAttribute('readonly'));
+    } else {
+      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.setAttribute('readonly', ''));
+    }
+
   }
 }

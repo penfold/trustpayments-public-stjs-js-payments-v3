@@ -173,9 +173,5 @@ describe('HPPUserIdentificationService', () => {
       sut.setInitParams(testInitParams);
       expect(sut['initParams']).toEqual(testInitParams);
     });
-
-    it('should pass onUpdateView callback to hppUpdateViewCallback', () => {
-      verify(hppUpdateViewCallback.init(testInitParams.onUpdateView)).once();
-    });
   });
 });
