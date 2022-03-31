@@ -112,8 +112,8 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
 
     this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      displayCardForm: false, 
-      displaySubmitButton: false,
+      displayCardForm: true, 
+      displaySubmitButton: true,
       displayMaskedCardNumber: null,
       displayCardType: null,
     });
