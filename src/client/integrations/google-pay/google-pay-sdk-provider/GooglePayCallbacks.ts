@@ -11,7 +11,7 @@ export class GooglePayCallbacks {
     return this.configProvider.getConfig$().pipe(
       map((config: IConfig) => ({
         onPaymentAuthorized: this.onPaymentAuthorized(config),
-        onPaymentDataChanged: this.onPaymentDataChanged(config, this.calculateNewTransactionInfo)
+        onPaymentDataChanged: this.onPaymentDataChanged(config)
       })
     ))
   }
@@ -55,43 +55,42 @@ export class GooglePayCallbacks {
     }
   }
 
-  private calculateNewTransactionInfo(shippingOptionId, intermediatePaymentData) {
-    console.warn(1, intermediatePaymentData);
-    let newTransactionInfo = intermediatePaymentData.transactionInfo;
-  
-    let shippingCost = "1.00";
-    newTransactionInfo.displayItems.push({
-      type: "LINE_ITEM",
-      label: "Shipping cost",
-      price: shippingCost,
-      status: "FINAL"
-    });
-
-    console.warn('newTransactionInfo 1', newTransactionInfo);
-  
-    let totalPrice = 0.00;
-    newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
-    newTransactionInfo.totalPrice = totalPrice.toString();
-
-    console.warn('newTransactionInfo 2', newTransactionInfo);
-  
-    return newTransactionInfo;
-  }
-
-  onPaymentDataChanged(config: any, calculateNewTransactionInfo) {
+  onPaymentDataChanged(config: any) {
     const { googlePay: { defaultSelectedOptionId, shippingOptions }} = config;
+    const displayItems = [...config.googlePay.paymentRequest.transactionInfo.displayItems];
+
     return (intermediatePaymentData: any) => {
       return new Promise(function(resolve, reject) {
         let shippingOptionData = intermediatePaymentData.shippingOptionData;
         let paymentDataRequestUpdate = {};
 
-        if (intermediatePaymentData.callbackTrigger == "INITIALIZE" || intermediatePaymentData.callbackTrigger == "SHIPPING_ADDRESS") {
+        if (intermediatePaymentData.callbackTrigger === "INITIALIZE" || intermediatePaymentData.callbackTrigger === "SHIPPING_ADDRESS") {
           (paymentDataRequestUpdate as any).newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
-          let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
-          (paymentDataRequestUpdate as any).newTransactionInfo = calculateNewTransactionInfo(selectedShippingOptionId, intermediatePaymentData);
+          // let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
+          const newTransactionInfo = config.googlePay.paymentRequest.transactionInfo;
+          let totalPrice = 0.00;
+          newTransactionInfo.displayItems = [...displayItems, {
+            type: "LINE_ITEM",
+            label: "Shipping cost",
+            price: "1.00",
+            status: "FINAL"
+          }];
+          newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
+          newTransactionInfo.totalPrice = totalPrice.toString();
+          (paymentDataRequestUpdate as any).newTransactionInfo = newTransactionInfo;
         }
-        else if (intermediatePaymentData.callbackTrigger == "SHIPPING_OPTION") {
-          (paymentDataRequestUpdate as any).newTransactionInfo = calculateNewTransactionInfo(shippingOptionData.id, intermediatePaymentData);
+        else if (intermediatePaymentData.callbackTrigger === "SHIPPING_OPTION") {
+          const newTransactionInfo = config.googlePay.paymentRequest.transactionInfo;
+          let totalPrice = 0.00;
+          newTransactionInfo.displayItems = [...displayItems, {
+            type: "LINE_ITEM",
+            label: "Shipping cost",
+            price: "1.00",
+            status: "FINAL"
+          }];
+          newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
+          newTransactionInfo.totalPrice = totalPrice.toString();
+          (paymentDataRequestUpdate as any).newTransactionInfo = newTransactionInfo;
         }
 
         resolve(paymentDataRequestUpdate);
