@@ -1,36 +1,29 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
-import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
-import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
 import { NewCardFieldName } from './NewCardFieldName';
 
-const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
+const iconMap: Map<string, string> = new Map(
+  [
+    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
+  ]
+);
 
 @Service()
 export class CardListGenerator {
-  private acceptedCards: SrcName[] = [SrcName.VISA];
   private notYouElementId = 'st-ctp-user-details__not--you';
-  private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  private panValidationStatusSubscription: Subscription;
 
-  private readonly iconMap: Map<string, string> = new Map([
-    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
-  ]);
+  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator) {
+  }
 
-  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder, private hppUpdateViewCallback: HPPUpdateViewCallback) {}
-
-  displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
+  displayCards(parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
-    container.innerHTML = '';
     cardList.forEach((card, index) => {
       const cardContent = this.cardContent(card, index === 0);
       const cardRow = document.createElement('div');
@@ -49,18 +42,9 @@ export class CardListGenerator {
     addCardRow.innerHTML = this.addCardContent();
     container.appendChild(addCardRow);
 
-    this.addValidation();
     this.fillUpExpiryMonth();
     this.fillUpExpiryYear();
-    this.addEventHandlers(formId);
-  }
-
-  displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
-    const container: HTMLElement = document.getElementById(parentContainer);
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
-    container.prepend(wrapper);
-    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+    this.addEventHandlers();
   }
 
   openNewCardForm(): void {
@@ -70,7 +54,15 @@ export class CardListGenerator {
 
   hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
+    //onUpdateView
+  }
+
+  displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
+    const container: HTMLElement = document.getElementById(parentContainer);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
+    container.prepend(wrapper);
+    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
   }
 
   private addCardContent(): string {
@@ -86,7 +78,6 @@ export class CardListGenerator {
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
         <input id="pan" type="text" name="${NewCardFieldName.pan}">
-        <div id="pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
@@ -104,54 +95,16 @@ export class CardListGenerator {
     `;
   }
 
-  private addEventHandlers(formId: string): void {
-    document.getElementById(formId).querySelector('input[name=' + NewCardFieldName.pan + ']').addEventListener('change', event => this.handleChangedPan(event));
-    document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
-  }
-
-  private addUserInformationContent(emailAddress: string): string {
-    return `
-      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
-        <?xml version="1.0" encoding="UTF-8"?>
-        <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="129.38" cy="60" r="60"/>
-          <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
-        </svg>
-        <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
-      </div>
-    `;
-  }
-
-  private addValidation(): void {
-    if (this.panValidationStatusSubscription) {
-      this.panValidationStatusSubscription.unsubscribe();
-    }
-    this.panValidationStatusSubscription = this.panValidationStatus
-      .pipe(
-        distinctUntilChanged()
-      )
-      .subscribe(result =>
-        result
-          ? this.hideValidationStatus('pan-validation-status')
-          : this.showValidationStatus('pan-validation-status', PAN_VALIDATION_STATUS_FAILED)
-      );
+  private addEventHandlers(): void {
+    document.getElementById('st-add-card__button').addEventListener('click', () => this.openNewCardForm());
   }
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
+    const activeCardRadioButton = `<label><input id="radio${card.srcDigitalCardId}" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="${card.srcDigitalCardId}"${check}><span class="st-card__checkbox-radio"></span></label>`;
 
     return `
-      <span class="st-card__checkbox">${
-        card.isActive
-          ? '<label><input id="radio' +
-            card.srcDigitalCardId +
-            '" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="' +
-            card.srcDigitalCardId +
-            '"' +
-            check +
-            '><span class="st-card__checkbox-radio"></span></label>'
-          : ''
-      }</span>
+      <span class="st-card__checkbox">${card.isActive ? activeCardRadioButton : ''}</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
@@ -163,7 +116,7 @@ export class CardListGenerator {
         <img src="${logo}" alt="">
       </span>
       <span class="st-card__type">
-        <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
+        <img src="${iconMap.get(card.srcName.toLowerCase())}" alt="">
       </span>
     `;
   }
@@ -173,7 +126,6 @@ export class CardListGenerator {
     (document.getElementById('pan') as HTMLInputElement).value = '';
     (document.getElementById('expiryDateMonthId') as HTMLSelectElement).value = '';
     (document.getElementById('expiryDateYearId') as HTMLSelectElement).value = '';
-    this.panValidationStatus.next(true);
   }
 
   private clearSelection(): void {
@@ -216,34 +168,11 @@ export class CardListGenerator {
     }
   }
 
-  private handleAddCardButtonClick(): void {
-    this.openForm();
-    this.clearSelection();
-  }
-
-  private handleChangedPan(event: Event): void {
-    if ((event.target as HTMLInputElement).value) {
-      this.srcNameFinder
-        .findSrcNameByPan((event.target as HTMLInputElement).value)
-        .pipe(first())
-        .subscribe((result: SrcName | null) => {
-          this.panValidationStatus.next(this.acceptedCards.indexOf(result) !== -1);
-        });
-    } else {
-      this.panValidationStatus.next(true);
-    }
-  }
-
   private handleClick(id: string): void {
     this.closeForm();
     this.clearForm();
     this.clearSelection();
     (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
-  }
-
-  private hideValidationStatus(id: string) {
-    document.getElementById(id).style.display = 'none';
-    document.getElementById(id).innerHTML = '';
   }
 
   private openForm(): void {
@@ -254,8 +183,16 @@ export class CardListGenerator {
     }
   }
 
-  private showValidationStatus(id: string, message: string) {
-    document.getElementById(id).style.display = 'block';
-    document.getElementById(id).innerHTML = message;
+  private addUserInformationContent(emailAddress: string): string {
+    return `
+      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
+        <?xml version="1.0" encoding="UTF-8"?>
+        <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="129.38" cy="60" r="60"/>
+          <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
+        </svg>
+        <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
+      </div>
+    `;
   }
 }

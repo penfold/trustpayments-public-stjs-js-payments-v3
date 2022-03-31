@@ -16,6 +16,7 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
+import { IUpdateView } from '../interfaces/IUpdateView';
 import { ICheckoutResponse } from '../../digital-terminal/ISrc';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -59,7 +60,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
-      this.cardListGenerator.displayCards(this.initParams.formId, this.initParams.cardListContainerId, cardList.aggregatedCards);
+      this.cardListGenerator.displayCards(this.initParams.cardListContainerId, cardList.aggregatedCards);
+      this.initParams.onUpdateView?.call(null, {
+        displayCardForm: false,
+      } as IUpdateView);
     });
     this.showUserDetails();
   }
@@ -111,7 +115,6 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       ...capturedCheckoutData,
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
-
     const preventUnfinishedCheckoutPropagation = (response: ICheckoutResponse) => {
       switch (response.dcfActionCode) {
         case 'SWITCH_CONSUMER':
@@ -132,18 +135,14 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
-        tap(response => this.initParams?.onCheckout.call(null, response)),
         tap(response => this.handleCheckoutResponse(response)),
+        tap(response => this.initParams?.onCheckout.call(null, response)),
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
   }
 
   private handleCheckoutResponse(response: ICheckoutResponse) {
-    if (response.dcfActionCode === 'CHANGE_CARD') {
-      this.showCardList();
-    }
-
     if (response.dcfActionCode === 'ADD_CARD') {
       this.cardListGenerator.openNewCardForm();
     }
