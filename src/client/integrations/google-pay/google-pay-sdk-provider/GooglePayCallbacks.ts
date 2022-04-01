@@ -1,8 +1,10 @@
 import { Observable, map } from 'rxjs';
-import { Service } from "typedi";
+import { Service } from 'typedi';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
-import { IConfig } from "../../../../shared/model/config/IConfig";
-import { ConfigProvider } from "../../../../shared/services/config-provider/ConfigProvider";
+import { GoogleDynamicPriceUpdates, INewShippingOptionParameters, IntermediatePaymentData } from '../../../../integrations/google-pay/models/IGooglePayDynamicPriceUpdates';
+import { IPaymentData } from '../../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+import { IConfig } from '../../../../shared/model/config/IConfig';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { GooglePayPaymentService } from '../GooglePayPaymentService';
 
 @Service()
@@ -13,91 +15,55 @@ export class GooglePayCallbacks {
     return this.configProvider.getConfig$().pipe(
       map((config: IConfig) => ({
         onPaymentAuthorized: this.onPaymentAuthorized(config),
-        onPaymentDataChanged: this.onPaymentDataChanged(config)
+        onPaymentDataChanged: this.onPaymentDataChanged(config),
       })
-    ))
+    ));
   }
 
-  // private processPayment(paymentData) {
-  //   let attempts = 0;
-
-  //   return new Promise(function(resolve, reject) {
-  //     setTimeout(function() {
-  //       console.log(paymentData.paymentMethodData.tokenizationData.token);
-  
-  //       if (attempts++ % 2 == 0) {
-  //         reject(new Error('Every other attempt fails, next one should succeed'));      
-  //       } else {
-  //         resolve({}); 
-  //       }
-  //     }, 500);
-  //   });
-  // }
-
   onPaymentAuthorized(config: IConfig) {
-    return (paymentData: any) => {
+    return (paymentData: IPaymentData) => {
       const formData = DomMethods.parseForm(config.formId);
-      console.warn(11, formData)
-      console.warn(111, paymentData)
-      return this.googlePayPaymentService.processPayment(formData, paymentData);
-      // return new Promise(function(resolve, reject) {
-      //   console.log(paymentData);
-      //   this.processPayment(paymentData)
-      //     .then(function() {
-      //       resolve({transactionState: 'SUCCESS'});
-      //     })
-      //     .catch(function() {
-      //       resolve({
-      //         transactionState: 'ERROR',
-      //         error: {
-      //           intent: 'PAYMENT_AUTHORIZATION',
-      //           message: 'Insufficient funds',
-      //           reason: 'PAYMENT_DATA_INVALID'
-      //         }
-      //       });
-      //     });
-      // });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { shippingAddress, shippingOptionData, ...newPaymentData } = paymentData;
+      return this.googlePayPaymentService.processPayment(formData, newPaymentData);
     }
   }
 
-  onPaymentDataChanged(config: any) {
+  onPaymentDataChanged(config: IConfig) {
     const { defaultSelectedOptionId, shippingOptions } = config.googlePay.paymentRequest.shippingOptionParameters;
     const displayItems = [...config.googlePay.paymentRequest.transactionInfo.displayItems];
 
-    return (intermediatePaymentData: any) => {
-      return new Promise(function(resolve, reject) {
+    return (intermediatePaymentData: IntermediatePaymentData) => {
+      return new Promise(function(resolve) {
         // let shippingOptionData = intermediatePaymentData.shippingOptionData;
-        let paymentDataRequestUpdate = {};
+        const paymentDataRequestUpdate: INewShippingOptionParameters = {};
 
-        if (intermediatePaymentData.callbackTrigger === "INITIALIZE" || intermediatePaymentData.callbackTrigger === "SHIPPING_ADDRESS") {
-          console.log(defaultSelectedOptionId, shippingOptions);
-          (paymentDataRequestUpdate as any).newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
-          console.warn('123', paymentDataRequestUpdate)
+        if (intermediatePaymentData.callbackTrigger === GoogleDynamicPriceUpdates.INITIALIZE || intermediatePaymentData.callbackTrigger === GoogleDynamicPriceUpdates.SHIPPING_ADDRESS) {
+          paymentDataRequestUpdate.newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
           // let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
           const newTransactionInfo = config.googlePay.paymentRequest.transactionInfo;
           let totalPrice = 0.00;
           newTransactionInfo.displayItems = [...displayItems, {
-            type: "LINE_ITEM",
-            label: "Shipping cost",
-            price: "1.00",
-            status: "FINAL"
+            type: 'LINE_ITEM',
+            label: 'Shipping cost',
+            price: '1.00',
+            status: 'FINAL',
           }];
           newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
           newTransactionInfo.totalPrice = totalPrice.toString();
-          (paymentDataRequestUpdate as any).newTransactionInfo = newTransactionInfo;
-        }
-        else if (intermediatePaymentData.callbackTrigger === "SHIPPING_OPTION") {
+          paymentDataRequestUpdate.newTransactionInfo = newTransactionInfo;
+        } else if (intermediatePaymentData.callbackTrigger === GoogleDynamicPriceUpdates.SHIPPING_OPTION) {
           const newTransactionInfo = config.googlePay.paymentRequest.transactionInfo;
           let totalPrice = 0.00;
           newTransactionInfo.displayItems = [...displayItems, {
-            type: "LINE_ITEM",
-            label: "Shipping cost",
-            price: "1.00",
-            status: "FINAL"
+            type: 'LINE_ITEM',
+            label: 'Shipping cost',
+            price: '1.00',
+            status: 'FINAL',
           }];
           newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
           newTransactionInfo.totalPrice = totalPrice.toString();
-          (paymentDataRequestUpdate as any).newTransactionInfo = newTransactionInfo;
+          paymentDataRequestUpdate.newTransactionInfo = newTransactionInfo;
         }
 
         resolve(paymentDataRequestUpdate);

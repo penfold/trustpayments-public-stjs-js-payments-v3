@@ -11,7 +11,7 @@ export type IGooglePayDisplayItemTypes = 'LINE_ITEM' | 'SUBTOTAL';
 
 export type IGooglePayCallbackIntents = 'PAYMENT_AUTHORIZATION' | 'SHIPPING_ADDRESS' | 'SHIPPING_OPTION';
 
-interface IGooglePayDisplayItem {
+export interface IGooglePayDisplayItem {
   label: string;
   price: string;
   status?: IGooglePayDisplayItemStatus;
@@ -48,12 +48,12 @@ interface GooglePayAllowedPaymentMethods {
   tokenizationSpecification?: IGooglePayTokenizationSpecification;
   type: IGooglePayAllowedPaymentMethodTypes;
 }
-interface GooglePayShippingAddressParameters {
+export interface GooglePayShippingAddressParameters {
   allowedCountryCodes: string[];
   phoneNumberRequired: boolean;
 }
 
-interface GooglePayShippingOptionSelection {
+export interface GooglePayShippingOptionSelection {
   description: string;
   id: string;
   label: string;
@@ -100,6 +100,8 @@ export interface IPaymentData {
     token: string;
     type: string;
   };
+  shippingAddress?: GooglePayShippingAddressParameters;
+  shippingOptionData?: GooglePayShippingOptionSelection;
 }
 
 export interface IPaymentResponse {
