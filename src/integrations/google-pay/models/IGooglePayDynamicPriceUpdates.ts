@@ -4,6 +4,7 @@ export enum GoogleDynamicPriceUpdates {
   INITIALIZE = 'INITIALIZE',
   SHIPPING_ADDRESS = 'SHIPPING_ADDRESS',
   SHIPPING_OPTION = 'SHIPPING_OPTION',
+  PAYMENT_AUTHORIZATION = 'PAYMENT_AUTHORIZATION',
 }
 
 export interface IntermediatePaymentData {

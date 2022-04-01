@@ -1,5 +1,6 @@
 import { IGooglePayAllowedPaymentMethodTypes } from './IGooglePayAllowedPaymentMethodTypes';
 import { IGooglePayCardParameters } from './IGooglePayCardParameters';
+import { GoogleDynamicPriceUpdates } from './IGooglePayDynamicPriceUpdates';
 
 export type IGooglePayTotalPriceStatus = 'NOT_CURRENTLY_KNOWN' | 'ESTIMATED' | 'FINAL';
 
@@ -68,7 +69,7 @@ export interface IGooglePayPaymentRequest {
   allowedPaymentMethods: GooglePayAllowedPaymentMethods[];
   apiVersion: number;
   apiVersionMinor: number;
-  callbackIntents?: IGooglePayCallbackIntents;
+  callbackIntents?: GoogleDynamicPriceUpdates[];
   emailRequired?: boolean;
   environment?: 'TEST' | 'PRODUCTION';
   merchantInfo: IGooglePayMerchantInfo;

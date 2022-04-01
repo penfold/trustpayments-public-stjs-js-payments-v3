@@ -18,6 +18,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { GoogleDynamicPriceUpdates } from '../../../integrations/google-pay/models/IGooglePayDynamicPriceUpdates';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
@@ -40,21 +41,20 @@ export class GooglePay {
 
   init(config: IConfig): Observable<IConfig> {
     this.config = config;
-    (this.config.googlePay.paymentRequest.callbackIntents as any) = ["SHIPPING_ADDRESS",  "SHIPPING_OPTION", "PAYMENT_AUTHORIZATION"];
+    this.config.googlePay.paymentRequest.callbackIntents = [GoogleDynamicPriceUpdates.SHIPPING_ADDRESS,  GoogleDynamicPriceUpdates.SHIPPING_OPTION, GoogleDynamicPriceUpdates.PAYMENT_AUTHORIZATION];
 
     return this.googlePaySdkProvider
       .setupSdk$(config)
       .pipe(
         this.sentryService.captureAndReportResourceLoadingTimeout('Google Pay script load timeout'),
         tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
-          console.warn(1, googlePaySdk);
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
         }),
         switchMap(() => this.configProvider.getConfig$()),
         tap((config: IConfig) => {
           this.config = config;
-          (this.config.googlePay.paymentRequest.callbackIntents as any) = ["SHIPPING_ADDRESS",  "SHIPPING_OPTION", "PAYMENT_AUTHORIZATION"];
+          this.config.googlePay.paymentRequest.callbackIntents = [GoogleDynamicPriceUpdates.SHIPPING_ADDRESS,  GoogleDynamicPriceUpdates.SHIPPING_OPTION, GoogleDynamicPriceUpdates.PAYMENT_AUTHORIZATION];
           this.updateJwtListener();
         })
       );
@@ -120,7 +120,6 @@ export class GooglePay {
         this.onGooglePayPaymentAuthorized(paymentData);
       })
       .catch((err: { statusCode: 'ERROR' | 'CANCELED' }) => {
-        console.warn(err);
         switch (err.statusCode) {
           case 'CANCELED': {
             this.onGooglePayPaymentCancel();
