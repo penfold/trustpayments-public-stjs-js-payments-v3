@@ -6,6 +6,7 @@ import {
   CONTROL_FRAME_COMPONENT,
   EXPIRATION_DATE_COMPONENT,
   SECURITY_CODE_COMPONENT,
+  TOKENIZED_SECURITY_CODE_COMPONENT,
 } from '../../application/core/models/constants/Selectors';
 import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 
@@ -16,6 +17,7 @@ export class IframeFactory {
       cardNumber: CARD_NUMBER_COMPONENT,
       expirationDate: EXPIRATION_DATE_COMPONENT,
       securityCode: SECURITY_CODE_COMPONENT,
+      securityCodeTokenized: TOKENIZED_SECURITY_CODE_COMPONENT,
       animatedCard: ANIMATED_CARD_COMPONENT,
       controlFrame: CONTROL_FRAME_COMPONENT,
     })

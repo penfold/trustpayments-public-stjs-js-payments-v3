@@ -2,12 +2,12 @@
 <html class="no-js" lang="en">
 
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>Trust Payments Example Form</title>
   <meta name="description" content="Trust Payments example page with form">
   <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
-  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="icon" href="./img/favicon.webp" sizes="32x32">
   <link rel="icon" href="./img/favicon.webp" sizes="192x192">
   <link rel="apple-touch-icon" href="./img/favicon.webp">
@@ -15,344 +15,431 @@
 
 <body>
 
-<main>
-  <header class="st-header">
-    <figure class="st-header__logo">
-      <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
-    </figure>
-    <h1 class="st-header__title">Example Form</h1>
-  </header>
+  <main>
+    <header class="st-header">
+      <figure class="st-header__logo">
+        <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
+      </figure>
+      <h1 class="st-header__title">Example Form</h1>
+    </header>
 
-  <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="off"
-        novalidate>
+    <section id="tokenized-card-payment">
+      <h2>Tokenized card payment</h2>
+      <form role="form" name="st-form-tokenized" id="st-form-tokenized" action="https://www.example.com" class="st-form"
+            autocomplete="off" novalidate>
 
-    <div id="st-popup" class="st-popup"></div>
+        <select id="tokenized-card-select">
+          <option value="card1">VISA</option>
+          <option value="card2">MASTERCARD</option>
+        </select>
 
-    <div id="st-notification-frame" class="st-form__group"></div>
+        <fieldset id="st-card-payment" class="st-form__fieldset">
+          <legend>Credit card details:</legend>
+          <div id="st-tokenized-security-code" class="st-form__group st-form__iframe-container"></div>
+        </fieldset>
 
-    <div id="st-browser-info" class="st-form__group"></div>
+        <!-- <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div> -->
 
-    <fieldset class="st-form__fieldset">
-      <legend>Payment details:</legend>
-      <div class="st-form__section st-form__section--horizontal">
-        <div class="st-form__field">
-
-          <label for="st-form-price" class="st-form__label">
-            price:
-            <abbr title="required" aria-label="required">*</abbr>
-          </label>
-
-          <input type="text"
-                 name="myBillPrice"
-                 id="st-form-price"
-                 class="st-form__input"
-                 placeholder="myBillPrice"
-                 data-st-name="billingprice"
-                 disabled
-          />
+        <div class="st-form__group st-form__group--submit">
+          <button type="submit" class="st-form__button st-button-submit__disabled" id="tokenized-submit-button"
+                  disabled>
+            Pay
+          </button>
         </div>
-        <div class="st-form__field">
-          <label for="example-form-amount" class="st-form__label">
-            amount:
-            <abbr title="required" aria-label="required">*</abbr>
-          </label>
-          <input type="number"
-                 name="myBillAmount"
-                 id="example-form-amount"
-                 class="st-form__input"
-                 placeholder="myBillAmount"
-                 data-st-name="billingamount"
-                 autocomplete="amount"
-          />
+      </form>
+    </section>
+
+    <section id="new-card-payment">
+      <h2>New card payment</h2>
+      <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="off"
+            novalidate>
+
+        <div id="st-popup" class="st-popup"></div>
+
+        <div id="st-notification-frame" class="st-form__group"></div>
+
+        <div id="st-browser-info" class="st-form__group"></div>
+
+        <fieldset class="st-form__fieldset">
+          <legend>Payment details:</legend>
+          <div class="st-form__section st-form__section--horizontal">
+            <div class="st-form__field">
+
+              <label for="st-form-price" class="st-form__label">
+                price:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+
+              <input type="text"
+                     name="myBillPrice"
+                     id="st-form-price"
+                     class="st-form__input"
+                     placeholder="myBillPrice"
+                     data-st-name="billingprice"
+                     disabled />
+            </div>
+            <div class="st-form__field">
+              <label for="example-form-amount" class="st-form__label">
+                amount:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+              <input type="number"
+                     name="myBillAmount"
+                     id="example-form-amount"
+                     class="st-form__input"
+                     placeholder="myBillAmount"
+                     data-st-name="billingamount"
+                     autocomplete="amount" />
+            </div>
+          </div>
+          <div class="st-form__section st-form__section--horizontal">
+            <div class="st-form__field">
+              <label for="st-form-last-name" class="st-form__label">name: </label>
+              <input type="text"
+                     name="myBillName"
+                     id="st-form-last-name"
+                     class="st-form__input"
+                     placeholder="Doe"
+                     data-st-name="billinglastname"
+                     autocomplete="family-name" />
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-email" class="st-form__label">e-mail: </label>
+              <input type="email"
+                     name="myBillEmail"
+                     id="st-form-email"
+                     class="st-form__input"
+                     placeholder="test@mail.com"
+                     data-st-name="billingemail"
+                     autocomplete="email" />
+            </div>
+
+            <div class="st-form__field">
+              <label for="st-form-phone" class="st-form__label">phone: </label>
+              <input type="tel"
+                     name="myBillTel"
+                     id="st-form-phone"
+                     class="st-form__input"
+                     placeholder="+00 000 000 000"
+                     autocomplete="tel" />
+            </div>
+          </div>
+          <div class="st-form__section st-form__section--horizontal">
+            <div class="st-form__field">
+              <label for="st-form-subscribe" class="st-form__label">
+                type of payment:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+              <select id="st-form-subscribe"
+                      class="st-form__input"
+                      placeholder="myBillSubscribe"
+                      autocomplete="subscribe">
+                <option value="one-off payment">one-off payment</option>
+                <option value="monthly payment">monthly payment</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="st-form__fieldset">
+          <legend>Logs:</legend>
+          <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
+        </fieldset>
+
+        <fieldset class="st-form__fieldset">
+          <legend>Wallets</legend>
+          <div id="st-visa-checkout" class="st-form__group"></div>
+          <div id="st-apple-pay" class="st-form__group"></div>
+          <div id="st-google-pay" class="st-form__group"></div>
+        </fieldset>
+
+        <fieldset class="st-form__fieldset">
+          <legend>APM"s</legend>
+          <div id="st-apm" class="st-form__group"></div>
+        </fieldset>
+
+        <fieldset class="st-form__fieldset">
+          <legend>placement override</legend>
+          <div id="st-apm-override" class="st-form__group"></div>
+        </fieldset>
+
+        <fieldset id="st-card-payment" class="st-form__fieldset">
+          <legend>Credit card details:</legend>
+          <div id="st-card-number" class="st-form__group st-form__iframe-container"></div>
+          <div id="st-expiration-date" class="st-form__group st-form__iframe-container"></div>
+          <div id="st-security-code" class="st-form__group st-form__iframe-container"></div>
+        </fieldset>
+
+        <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div>
+
+        <div class="st-form__group st-form__group--submit">
+          <button type="submit" class="st-form__button st-button-submit__disabled" id="merchant-submit-button" disabled>
+            Pay
+          </button>
         </div>
-      </div>
-      <div class="st-form__section st-form__section--horizontal">
-        <div class="st-form__field">
-          <label for="st-form-last-name" class="st-form__label">name: </label>
-          <input type="text"
-                 name="myBillName"
-                 id="st-form-last-name"
-                 class="st-form__input"
-                 placeholder="Doe"
-                 data-st-name="billinglastname"
-                 autocomplete="family-name"
-          />
-        </div>
-        <div class="st-form__field">
-          <label for="st-form-email" class="st-form__label">e-mail: </label>
-          <input type="email"
-                 name="myBillEmail"
-                 id="st-form-email"
-                 class="st-form__input"
-                 placeholder="test@mail.com"
-                 data-st-name="billingemail"
-                 autocomplete="email"
-          />
-        </div>
+      </form>
+    </section>
+    <footer class="st-footer">
+      <p>&copy; Trust Payments 2020</p>
+    </footer>
+  </main>
 
-        <div class="st-form__field">
-          <label for="st-form-phone" class="st-form__label">phone: </label>
-          <input type="tel"
-                 name="myBillTel"
-                 id="st-form-phone"
-                 class="st-form__input"
-                 placeholder="+00 000 000 000"
-                 autocomplete="tel"
-          />
-        </div>
-      </div>
-      <div class="st-form__section st-form__section--horizontal">
-        <div class="st-form__field">
-          <label for="st-form-subscribe" class="st-form__label">
-            type of payment:
-            <abbr title="required" aria-label="required">*</abbr>
-          </label>
-          <select id="st-form-subscribe"
-                  class="st-form__input"
-                  placeholder="myBillSubscribe"
-                  autocomplete="subscribe">
-            <option value="one-off payment">one-off payment</option>
-            <option value="monthly payment">monthly payment</option>
-          </select>
-        </div>
-      </div>
-    </fieldset>
+  <div id="st-helper-actions" class="st-helper-actions">
+    <input type="button" id="st-action-remove" value="Remove frames">
+    <input type="button" id="st-action-destroy" value="Destroy ST">
+    <input type="button" id="st-action-start" value="Start ST">
+    <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
+    <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
+  </div>
+  <script type="text/javascript" src="./counter.js"></script>
+  <script type="text/javascript" src="./inlineConfig.js"></script>
+  <script type="text/javascript" src="./predefinedCallbacks.js"></script>
+  <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+  <script type="text/javascript">
+    var ST = SecureTrading;
+    window.addEventListener('load', function () {
+      var params = new URLSearchParams(window.location.search.substring(1));
+      var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
+      var inlineConfigApm = params.get('inlineConfigApm') ? JSON.parse(params.get('inlineConfigApm')) : '';
+      var jwt = params.get('jwt') || '';
+      var updatedJwt = params.get('updatedJwt') || '';
+      var browserInfo = params.get('browserInfo');
 
-    <fieldset class="st-form__fieldset">
-      <legend>Logs:</legend>
-      <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
-    </fieldset>
+      var inlineTokenizedJwt = params.get('inlineTokenizedJwt') || '';
+      var tokenizedCardSection = document.querySelector('#tokenized-card-payment');
+      var tokenizedCardsSelect = document.querySelector('#tokenized-card-select');
+      var tokenizedCards = tokenizedCardsSelect.querySelectorAll('#tokenized-card-select option');
+      var tokenizedCardPaymentAdapter = null;
 
-    <fieldset class="st-form__fieldset">
-      <legend>Wallets</legend>
-      <div id="st-visa-checkout" class="st-form__group"></div>
-      <div id="st-apple-pay" class="st-form__group"></div>
-      <div id="st-google-pay" class="st-form__group"></div>
-    </fieldset>
+      Promise.all([getConfig(), getAPMsConfig(), getInitialTokenizedJwt()])
+        .then(function (configValues) {
+          var config = configValues[0];
+          var apmConfig = configValues[1];
 
-    <fieldset class="st-form__fieldset">
-      <legend>APM"s</legend>
-      <div id="st-apm" class="st-form__group"></div>
-    </fieldset>
+          var tokenizedJwt = configValues[2];
 
-    <fieldset class="st-form__fieldset">
-      <legend>placement override</legend>
-      <div id="st-apm-override" class="st-form__group"></div>
-    </fieldset>
+          !tokenizedJwt ? destroyTokenizdCardPayment() : enableTokenizdCardPayment();
 
-    <fieldset id="st-card-payment" class="st-form__fieldset">
-      <legend>Credit card details:</legend>
-      <div id="st-card-number" class="st-form__group st-form__iframe-container"></div>
-      <div id="st-expiration-date" class="st-form__group st-form__iframe-container"></div>
-      <div id="st-security-code" class="st-form__group st-form__iframe-container"></div>
-    </fieldset>
+          var st = init(config, apmConfig, tokenizedJwt);
 
-    <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div>
+          function addClickHandler(elementId, handler) {
+            document.getElementById(elementId).addEventListener('click', handler);
+          }
 
-    <div class="st-form__group st-form__group--submit">
-      <button type="submit" class="st-form__button st-button-submit__disabled" id="merchant-submit-button" disabled>
-        Pay
-      </button>
-    </div>
-  </form>
+          addClickHandler('st-action-start', function () {
+            init(config, apmConfig);
+          });
+          addClickHandler('st-action-destroy', function () {
+            st.destroy();
+          });
+          addClickHandler('st-action-remove', function () {
+            document.querySelectorAll('.st-form__iframe-container').forEach(function (element) {
+              element.innerHTML = '';
+            });
+            document.getElementById('st-control-frame-iframe').remove();
+            document.getElementById('st-visa-checkout').innerHTML = '';
+            document.getElementById('st-google-pay').innerHTML = '';
+            document.getElementById('st-apple-pay').innerHTML = '';
+          });
+          addClickHandler('st-action-cancel-3ds', function () {
+            st.cancelThreeDProcess();
+          });
+          addClickHandler('st-actions-toggler', function () {
+            document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
+          });
 
-  <footer class="st-footer">
-    <p>&copy; Trust Payments 2020</p>
-  </footer>
-</main>
+          tokenizedCardsSelect.addEventListener('change', function () {
+            var selectedCard = tokenizedCardsSelect.value;
+            if (selectedCard === 'inline') {
+              tokenizedCardPaymentAdapter.then(function (adapter) { return adapter.updateTokenizedJWT(inlineTokenizedJwt)});
+            } else {
+              getNotInlineTokenizedJwt(selectedCard)
+                .then(function (jwt) {
+                  tokenizedCardPaymentAdapter.then(function (adapter) { return adapter.updateTokenizedJWT(jwt)});
+                });
+            }
+          });
+        });
 
-<div id="st-helper-actions" class="st-helper-actions">
-  <input type="button" id="st-action-remove" value="Remove frames">
-  <input type="button" id="st-action-destroy" value="Destroy ST">
-  <input type="button" id="st-action-start" value="Start ST">
-  <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
-  <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
-</div>
-<script type="text/javascript" src="./counter.js"></script>
-<script type="text/javascript" src="./inlineConfig.js"></script>
-<script type="text/javascript" src="./predefinedCallbacks.js"></script>
-<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
-<script type="text/javascript">
-  var ST = SecureTrading;
-  window.addEventListener('load', function () {
-    var params = new URLSearchParams(window.location.search.substring(1));
-    var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
-    var inlineConfigApm = params.get('inlineConfigApm') ? JSON.parse(params.get('inlineConfigApm')) : '';
-    var jwt = params.get('jwt') || '';
-    var updatedJwt = params.get('updatedJwt') || '';
-    var browserInfo = params.get('browserInfo');
-
-    Promise.all([getConfig(), getAPMsConfig()])
-      .then(function (configValues) {
-        var config = configValues[0];
-        var apmConfig = configValues[1];
-        var st = init(config, apmConfig);
-
-        function addClickHandler(elementId, handler) {
-          document.getElementById(elementId).addEventListener('click', handler);
+      function getConfig() {
+        if (inlineConfig) {
+          return Promise.resolve(inlineConfig);
         }
 
-        addClickHandler('st-action-start', function () {
-          init(config, apmConfig);
-        });
-        addClickHandler('st-action-destroy', function () {
-          st.destroy();
-        });
-        addClickHandler('st-action-remove', function () {
-          document.querySelectorAll('.st-form__iframe-container').forEach(function (element) {
-            element.innerHTML = '';
+        return window
+          .fetch('<%= CONFIG_URL %>/config.json')
+          .then(function (response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load configuration file!');
+            }
+
+            return response.json();
+          })
+          .then(function (config) {
+            return getJwt(config).then(function (jwt) {
+              return Object.assign(config, { jwt: jwt });
+            });
+          })
+          .catch(function (error) {
+            console.error(error);
           });
-          document.getElementById('st-control-frame-iframe').remove();
-          document.getElementById('st-visa-checkout').innerHTML = '';
-          document.getElementById('st-google-pay').innerHTML = '';
-          document.getElementById('st-apple-pay').innerHTML = '';
-        });
-        addClickHandler('st-action-cancel-3ds', function () {
-          st.cancelThreeDProcess();
-        });
-        addClickHandler('st-actions-toggler', function () {
-          document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
-        });
-      });
-
-    function getConfig() {
-      if (inlineConfig) {
-        return Promise.resolve(inlineConfig);
       }
 
-      return window
-        .fetch('<%= CONFIG_URL %>/config.json')
-        .then(function (response) {
-          if (response.status !== 200) {
-            return Promise.reject('Failed to load configuration file!');
-          }
+      function getAPMsConfig() {
+        if (inlineConfigApm) {
+          return Promise.resolve(inlineConfigApm);
+        }
 
-          return response.json();
-        })
-        .then(function (config) {
-          return getJwt(config).then(function (jwt) {
-            return Object.assign(config, {jwt: jwt});
+        return window
+          .fetch('<%= CONFIG_URL %>/configAPMs.json')
+          .then(function (response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load APMs configuration file!');
+            }
+
+            return response.json();
+          })
+          .catch(function (error) {
+            console.error(error);
           });
-        })
-        .catch(function (error) {
-          console.error(error);
+      }
+
+      function getJwt(config) {
+        var presetJwt = jwt || config.jwt;
+
+        if (presetJwt) {
+          return Promise.resolve(presetJwt);
+        }
+
+        return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
+      }
+
+      function getInitialTokenizedJwt() {
+        if (inlineTokenizedJwt) {
+          addNewCardOption('inline');
+          tokenizedCardsSelect.firstElementChild.selected = true;
+          return Promise.resolve(inlineTokenizedJwt);
+        }
+
+        if (tokenizedCards.length) {
+          var selectedCard = tokenizedCardsSelect.options[tokenizedCardsSelect.selectedIndex].value;
+          return getNotInlineTokenizedJwt(selectedCard);
+        }
+      }
+
+      function getNotInlineTokenizedJwt(selectedCard) {
+        return window.configJWT('<%= CONFIG_URL %>/' + selectedCard + '-tokenizedJwtData.json')
+          .then(function (jwt) {
+            return Promise.resolve(jwt);
+          })
+          .catch(function (error) {
+            console.log('Fail to load initial JWT data file.');
+            return Promise.resolve('');
+          });
+      }
+
+      function addNewCardOption(cardName) {
+        var newCardOption = document.createElement('option');
+        newCardOption.appendChild(document.createTextNode(cardName.toUpperCase()));
+        newCardOption.value = cardName.toLowerCase();
+        tokenizedCardsSelect.prepend(newCardOption);
+      }
+
+      function init(config, apmConfig, tokenizedJwt) {
+        setCallbacks(config);
+        if (!validDataCenterUrl(config.datacenterurl)) {
+          console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
+          return;
+        }
+        var st = ST(config);
+        st.Components(config.components);
+        st.VisaCheckout(config.visaCheckout);
+        st.ApplePay(config.applePay);
+        st.GooglePay(config.googlePay);
+        tokenizedCardPaymentAdapter = st.TokenizedCardPayment(tokenizedJwt, config.tokenizedCard);
+        if (browserInfo === "true") {
+          document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
+        }
+
+        updateJwtListener(st, updatedJwt);
+
+        st.on('paymentInitStarted', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT INIT STARTED' });
         });
-    }
-
-    function getAPMsConfig() {
-      if (inlineConfigApm) {
-        return Promise.resolve(inlineConfigApm);
-      }
-
-      return window
-        .fetch('<%= CONFIG_URL %>/configAPMs.json')
-        .then(function (response) {
-          if (response.status !== 200) {
-            return Promise.reject('Failed to load APMs configuration file!');
-          }
-
-          return response.json();
-        })
-        .catch(function (error) {
-          console.error(error);
+        st.on('paymentInitCompleted', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT INIT COMPLETED' });
         });
-    }
+        st.on('paymentInitFailed', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT INIT FAILED' });
+        });
+        st.on('paymentStarted', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT STARTED' });
+        });
+        st.on('paymentCompleted', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT COMPLETED' });
+        });
+        st.on('paymentFailed', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT FAILED' });
+        });
+        st.on('paymentCanceled', function (data) {
+          printLogs({ name: data.name, step: 'PAYMENT CANCELED' });
+        });
 
-    function getJwt(config) {
-      var presetJwt = jwt || config.jwt;
+        if (apmConfig) {
+          st.APM(apmConfig);
+        }
 
-      if (presetJwt) {
-        return Promise.resolve(presetJwt);
+        window.resetCallbackCounter();
+        return st;
       }
 
-      return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
-    }
-
-    function init(config, apmConfig) {
-      setCallbacks(config);
-     if (!validDataCenterUrl(config.datacenterurl)) {
-        console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
-        return;
-      }
-      var st = ST(config);
-      st.Components(config.components);
-      st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.GooglePay(config.googlePay);
-      if (browserInfo === "true") {
-        document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
-      }
-
-      updateJwtListener(st, updatedJwt);
-
-      st.on('paymentInitStarted', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT INIT STARTED'});
-      });
-      st.on('paymentInitCompleted', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT INIT COMPLETED'});
-      });
-      st.on('paymentInitFailed', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT INIT FAILED'});
-      });
-      st.on('paymentStarted', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT STARTED'});
-      });
-      st.on('paymentCompleted', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT COMPLETED'});
-      });
-      st.on('paymentFailed', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT FAILED'});
-      });
-      st.on('paymentCanceled', function (data) {
-        printLogs({name: data.name, step: 'PAYMENT CANCELED'});
-      });
-
-      if (apmConfig) {
-        st.APM(apmConfig);
-      }
-
-      window.resetCallbackCounter();
-      return st;
-    }
-
-    function updateJwtListener(st, updatedJwt) {
-      document.getElementById('example-form-amount').addEventListener('input', function () {
+      function updateJwtListener(st, updatedJwt) {
+        document.getElementById('example-form-amount').addEventListener('input', function () {
           st.updateJWT(updatedJwt);
         }
-      );
-    }
-
-    function printLogs(logs) {
-      var outputElement = document.getElementById('st-log-area');
-      if (typeof logs === 'object') {
-        logs = JSON.stringify(logs, null, 2);
+        );
       }
 
-      outputElement.value += '' + logs + '\n';
-    }
-
-    function validDataCenterUrl(url) {
-      return (
-        url === undefined ||
-        url === 'https://webservices.securetrading.net/jwt/' ||
-        url === 'https://webservices.securetrading.us/jwt/'
-      );
-    }
-
-    function setCallbacks(config) {
-      var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
-      configCallbackKeys.forEach(function (callbackKey) {
-        var callbackFunctionName = config[callbackKey] || null;
-        if (callbackFunctionName && typeof callbackFunctionName === "function") {
-          config[callbackKey] = callbackFunctionName;
-        } else if (callbackFunctionName && typeof callbackFunctionName === "string" && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
-          config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
-        } else {
-          config[callbackKey] = null;
+      function printLogs(logs) {
+        var outputElement = document.getElementById('st-log-area');
+        if (typeof logs === 'object') {
+          logs = JSON.stringify(logs, null, 2);
         }
-      });
-    }
-  });
-</script>
+
+        outputElement.value += '' + logs + '\n';
+      }
+
+      function validDataCenterUrl(url) {
+        return (
+          url === undefined ||
+          url === 'https://webservices.securetrading.net/jwt/' ||
+          url === 'https://webservices.securetrading.us/jwt/'
+        );
+      }
+
+      function setCallbacks(config) {
+        var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
+        configCallbackKeys.forEach(function (callbackKey) {
+          var callbackFunctionName = config[callbackKey] || null;
+          if (callbackFunctionName && typeof callbackFunctionName === "function") {
+            config[callbackKey] = callbackFunctionName;
+          } else if (callbackFunctionName && typeof callbackFunctionName === "string" && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
+            config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
+          } else {
+            config[callbackKey] = null;
+          }
+        });
+      }
+
+      function destroyTokenizdCardPayment() {
+        tokenizedCardSection.remove();
+      }
+
+      function enableTokenizdCardPayment() {
+        tokenizedCardSection.style.display = 'block';
+      }
+    });
+  </script>
 </body>
+
 </html>

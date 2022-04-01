@@ -132,7 +132,7 @@ export class Input {
       if (this.inputElement.id === CARD_NUMBER_INPUT) {
         this.validation.luhnCheck(this.cardNumberInput, this.inputElement, this.messageElement);
       }
-      this.validateInput();
+
       this.validation.callSubmitEvent();
     }
   }
@@ -258,7 +258,7 @@ export class Input {
     }
   }
 
-  private validateInput(): void {
+  protected validateInput(): void {
     this.format(this.inputElement.value);
     if (this.inputElement.id === CARD_NUMBER_INPUT) {
       this.validation.luhnCheck(this.cardNumberInput, this.inputElement, this.messageElement);

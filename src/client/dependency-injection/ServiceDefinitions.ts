@@ -16,19 +16,21 @@ import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/serv
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 import { SentryBreadcrumbsSender } from '../../application/core/services/sentry-breadcrumbs-sender/SentryBreadcrumbsSender';
 import { AnalyticsEventSender } from '../../application/core/services/analytics-event-sender/AnalyticsEventSender';
+import { TokenizedCardClientInitializer } from '../../integrations/tokenized-card/client/TokenizedCardClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
 Container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProvider });
 Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapper });
 Container.import([
-  PreventNavigationPopup,
-  PaymentResultSubmitterSubscriber,
-  GooglePayInitializeSubscriber,
-  ApplePayClientInitializer,
   APMClientInitializer,
-  SentryBreadcrumbsSender,
   AnalyticsEventSender,
+  ApplePayClientInitializer,
+  GooglePayInitializeSubscriber,
+  PaymentResultSubmitterSubscriber,
+  PreventNavigationPopup,
+  SentryBreadcrumbsSender,
+  TokenizedCardClientInitializer,
 ]);
 
 if(environment.testEnvironment){

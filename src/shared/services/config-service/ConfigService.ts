@@ -8,6 +8,7 @@ import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 
 @Service()
 export class ConfigService implements ConfigProvider {
@@ -27,7 +28,7 @@ export class ConfigService implements ConfigProvider {
     return this.broadcast(this.resolveAndValidate({ ...this.getConfig(), [key]: value }));
   }
 
-  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
+  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName | typeof TokenizedCardPaymentConfigName,
     C extends IConfig[K]>(key: K, config: C): IConfig {
 
     const currentConfig = this.getConfig();

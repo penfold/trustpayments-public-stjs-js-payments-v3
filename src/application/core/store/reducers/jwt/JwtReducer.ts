@@ -9,6 +9,12 @@ import { ReducerToken } from '../../../../../shared/dependency-injection/Injecti
 export class JwtReducer implements IReducer<IApplicationFrameState> {
   reduce(state: IApplicationFrameState, action: IMessageBusEvent<string>): IApplicationFrameState {
     switch (action.type) {
+      case PUBLIC_EVENTS.TOKENIZED_JWT_UPDATED: {
+        return {
+          ...state,
+          tokenizedJwt: action.data,
+        };
+      }
       case PUBLIC_EVENTS.JWT_UPDATED: {
         return {
           ...state,
