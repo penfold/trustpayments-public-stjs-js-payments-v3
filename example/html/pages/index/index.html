@@ -33,12 +33,10 @@
           <option value="card2">MASTERCARD</option>
         </select>
 
-        <fieldset id="st-card-payment" class="st-form__fieldset">
+        <fieldset id="st-card-payment-tokenized" class="st-form__fieldset">
           <legend>Credit card details:</legend>
           <div id="st-tokenized-security-code" class="st-form__group st-form__iframe-container"></div>
         </fieldset>
-
-        <!-- <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div> -->
 
         <div class="st-form__group st-form__group--submit">
           <button type="submit" class="st-form__button st-button-submit__disabled" id="tokenized-submit-button"
@@ -251,11 +249,11 @@
           tokenizedCardsSelect.addEventListener('change', function () {
             var selectedCard = tokenizedCardsSelect.value;
             if (selectedCard === 'inline') {
-              tokenizedCardPaymentAdapter.then(function (adapter) { return adapter.updateTokenizedJWT(inlineTokenizedJwt)});
+              tokenizedCardPaymentAdapter.then(function (adapter) { adapter.updateTokenizedJWT(inlineTokenizedJwt)});
             } else {
               getNotInlineTokenizedJwt(selectedCard)
                 .then(function (jwt) {
-                  tokenizedCardPaymentAdapter.then(function (adapter) { return adapter.updateTokenizedJWT(jwt)});
+                  tokenizedCardPaymentAdapter.then(function (adapter) { adapter.updateTokenizedJWT(jwt)});
                 });
             }
           });

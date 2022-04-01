@@ -1,5 +1,5 @@
 import { finalize, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -67,8 +67,6 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
     data = {
       ...data,
       formId: this.formId,
-      pan: '',
-      expirationDate: '',
       termurl: TERM_URL,
     };
 
@@ -78,6 +76,15 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
         return requestProcessingService.process(data);
       }),
       map(response => this.mapPaymentResponse(response, data)),
+      tap(response =>{
+        if(response.status === PaymentStatus.ERROR) {
+          this.messageBus.publish({
+            type: MessageBus.EVENTS_PUBLIC.TOKENIZED_CARD_PAYMENT_METHOD_FAILED,
+            data: response.error,
+          },  EventScope.ALL_FRAMES);
+        }
+
+      }),
       catchError(response => this.handleResponseError(response, data)),
       finalize(()=>{
         this.messageBus.publish({
@@ -104,6 +111,8 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
     response: IRequestTypeResponse,
     request: ITokenizedCardPayGatewayRequest
   ): IPaymentResult<IRequestTypeResponse> {
+    console.log(response, 'mapPaymentResponse', request)
+
     const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
       status: this.resolvePaymentStatus(response),
       data: response,
@@ -161,14 +170,14 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
     console.log('TOKEN Payment method started', this.cvv)
 
-    // this.messageBus.publish({
-    //     type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-    //     data: {
-    //       name: TokenizedCardPaymentMethodName,
-    //       data: {
-    //         securitycode: this.cvv?.value || '',
-    //       },
-    //     },
-    //   });
+    this.messageBus.publish({
+        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+        data: {
+          name: TokenizedCardPaymentMethodName,
+          data: {
+            securitycode: this.cvv.value,
+          },
+        },
+      });
   }
 }
