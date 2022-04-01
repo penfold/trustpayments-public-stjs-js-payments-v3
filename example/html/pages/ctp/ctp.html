@@ -669,10 +669,10 @@
     }
 
     function inputHandler(adapterInstance) {
-      return (event) => {
+      return function (event) {
         if (event.target.value) {
           const cardType = adapterInstance.getSrcName(event.target.value);
-          cardType.then((srcName) => {
+          cardType.then(function (srcName) {
             srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
           });
         } else {
@@ -711,7 +711,7 @@
     }
 
     function onCheckout(checkoutResult) {
-      printLogs(`CTP - checkout result: \n${JSON.stringify(checkoutResult, null, 2)}`);
+      printLogs('CTP - checkout result:' + JSON.stringify(checkoutResult, null, 2));
     }
 
     function printLogs(logs) {

@@ -296,7 +296,7 @@ export class ST {
   }
 
   ClickToPay(clickToPayConfig: IClickToPayConfig): Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter> {
-    if (window.navigator.userAgent.indexOf('MSIE') > -1) {
+    if (window.navigator.userAgent.indexOf('MSIE') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1) {
       const message = 'ClickToPay is not available on Internet Explorer';
       console.warn(message);
       return Promise.reject(message);
