@@ -159,7 +159,7 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
       data: FormState.BLOCKED,
     },  EventScope.ALL_FRAMES);
 
-    console.log('TOKEN Payment method started', this.cvv)
+    console.log('TOKENIZED Payment method started', this.cvv)
 
     // this.messageBus.publish({
     //     type: PUBLIC_EVENTS.START_PAYMENT_METHOD,

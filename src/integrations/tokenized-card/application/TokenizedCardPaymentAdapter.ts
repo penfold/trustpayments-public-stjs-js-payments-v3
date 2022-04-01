@@ -11,7 +11,7 @@ export class TokenizedCardPaymentAdapter {
     if (!updatedJwt) {
       return;
     }
-    console.log('TOKEN TokenizedCardPaymentAdapter - Tokenized JWT', updatedJwt)
+    console.log('TOKENIZED TokenizedCardPaymentAdapter - Tokenized JWT', updatedJwt)
 
     this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_JWT_UPDATED, data: updatedJwt });
     this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT });

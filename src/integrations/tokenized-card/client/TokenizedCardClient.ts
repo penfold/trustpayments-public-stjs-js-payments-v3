@@ -20,8 +20,6 @@ import {
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { PayButtonFactory } from '../../../client/pay-button/PayButtonFactory';
-import { IStyles } from '../../../shared/model/config/IStyles';
-import { IStyle } from '../../../shared/model/config/IStyle';
 
 @Service()
 export class TokenizedCardClient {
@@ -67,26 +65,17 @@ export class TokenizedCardClient {
 
     const securityCodeSlot: HTMLElement = document.querySelector(`#${tokenizedCardConfig.formId} #${tokenizedCardConfig.securityCodeSlotId}`);
     const store: IApplicationFrameState = this.store.getState();
+
     const securityCodeIframe = this.iframeFactory.create(
       TOKENIZED_SECURITY_CODE_COMPONENT_NAME,
       TOKENIZED_SECURITY_CODE_IFRAME,
-      this.getStyles(store.initialConfig.config.styles) as IStyle,
+      { },
       {
         locale: this.jwtDecoder.decode<IStJwtPayload>(store.initialConfig.config.jwt).payload.locale || 'en_GB',
         origin: store.initialConfig.config.origin,
       });
 
     securityCodeSlot.appendChild(securityCodeIframe);
-  }
-
-  private getStyles(styles: IStyles): IStyles {
-    for(const key in styles){
-      if(styles[key] instanceof Object) {
-        return styles;
-      }
-    }
-    styles = { defaultStyles: styles as  IStyle };
-    return styles;
   }
 
   private startPaymentEvent(){

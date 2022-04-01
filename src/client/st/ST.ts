@@ -305,7 +305,7 @@ export class ST {
       ...tokenizedCardPaymentConfig,
     }
 
-    console.log('TOKEN ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
+    console.log('TOKENIZED ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
 
     this.tokenizedCardPaymentAdapter.updateTokenizedJWT(jwtCard);
 

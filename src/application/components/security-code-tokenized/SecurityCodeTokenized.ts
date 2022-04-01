@@ -102,7 +102,9 @@ export class SecurityCodeTokenized extends Input {
         placeholder: config[TokenizedCardPaymentConfigName]?.placeholder || this.translator.translate('***'),
       });
 
-      const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
+      const stylerStyle = { ...config?.styles?.defaultStyles, ...inputStyle };
+
+      const styler: Styler = new Styler(this.getAllowedStyles(),[stylerStyle]);
       if(styler.hasSpecificStyle('isLinedUp', inputStyle)) {
         styler.addStyles([
           {
