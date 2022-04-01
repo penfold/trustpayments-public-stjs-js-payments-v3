@@ -14,18 +14,21 @@ export class GooglePayCallbacks {
   getCallbacks(): Observable<any> {
     return this.configProvider.getConfig$().pipe(
       map((config: IConfig) => ({
-        onPaymentAuthorized: this.onPaymentAuthorized(config),
+        onPaymentAuthorized: this.onPaymentAuthorized(config, this.googlePayPaymentService),
         onPaymentDataChanged: this.onPaymentDataChanged(config),
       })
     ));
   }
 
-  onPaymentAuthorized(config: IConfig) {
-    return (paymentData: IPaymentData) => {
-      const formData = DomMethods.parseForm(config.formId);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { shippingAddress, shippingOptionData, ...newPaymentData } = paymentData;
-      return this.googlePayPaymentService.processPayment(formData, newPaymentData);
+  onPaymentAuthorized(config: IConfig, googlePayPaymentService: GooglePayPaymentService) {
+    return (paymentData: any) => { //IPaymentData
+      return new Promise(function(resolve) {
+        const formData = DomMethods.parseForm(config.formId);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { shippingAddress, shippingOptionData, ...newPaymentData } = paymentData;
+        googlePayPaymentService.processPayment(formData, newPaymentData);
+        resolve({ transactionState: 'SUCCESS' });
+      })
     }
   }
 
