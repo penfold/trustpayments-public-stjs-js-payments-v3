@@ -195,7 +195,6 @@ iPhone13-15.0-component-tests-smoke-nightly:
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
 
-# TODO - uncomment when cardinal issue will be resolved
 .win10-Chrome-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
@@ -262,7 +261,6 @@ win10-IE-11.0-e2e-tests-smoke-review:
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
 
-# TODO - uncomment when cardinal issue will be resolved
 .win8.1-Edge-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release

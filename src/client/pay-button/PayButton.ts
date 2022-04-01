@@ -9,6 +9,7 @@ import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
 
 @Service()
 export class PayButton {
@@ -23,13 +24,13 @@ export class PayButton {
   ) {
   }
 
-  init(): void {
+  init(tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): void {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      const { buttonId, components, formId } = config;
-      this.buttonId = buttonId;
-
+      const components = config.components
+      const { buttonId, formId } =  tokenizedCardPaymentConfig? tokenizedCardPaymentConfig: config
       const form = document.getElementById(formId);
+      this.buttonId = buttonId;
 
       this.button = (document.getElementById(this.buttonId) as HTMLInputElement | HTMLButtonElement) ||
         form.querySelector('button[type="submit"]') ||

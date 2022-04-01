@@ -23,6 +23,7 @@ import { TranslationProvider } from '../../application/core/shared/translator/Tr
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { PayButton } from '../pay-button/PayButton';
+import { PayButtonFactory } from '../pay-button/PayButtonFactory';
 import { CardFrames } from './CardFrames';
 import spyOn = jest.spyOn;
 
@@ -41,6 +42,7 @@ describe('CardFrames', () => {
   let messageBus: IMessageBus;
   let jwtDecoder: JwtDecoder;
   let payButton: PayButton;
+  let payButtonFactory: PayButtonFactory;
 
   beforeEach(() => {
     document.body.innerHTML =
@@ -49,6 +51,7 @@ describe('CardFrames', () => {
     iframeFactory = mock(IframeFactory);
     jwtDecoder = mock(JwtDecoder);
     payButton = mock(PayButton);
+    payButtonFactory = mock(PayButtonFactory);
     configProvider = mock<ConfigProvider>();
     messageBus = new SimpleMessageBus();
     frame = mock(Frame);
@@ -80,6 +83,7 @@ describe('CardFrames', () => {
         return iframe;
       }
     );
+    when(payButtonFactory.create()).thenReturn(payButton);
     when(frame.parseUrl()).thenReturn({ params: { locale: 'en_GB' } });
     when(jwtDecoder.decode(anything())).thenReturn({
       payload: {
@@ -99,7 +103,7 @@ describe('CardFrames', () => {
       instanceOf(frame),
       messageBus,
       instanceOf(jwtDecoder),
-      instanceOf(payButton)
+      instanceOf(payButtonFactory)
     );
     // @ts-ignore
     when(payButton.button).thenReturn(element);

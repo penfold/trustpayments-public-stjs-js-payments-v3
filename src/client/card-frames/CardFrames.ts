@@ -33,6 +33,7 @@ import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { PayButton } from '../pay-button/PayButton';
+import { PayButtonFactory } from '../pay-button/PayButtonFactory';
 
 @Service()
 export class CardFrames {
@@ -65,6 +66,7 @@ export class CardFrames {
   private origin: string;
   private fieldsToSubmit: string[];
   private elementsTargets: string[];
+  private payButton: PayButton;
 
   constructor(
     private configProvider: ConfigProvider,
@@ -72,8 +74,9 @@ export class CardFrames {
     private frame: Frame,
     private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder,
-    private payButton: PayButton,
+    private payButtonFactory: PayButtonFactory
   ) {
+    this.payButton = this.payButtonFactory.create();
   }
 
   init(): void {
@@ -110,8 +113,8 @@ export class CardFrames {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getStyles(styles: any) {
-    for (const key in styles) {
-      if (styles[key] instanceof Object) {
+    for(const key in styles){
+      if(styles[key] instanceof Object) {
         return styles;
       }
     }
@@ -139,10 +142,10 @@ export class CardFrames {
   }
 
   private registerElements(fields: HTMLElement[], targets: string[]): void {
-    if (fields.length === targets.length) {
+    if(fields.length === targets.length) {
       targets.forEach((item, index) => {
         const element: HTMLElement = document.getElementById(item);
-        if (element !== null) {
+        if(element !== null) {
           element.appendChild(fields[index]);
         }
       });
@@ -151,7 +154,7 @@ export class CardFrames {
         targets.forEach((item, index) => {
           const element: HTMLElement = document.getElementById(item);
           const iframe: HTMLElement = fields[index];
-          if (element && iframe && iframe.parentElement === element) {
+          if(element && iframe && iframe.parentElement === element) {
             element.removeChild(iframe);
           }
         });
@@ -160,16 +163,16 @@ export class CardFrames {
   }
 
   private setElementsFields(): string[] {
-    if (this.configurationForStandardCard) {
+    if(this.configurationForStandardCard) {
       return [
         this.componentIds.cardNumber,
         this.componentIds.expirationDate,
         this.componentIds.securityCode,
         this.componentIds.animatedCard,
       ];
-    } else if (this.onlyCvvConfiguration) {
+    } else if(this.onlyCvvConfiguration) {
       return [this.componentIds.securityCode];
-    } else if (this.noFieldConfiguration) {
+    } else if(this.noFieldConfiguration) {
       return [];
     } else {
       return [
@@ -197,7 +200,7 @@ export class CardFrames {
       EXPIRATION_DATE_COMPONENT_NAME,
       EXPIRATION_DATE_IFRAME,
       styles,
-      this.params,
+      this.params
     );
     this.elementsToRegister.push(this.expirationDate);
   }
@@ -207,17 +210,17 @@ export class CardFrames {
       SECURITY_CODE_COMPONENT_NAME,
       SECURITY_CODE_IFRAME,
       styles,
-      this.params,
+      this.params
     );
     this.elementsToRegister.push(this.securityCode);
   }
 
   private initAnimatedCardFrame(): void {
     const animatedCardConfig = { ...this.params };
-    if (this.paymentTypes !== undefined) {
+    if(this.paymentTypes !== undefined) {
       animatedCardConfig.paymentTypes = this.paymentTypes;
     }
-    if (this.defaultPaymentType !== undefined) {
+    if(this.defaultPaymentType !== undefined) {
       animatedCardConfig.defaultPaymentType = this.defaultPaymentType;
     }
     this.animatedCard = this.iframeFactory.create(
@@ -225,7 +228,7 @@ export class CardFrames {
       ANIMATED_CARD_COMPONENT_IFRAME,
       {},
       animatedCardConfig,
-      -1,
+      -1
     );
     this.elementsToRegister.push(this.animatedCard);
   }
@@ -236,9 +239,9 @@ export class CardFrames {
     cardNumber = Object.assign({}, defaultStyles, cardNumber);
     securityCode = Object.assign({}, defaultStyles, securityCode);
     expirationDate = Object.assign({}, defaultStyles, expirationDate);
-    if (this.onlyCvvConfiguration) {
+    if(this.onlyCvvConfiguration) {
       this.initSecurityCodeFrame(securityCode);
-    } else if (this.configurationForStandardCard) {
+    } else if(this.configurationForStandardCard) {
       this.initCardNumberFrame(cardNumber);
       this.initExpiryDateFrame(expirationDate);
       this.initSecurityCodeFrame(securityCode);
@@ -283,7 +286,7 @@ export class CardFrames {
 
   private setMerchantInputListeners(): void {
     const els = DomMethods.getAllFormElements(document.getElementById(this.formId));
-    for (const el of els) {
+    for(const el of els){
       el.addEventListener('input', this.onInput.bind(this));
     }
   }
@@ -293,7 +296,7 @@ export class CardFrames {
     paymentTypes: string[],
     loadAnimatedCard: boolean,
     jwt: string,
-    formId: string,
+    formId: string
   ): void {
     this.validation = new Validation();
     this.formId = formId;
@@ -325,7 +328,7 @@ export class CardFrames {
       .pipe(
         ofType(PUBLIC_EVENTS.BLOCK_FORM),
         map(event => event.data),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe((state: FormState) => {
         this.payButton.disable(state);
@@ -340,17 +343,17 @@ export class CardFrames {
       .pipe(
         ofType(PRIVATE_EVENTS.VALIDATE_FORM),
         map(event => event.data),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe((data: IValidationMessageBus) => {
         const { cardNumber, expirationDate, securityCode } = data;
-        if (!cardNumber.state) {
+        if(!cardNumber.state) {
           this.publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);
         }
-        if (!expirationDate.state) {
+        if(!expirationDate.state) {
           this.publishValidatedFieldState(expirationDate, MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
         }
-        if (!securityCode.state) {
+        if(!securityCode.state) {
           this.publishValidatedFieldState(securityCode, MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD);
         }
       });

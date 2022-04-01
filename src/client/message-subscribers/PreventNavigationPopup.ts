@@ -22,11 +22,16 @@ export class PreventNavigationPopup implements IMessageSubscriber {
       .subscribe(() => this.window.addEventListener('beforeunload', beforeUnloadHandler));
 
     messageBus
+      .pipe(ofType(PUBLIC_EVENTS.TOKENIZED_CARD_START_PAYMENT_METHOD), takeUntil(destroy))
+      .subscribe(() => this.window.addEventListener('beforeunload', beforeUnloadHandler));
+
+    messageBus
       .pipe(ofType(PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK), takeUntil(destroy))
       .subscribe(() => this.window.removeEventListener('beforeunload', beforeUnloadHandler));
 
     messageBus
       .pipe(ofType(PUBLIC_EVENTS.DESTROY), first())
       .subscribe(() => this.window.removeEventListener('beforeunload', beforeUnloadHandler));
+
   }
 }
