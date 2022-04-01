@@ -172,7 +172,8 @@ describe('ST', () => {
           null,
           null,
           null,
-          null
+          null,
+          null,
         ));
     });
 

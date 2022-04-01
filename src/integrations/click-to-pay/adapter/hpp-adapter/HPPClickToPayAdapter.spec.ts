@@ -106,7 +106,9 @@ describe('HPPClickToPayAdapter', () => {
       it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
         when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
           displayCardForm: false,
-          displaySubmitForm: false,
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
         }));
         sut.init(initParams).then(() => {
           cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
@@ -117,7 +119,9 @@ describe('HPPClickToPayAdapter', () => {
       it('when card form should not be hidden card fields should have "readonly" attribute removed', done => {
         when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
           displayCardForm: true,
-          displaySubmitForm: false,
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
         }));
         sut.init(initParams).then(() => {
           cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
