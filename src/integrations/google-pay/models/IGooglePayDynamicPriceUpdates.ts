@@ -9,6 +9,9 @@ export enum GoogleDynamicPriceUpdates {
 
 export interface IntermediatePaymentData {
   callbackTrigger: GoogleDynamicPriceUpdates;
+  shippingOptionData?: {
+    id: string;
+  };
 }
 
 export interface INewShippingOptionParameters {

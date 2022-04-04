@@ -21,12 +21,10 @@ export class GooglePayCallbacks {
   }
 
   onPaymentAuthorized(config: IConfig, googlePayPaymentService: GooglePayPaymentService) {
-    return (paymentData: any) => { //IPaymentData
+    return (paymentData: IPaymentData) => {
       return new Promise(function(resolve) {
         const formData = DomMethods.parseForm(config.formId);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { shippingAddress, shippingOptionData, ...newPaymentData } = paymentData;
-        googlePayPaymentService.processPayment(formData, newPaymentData);
+        googlePayPaymentService.processPayment(formData, paymentData);
         resolve({ transactionState: 'SUCCESS' });
       })
     }
@@ -38,18 +36,23 @@ export class GooglePayCallbacks {
 
     return (intermediatePaymentData: IntermediatePaymentData) => {
       return new Promise(function(resolve) {
-        // let shippingOptionData = intermediatePaymentData.shippingOptionData;
+        const shippingPriceFromConfigMock = {
+          'shipping-001': '0.00',
+          'shipping-002': '1.99',
+          'shipping-003': '1000.00',
+        };
+        const shippingOptionData = intermediatePaymentData?.shippingOptionData?.id;
+        const shippingPrice = shippingPriceFromConfigMock[shippingOptionData];
         const paymentDataRequestUpdate: INewShippingOptionParameters = {};
 
         if (intermediatePaymentData.callbackTrigger === GoogleDynamicPriceUpdates.INITIALIZE || intermediatePaymentData.callbackTrigger === GoogleDynamicPriceUpdates.SHIPPING_ADDRESS) {
           paymentDataRequestUpdate.newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
-          // let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
           const newTransactionInfo = config.googlePay.paymentRequest.transactionInfo;
           let totalPrice = 0.00;
           newTransactionInfo.displayItems = [...displayItems, {
             type: 'LINE_ITEM',
             label: 'Shipping cost',
-            price: '1.00',
+            price: shippingPrice || 0.00,
             status: 'FINAL',
           }];
           newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
@@ -61,7 +64,7 @@ export class GooglePayCallbacks {
           newTransactionInfo.displayItems = [...displayItems, {
             type: 'LINE_ITEM',
             label: 'Shipping cost',
-            price: '1.00',
+            price: shippingPrice || 0.00,
             status: 'FINAL',
           }];
           newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
