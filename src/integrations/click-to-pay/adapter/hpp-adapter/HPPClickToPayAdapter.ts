@@ -165,7 +165,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     if (updateData.displayCardForm === true) {
       cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.removeAttribute('readonly'));
     } else {
-      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.setAttribute('readonly', ''));
+      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.setAttribute('readonly', 'readonly'));
     }
 
   }

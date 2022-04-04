@@ -1,5 +1,5 @@
-import { anyFunction, anyString, anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
-import { of, Subject, throwError } from 'rxjs';
+import { anyFunction, anyString, anything, instance, mock, objectContaining, spy, verify, when } from 'ts-mockito';
+import { NEVER, of, Subject, throwError } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
@@ -14,6 +14,9 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
+import { SimpleMessageBus } from '../../../../application/core/shared/message-bus/SimpleMessageBus';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { IUpdateView } from '../interfaces/IUpdateView';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -40,9 +43,10 @@ describe('HPPClickToPayAdapter', () => {
   let hppCheckoutDataProviderMock: HPPCheckoutDataProvider;
   let hppUpdateViewCallbackMock: HPPUpdateViewCallback;
   let sut: HPPClickToPayAdapter;
+  let messageBusSpy;
 
   beforeEach(() => {
-    messageBus = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     digitalTerminalMock = mock(DigitalTerminal);
     srcNameFinderMock = mock(SrcNameFinder);
@@ -54,12 +58,19 @@ describe('HPPClickToPayAdapter', () => {
     when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
     when(digitalTerminalMock.checkout(anything())).thenReturn(of(undefined));
     when(hppCheckoutDataProviderMock.getCheckoutData(anyString())).thenReturn(of(undefined));
+    when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
+      displayCardForm: false,
+      displaySubmitForm: false,
+    }));
+
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
+
+    messageBusSpy = spy(messageBus);
     sut = new HPPClickToPayAdapter(
       instance(digitalTerminalMock),
-      instance(messageBus),
+      messageBus,
       instance(frameQueryingServiceMock),
       instance(userIdentificationServiceMock),
       instance(srcNameFinderMock),
@@ -80,7 +91,7 @@ describe('HPPClickToPayAdapter', () => {
           },
         };
 
-        verify(messageBus.publish(objectContaining(paymentMethodInitEvent), EventScope.THIS_FRAME)).once();
+        verify(messageBusSpy.publish(objectContaining(paymentMethodInitEvent), EventScope.THIS_FRAME)).once();
         done();
       });
     });
@@ -88,7 +99,9 @@ describe('HPPClickToPayAdapter', () => {
     describe('should subscribe to updateView state changes', () => {
       let testForm: HTMLFormElement;
       let cardInputs: Element[];
-      beforeAll(() => {
+      const updateViewMock: Subject<IUpdateView> = new Subject<IUpdateView>();
+
+      beforeEach(() => {
         testForm = document.createElement('form');
         testForm.id = initParams.formId;
         testForm.innerHTML = `
@@ -100,34 +113,46 @@ describe('HPPClickToPayAdapter', () => {
         cardInputs = [HPPFormFieldName.pan, HPPFormFieldName.cardExpiryMonth, HPPFormFieldName.cardExpiryYear, HPPFormFieldName.cardSecurityCode]
           .map(name =>
             testForm.querySelector(`[name="${name}"]`));
-
+        document.body.innerHTML = '';
+        document.body.appendChild(testForm);
+        when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(updateViewMock);
       });
 
       it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
-        when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
-          displayCardForm: false,
-          displaySubmitForm: false,
-        }));
-        sut.init(initParams).then(() => {
-          cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
-          done();
+        sut.init(initParams).then((a) => {
+          updateViewMock.subscribe(()=>{
+            cardInputs.forEach(input => {
+              expect(input.hasAttribute('readonly')).toBe(true);
+            });
+            done();
+          })
+
+          updateViewMock.next({
+            displayCardForm: false,
+            displaySubmitForm: false,
+          });
         });
       });
 
       it('when card form should not be hidden card fields should have "readonly" attribute removed', done => {
-        when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
-          displayCardForm: true,
-          displaySubmitForm: false,
-        }));
         sut.init(initParams).then(() => {
-          cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
-          done();
+          updateViewMock.subscribe(()=>{
+            cardInputs.forEach(input => {
+              expect(input.hasAttribute('readonly')).toBe(false);
+            });
+            done();
+          })
+
+          updateViewMock.next({
+            displayCardForm: true,
+            displaySubmitForm: false,
+          });
         });
       });
     });
 
-    describe('should subscribe to checkout data captured from form submit and', () => {
-      let formSubmitEventMock: Subject<void>;
+    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
+      const formSubmitEventMock: Subject<void> = new Subject();
       const testCheckoutData: IInitialCheckoutData = {
         newCardData: {
           primaryAccountNumber: '111',
@@ -194,6 +219,7 @@ describe('HPPClickToPayAdapter', () => {
       });
     });
   });
+
   it('should propagate error from DigitalTerminal.isRecognized() if any occurs', (done) => {
     const errorResponse = new Error('digital terminal error');
 
@@ -220,6 +246,7 @@ describe('HPPClickToPayAdapter', () => {
       const testData: IIdentificationData = {
         email: 'email@example.com',
       };
+
       when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(of(identificationResult));
       const response = sut.identifyUser(testData);
       expect(response).toBeInstanceOf(Promise);
