@@ -69,7 +69,7 @@ export class TokenizedCardClient {
     const securityCodeIframe = this.iframeFactory.create(
       TOKENIZED_SECURITY_CODE_COMPONENT_NAME,
       TOKENIZED_SECURITY_CODE_IFRAME,
-      { },
+      {},
       {
         locale: this.jwtDecoder.decode<IStJwtPayload>(store.initialConfig.config.jwt).payload.locale || 'en_GB',
         origin: store.initialConfig.config.origin,
