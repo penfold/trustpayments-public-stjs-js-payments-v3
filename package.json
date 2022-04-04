@@ -78,7 +78,8 @@
     "rxjs": "7.5.1",
     "node-forge": "1.3.0",
     "minimist": "1.2.6",
-    "string-width": "4.2.3"
+    "string-width": "4.2.3",
+    "strip-ansi": "6.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.17.8",
