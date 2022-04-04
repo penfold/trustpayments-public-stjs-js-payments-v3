@@ -45,6 +45,12 @@ export class SecurityCodeTokenized extends Input {
     this.messageBus.subscribeType(MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE, () => {
       this.validation.validate(this.inputElement, this.messageElement);
     });
+
+    this.validation.backendValidation(
+      this.inputElement,
+      this.messageElement,
+      PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_METHOD_FAILED
+    );
   }
 
   getLabel(): string {
