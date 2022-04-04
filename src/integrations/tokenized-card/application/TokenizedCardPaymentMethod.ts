@@ -67,8 +67,6 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
     data = {
       ...data,
       formId: this.formId,
-      pan: '',
-      expirationDate: '',
       termurl: TERM_URL,
     };
 
@@ -159,16 +157,14 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
       data: FormState.BLOCKED,
     },  EventScope.ALL_FRAMES);
 
-    console.log('TOKENIZED Payment method started', this.cvv)
-
-    // this.messageBus.publish({
-    //     type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-    //     data: {
-    //       name: TokenizedCardPaymentMethodName,
-    //       data: {
-    //         securitycode: this.cvv?.value || '',
-    //       },
-    //     },
-    //   });
+    this.messageBus.publish({
+        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+        data: {
+          name: TokenizedCardPaymentMethodName,
+          data: {
+            securitycode: this.cvv.value,
+          },
+        },
+      });
   }
 }
