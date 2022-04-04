@@ -75,7 +75,12 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitForm: true } as IUpdateView))).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ 
+          displayCardForm: false, 
+          displaySubmitButton: true,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        } as IUpdateView))).once();
         done();
       });
     promptClosedMock.next(false);
@@ -86,7 +91,12 @@ describe('HPPUserIdentificationService', () => {
       emailResultMock.next(false);
       codeResultMock.next(true);
       sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitForm: false } as IUpdateView))).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ 
+          displayCardForm: false, 
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        } as IUpdateView))).once();
         done();
       });
     });
@@ -172,10 +182,6 @@ describe('HPPUserIdentificationService', () => {
       sut['initParams'] = null;
       sut.setInitParams(testInitParams);
       expect(sut['initParams']).toEqual(testInitParams);
-    });
-
-    it('should pass onUpdateView callback to hppUpdateViewCallback', () => {
-      verify(hppUpdateViewCallback.init(testInitParams.onUpdateView)).once();
     });
   });
 });

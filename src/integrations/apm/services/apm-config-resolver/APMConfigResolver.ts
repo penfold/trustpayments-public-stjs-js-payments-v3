@@ -1,4 +1,4 @@
-import { Container, Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { Observable, of } from 'rxjs';
 import { ValidationResult } from 'joi';
 import { IAPMConfig } from '../../models/IAPMConfig';
@@ -13,12 +13,10 @@ import { ITranslator } from '../../../../application/core/shared/translator/ITra
 @Service()
 export class APMConfigResolver {
 
-  private translator: ITranslator;
-
   constructor(
-    private apmValidator: APMValidator
+    private apmValidator: APMValidator,
+    @Inject(TranslatorToken) private translator: ITranslator
   ) {
-    this.translator = Container.get(TranslatorToken);
   }
 
   resolve(config: IAPMConfig): Observable<IAPMConfig> {
@@ -37,9 +35,6 @@ export class APMConfigResolver {
         const resolved = {
           ...item,
           placement: item.placement || config.placement,
-          errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
-          successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
-          cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
         };
 
         if (item.name === APMName.ACCOUNT2ACCOUNT) {
@@ -58,9 +53,6 @@ export class APMConfigResolver {
       const resolved: IAPMItemConfig = {
         name: item,
         placement: config.placement,
-        errorRedirectUrl: config.errorRedirectUrl,
-        successRedirectUrl: config.successRedirectUrl,
-        cancelRedirectUrl: config.cancelRedirectUrl,
       };
 
       if (item === APMName.ACCOUNT2ACCOUNT) {

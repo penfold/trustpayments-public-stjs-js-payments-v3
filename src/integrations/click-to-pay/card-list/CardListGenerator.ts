@@ -20,6 +20,7 @@ export class CardListGenerator {
   private notYouElementId = 'st-ctp-user-details__not--you';
   private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
   private panValidationStatusSubscription: Subscription;
+  private cardList: ICorrelatedMaskedCard[];
 
   private readonly iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
@@ -30,6 +31,7 @@ export class CardListGenerator {
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
+    this.cardList = cardList;
     cardList.forEach((card, index) => {
       const cardContent = this.cardContent(card, index === 0);
       const cardRow = document.createElement('div');
@@ -129,6 +131,15 @@ export class CardListGenerator {
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
 
+    if (checked) {
+      this.hppUpdateViewCallback.callUpdateViewCallback({ 
+        displayMaskedCardNumber: card.panLastFour.toString(),
+        displayCardType: card.srcName.toLowerCase(),
+        displayCardForm: false,
+        displaySubmitButton: true,
+      });
+    }
+
     return `
       <span class="st-card__checkbox">${
         card.isActive
@@ -206,6 +217,12 @@ export class CardListGenerator {
   }
 
   private handleAddCardButtonClick(): void {
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+      displayCardForm: false,
+      displaySubmitButton: true,
+    });
     this.openForm();
     this.clearSelection();
   }
@@ -227,7 +244,16 @@ export class CardListGenerator {
     this.closeForm();
     this.clearForm();
     this.clearSelection();
-    (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
+    const checkboxElement = (document.getElementById('radio' + id) as HTMLInputElement);
+    checkboxElement.checked = true;
+    const selectedCard = this.cardList.filter(card => card.srcDigitalCardId === id)
+
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayMaskedCardNumber: selectedCard[0].panLastFour.toString(),
+      displayCardType: selectedCard[0].srcName.toLowerCase(),
+      displayCardForm: false,
+      displaySubmitButton: true,
+    });
   }
 
   private hideValidationStatus(id: string) {
@@ -245,11 +271,16 @@ export class CardListGenerator {
 
   private hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayCardForm: true, 
+      displaySubmitButton: true, 
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+    });
   }
+
   private showValidationStatus(id: string, message: string) {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
   }
-
 }

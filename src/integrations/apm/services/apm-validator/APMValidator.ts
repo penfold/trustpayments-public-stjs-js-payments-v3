@@ -5,14 +5,19 @@ import { IAPMConfig } from '../../models/IAPMConfig';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { APMJwtSchemasMap } from '../../models/APMJwtSchemasMap';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
 
 @Service()
 export class APMValidator {
-  constructor() {
+  constructor(private sentryService: SentryService) {
   }
 
   validateConfig(config: IAPMConfig): ValidationResult {
-    return APMSchema.validate(config);
+    const validationResult = APMSchema.validate(config);
+    this.handleApmDeprecatedFields(validationResult);
+
+    return validationResult;
   }
 
   validateItemConfig(apm: IAPMItemConfig): ValidationError | null {
@@ -21,6 +26,7 @@ export class APMValidator {
     }
 
     const validationResult: ValidationResult = APMSchemasMap.get(apm.name).validate(apm);
+    this.handleApmDeprecatedFields(validationResult);
 
     return validationResult.error || null;
   }
@@ -31,5 +37,12 @@ export class APMValidator {
     }
 
     return APMJwtSchemasMap.get(apm.name).validate(jwtPayload).error || null;
+  }
+
+  private handleApmDeprecatedFields(validationResult: ValidationResult) {
+    if (validationResult.warning) {
+      console.warn(validationResult.warning.message);
+      this.sentryService.sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${validationResult.warning.message}`, validationResult.warning));
+    }
   }
 }

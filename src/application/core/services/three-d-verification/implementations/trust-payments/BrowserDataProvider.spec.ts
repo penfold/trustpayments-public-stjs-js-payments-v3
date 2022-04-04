@@ -8,11 +8,13 @@ import { environment } from '../../../../../../environments/environment';
 import { SentryService } from '../../../../../../shared/services/sentry/SentryService';
 import { RequestTimeoutError } from '../../../../../../shared/services/sentry/RequestTimeoutError';
 import { TimeoutDetailsType } from '../../../../../../shared/services/sentry/RequestTimeout';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { IBrowserData } from './data/IBrowserData';
 
 describe('BrowserDataProvider', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
+  let messageBusMock: IMessageBus;
   let sut: BrowserDataProvider;
   let sentryServiceMock: SentryService;
   const browserData: BrowserDataInterface = {
@@ -31,16 +33,25 @@ describe('BrowserDataProvider', () => {
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     sentryServiceMock = mock(SentryService);
-
-    sut = new BrowserDataProvider(instance(interFrameCommunicatorMock), instance(sentryServiceMock));
+    messageBusMock = mock<IMessageBus>();
+    sut = new BrowserDataProvider(instance(interFrameCommunicatorMock), instance(sentryServiceMock), instance(messageBusMock));
   });
 
   it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
+
+    const extendedUrls = [
+      environment.BROWSER_DATA_URLS[0] + '?123456',
+      environment.BROWSER_DATA_URLS[1] + '/123456',
+      environment.BROWSER_DATA_URLS[2] + '/123456',
+    ];
+
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URL,
+      data: extendedUrls,
     };
 
+    // @ts-ignore
+    sut.extendUrlsWithRandomNumbers = jest.fn().mockReturnValue(extendedUrls);
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserData);
 
     sut.getBrowserData$().subscribe((result: IBrowserData) => {
@@ -61,48 +72,41 @@ describe('BrowserDataProvider', () => {
   });
 
   describe('send error if no customerIp', () => {
+    const extendedUrls = [
+      environment.BROWSER_DATA_URLS[0] + '?123456',
+      environment.BROWSER_DATA_URLS[1] + '/123456',
+      environment.BROWSER_DATA_URLS[2] + '/123456',
+    ];
+
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URL,
+      data: extendedUrls,
     };
+
     const browserDataLocal: BrowserDataInterface = {
       ...browserData,
       browserIP: '',
     };
 
     it('without query parameter', done => {
+
+      // @ts-ignore
+      sut.extendUrlsWithRandomNumbers = jest.fn().mockReturnValue(extendedUrls);
       when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserDataLocal);
 
       sut.getBrowserData$().subscribe(() => {
-        verify(sentryServiceMock.sendCustomMessage(
-          deepEqual(new RequestTimeoutError('Get browser data error', {
-            type: TimeoutDetailsType.BROWSER_DATA,
-            requestUrl: queryEvent.data as string,
-          })))
+        verify(
+          sentryServiceMock.sendCustomMessage(
+            deepEqual(
+              new RequestTimeoutError('Get browser data error', {
+                type: TimeoutDetailsType.BROWSER_DATA,
+                requestUrl: (queryEvent.data as string[]).join(', '),
+              })
+            )
+          )
         ).once();
         done();
       });
-
     });
-
-    it('with query parameter threeDsTransactionId', done => {
-      const threeDsTransactionId = '12345';
-      queryEvent.data = `${queryEvent.data}?threeDSServerTransID=${threeDsTransactionId}`;
-
-      when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserDataLocal);
-
-      sut.getBrowserData$(threeDsTransactionId).subscribe(() => {
-        verify(sentryServiceMock.sendCustomMessage(
-          deepEqual(new RequestTimeoutError('Get browser data error', {
-            type: TimeoutDetailsType.BROWSER_DATA,
-            requestUrl: queryEvent.data as string,
-          })))
-        ).once();
-        done();
-      });
-
-    });
-
   });
-
 });

@@ -18,6 +18,8 @@ import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitPara
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
+import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
+import { HPPFormFieldName } from './HPPFormFieldName';
 
 describe('HPPClickToPayAdapter', () => {
   const initParams: IHPPClickToPayAdapterInitParams = {
@@ -36,6 +38,7 @@ describe('HPPClickToPayAdapter', () => {
   let userIdentificationServiceMock: HPPUserIdentificationService;
   let cardListGeneratorMock: CardListGenerator;
   let hppCheckoutDataProviderMock: HPPCheckoutDataProvider;
+  let hppUpdateViewCallbackMock: HPPUpdateViewCallback;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
@@ -46,6 +49,7 @@ describe('HPPClickToPayAdapter', () => {
     userIdentificationServiceMock = mock(HPPUserIdentificationService);
     cardListGeneratorMock = mock(CardListGenerator);
     hppCheckoutDataProviderMock = mock(HPPCheckoutDataProvider);
+    hppUpdateViewCallbackMock = mock(HPPUpdateViewCallback);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
     when(digitalTerminalMock.checkout(anything())).thenReturn(of(undefined));
@@ -60,7 +64,8 @@ describe('HPPClickToPayAdapter', () => {
       instance(userIdentificationServiceMock),
       instance(srcNameFinderMock),
       instance(cardListGeneratorMock),
-      instance(hppCheckoutDataProviderMock)
+      instance(hppCheckoutDataProviderMock),
+      instance(hppUpdateViewCallbackMock)
     );
   });
 
@@ -80,8 +85,53 @@ describe('HPPClickToPayAdapter', () => {
       });
     });
 
-    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
-      const formSubmitEventMock = new Subject<void>();
+    describe('should subscribe to updateView state changes', () => {
+      let testForm: HTMLFormElement;
+      let cardInputs: Element[];
+      beforeAll(() => {
+        testForm = document.createElement('form');
+        testForm.id = initParams.formId;
+        testForm.innerHTML = `
+        <input type='text' name='${HPPFormFieldName.pan}'>
+        <input type='text' name='${HPPFormFieldName.cardExpiryMonth}'>
+        <input type='text' name='${HPPFormFieldName.cardExpiryYear}'>
+        <input type='text' name='${HPPFormFieldName.cardSecurityCode}'>
+        `;
+        cardInputs = [HPPFormFieldName.pan, HPPFormFieldName.cardExpiryMonth, HPPFormFieldName.cardExpiryYear, HPPFormFieldName.cardSecurityCode]
+          .map(name =>
+            testForm.querySelector(`[name="${name}"]`));
+
+      });
+
+      it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
+        when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
+          displayCardForm: false,
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        }));
+        sut.init(initParams).then(() => {
+          cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
+          done();
+        });
+      });
+
+      it('when card form should not be hidden card fields should have "readonly" attribute removed', done => {
+        when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
+          displayCardForm: true,
+          displaySubmitButton: false,
+          displayMaskedCardNumber: null,
+          displayCardType: null,
+        }));
+        sut.init(initParams).then(() => {
+          cardInputs.forEach(input => expect(input.hasAttribute('readonly')).toBe(true));
+          done();
+        });
+      });
+    });
+
+    describe('should subscribe to checkout data captured from form submit and', () => {
+      let formSubmitEventMock: Subject<void>;
       const testCheckoutData: IInitialCheckoutData = {
         newCardData: {
           primaryAccountNumber: '111',

@@ -1,4 +1,6 @@
 export interface IUpdateView {
   displayCardForm: boolean;
-  displaySubmitForm: boolean;
+  displaySubmitButton: boolean;
+  displayMaskedCardNumber: string | null;
+  displayCardType: string | null;
 }
