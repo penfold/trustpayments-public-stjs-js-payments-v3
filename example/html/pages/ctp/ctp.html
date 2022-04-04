@@ -515,6 +515,7 @@
             <button type="submit" class="st-form__button" id="merchant-submit-button">
               Pay securely
             </button>
+            <label id="merchant-submit-label">We accept VISA</label>
           </div>
         </div>
       </div>
@@ -608,7 +609,11 @@
           getSrcName(adapter);
         })
         .catch(function(error) {
-          console.error(error);
+          if (error === 'ClickToPay is not available on Internet Explorer') {
+            return null;
+          } else {
+            console.error(error);
+          }
         });
 
       st.on('paymentInitStarted', function(data) {
@@ -665,10 +670,10 @@
     }
 
     function inputHandler(adapterInstance) {
-      return (event) => {
+      return function (event) {
         if (event.target.value) {
           const cardType = adapterInstance.getSrcName(event.target.value);
-          cardType.then((srcName) => {
+          cardType.then(function (srcName) {
             srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
           });
         } else {
@@ -689,6 +694,21 @@
     function onUpdateView(updateView) {
       var cardDetailsElement = document.getElementById('st-card-details-section');
       var submitElement = document.getElementById('st-ctp-submit-section');
+      var merchantSubmitButton = document.getElementById('merchant-submit-button');
+      var merchantSubmitLabel = document.getElementById('merchant-submit-label');
+      var ctpImage = '<svg id="ctp-logo" width="20px" height="20px" version="1.0" viewBox="0 0 92 59" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 59) scale(.1 -.1)"><path fill="#fff" d="m29 554c-24-26-24-26-24-260v-234l28-27c27-28 29-28 175-31l148-3 127 134c70 74 127 143 127 152s-42 64-92 122c-51 57-94 109-96 114s12 9 32 9c32 0 43-9 140-121l106-121-49-57c-27-31-66-72-86-91s-50-52-67-73c-44-54-29-67 77-67h83l124 131c67 71 127 137 131 145 6 11 2 24-15 42-14 15-71 80-127 145-64 72-110 117-122 117-40 0-16-43 92-165l110-125-20-26c-11-14-58-65-105-115-79-83-89-90-120-87l-34 3 99 108c69 74 97 112 92 121-4 8-61 75-127 150l-119 137-95-3c-60-2-97-7-99-14s48-72 111-145l115-133-79-85c-43-47-91-99-107-114l-30-28-268 6-3 227-2 228 22 5c13 3 57 6 98 7 69 3 75 5 78 26 3 22 2 22-101 22-98 0-105-1-128-26z"/></g></svg>';
+
+      if (updateView.displayMaskedCardNumber) {
+        merchantSubmitButton.innerHTML = `Continue with ${ctpImage} ...${updateView.displayMaskedCardNumber}`;
+      } else {
+        merchantSubmitButton.innerHTML = 'Pay securely';
+      }
+
+      if (updateView.displayCardType) {
+        merchantSubmitLabel.innerHTML = `Your ${updateView.displayCardType} payment is enabled by Click to Pay`
+      } else {
+        merchantSubmitLabel.innerHTML = 'We accept VISA';
+      }
 
       if (updateView.displayCardForm === true) {
         cardDetailsElement.classList.remove('hidden');
@@ -696,18 +716,19 @@
         cardDetailsElement.classList.add('hidden');
       }
 
-      if (updateView.displaySubmitForm === true) {
+      if (updateView.displaySubmitButton === true) {
         submitElement.classList.remove('hidden');
       } else {
         submitElement.classList.add('hidden');
       }
     }
+
     function onCheckout(checkoutResult){
       console.log('CTP - cecheckout result: ', checkoutResult)
     }
 
     function onCheckout(checkoutResult) {
-      printLogs(`CTP - checkout result: \n${JSON.stringify(checkoutResult, null, 2)}`);
+      printLogs('CTP - checkout result:' + JSON.stringify(checkoutResult, null, 2));
     }
 
     function printLogs(logs) {

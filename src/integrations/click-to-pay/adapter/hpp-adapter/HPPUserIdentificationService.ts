@@ -27,7 +27,12 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
       filter(value => value === false),
       untilDestroy(this.messageBus)
     ).subscribe(() =>
-      this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true })
+      this.hppUpdateViewCallback.callUpdateViewCallback({ 
+        displayCardForm: false, 
+        displaySubmitButton: true,
+        displayMaskedCardNumber: null,
+        displayCardType: null,
+      })
     );
   }
 
@@ -105,7 +110,12 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
 
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayCardForm: true, 
+      displaySubmitButton: true,
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+    });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();
@@ -115,7 +125,12 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createOTPForm(result, validationResponse, resendSubject);
 
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      displayCardForm: false, 
+      displaySubmitButton: false,
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+    });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();

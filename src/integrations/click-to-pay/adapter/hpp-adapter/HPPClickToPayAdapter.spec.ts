@@ -60,7 +60,9 @@ describe('HPPClickToPayAdapter', () => {
     when(hppCheckoutDataProviderMock.getCheckoutData(anyString())).thenReturn(of(undefined));
     when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(of({
       displayCardForm: false,
-      displaySubmitForm: false,
+      displaySubmitButton: false,
+      displayMaskedCardNumber:null,
+      displayCardType: null,
     }));
 
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
@@ -120,32 +122,36 @@ describe('HPPClickToPayAdapter', () => {
 
       it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
         sut.init(initParams).then((a) => {
-          updateViewMock.subscribe(()=>{
+          updateViewMock.subscribe(() => {
             cardInputs.forEach(input => {
               expect(input.hasAttribute('readonly')).toBe(true);
             });
             done();
-          })
+          });
 
           updateViewMock.next({
             displayCardForm: false,
-            displaySubmitForm: false,
+            displaySubmitButton: false,
+            displayMaskedCardNumber: null,
+            displayCardType: null,
           });
         });
       });
 
       it('when card form should not be hidden card fields should have "readonly" attribute removed', done => {
         sut.init(initParams).then(() => {
-          updateViewMock.subscribe(()=>{
+          updateViewMock.subscribe(() => {
             cardInputs.forEach(input => {
               expect(input.hasAttribute('readonly')).toBe(false);
             });
             done();
-          })
+          });
 
           updateViewMock.next({
             displayCardForm: true,
-            displaySubmitForm: false,
+            displayCardType: null,
+            displayMaskedCardNumber: null,
+            displaySubmitButton: false,
           });
         });
       });

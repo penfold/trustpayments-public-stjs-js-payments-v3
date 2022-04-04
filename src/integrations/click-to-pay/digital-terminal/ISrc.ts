@@ -106,10 +106,10 @@ export interface IDcf {
 export interface IMaskedCard {
   srcDigitalCardId: string;
   panBin: string;
-  panLastFour: number;
+  panLastFour: number | string;
   tokenBinRange: string;
   paymentAccountReference: string;
-  tokenLastFour: number;
+  tokenLastFour: number | string;
   panExpirationMonth: number;
   panExpirationYear: number;
   digitalCardData: IDigitalCardData;
