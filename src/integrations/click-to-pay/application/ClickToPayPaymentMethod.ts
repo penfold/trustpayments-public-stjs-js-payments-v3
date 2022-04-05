@@ -13,7 +13,7 @@ import { PaymentMethodToken } from '../../../application/dependency-injection/In
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-import { ICheckoutResponse } from '../digital-terminal/ISrc';
+import { DcfActionCode, ICheckoutResponse } from '../digital-terminal/ISrc';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig> {
@@ -54,7 +54,7 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
       );
   }
 
-  private getPaymentStatus(dcfActionCode: ICheckoutResponse['dcfActionCode']): PaymentStatus {
+  private getPaymentStatus(dcfActionCode: DcfActionCode): PaymentStatus {
     switch (dcfActionCode) {
       case 'CANCEL':
         return PaymentStatus.CANCEL;

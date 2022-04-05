@@ -2,7 +2,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { Observable } from 'rxjs';
 import { ISrcProvider } from './ISrcProvider';
 import { SrcAggregate } from './SrcAggregate';
-import { ICheckoutData, ICheckoutResponse, ICheckoutResponseData, IConsumerIdentity, ISrc } from './ISrc';
+import { DcfActionCode, ICheckoutData, ICheckoutResponse, IConsumerIdentity, ISrc } from './ISrc';
 import { SrcName } from './SrcName';
 import { CardAggregator } from './CardAggregator';
 import { ICorrelatedMaskedCard } from './interfaces/ICorrelatedMaskedCard';
@@ -219,22 +219,9 @@ describe('SrcAggregate', () => {
         srcCorrelationId: '',
       };
 
-      const responseData: ICheckoutResponseData = {
-        srciTransactionId: '',
-        shippingCountryCode: '',
-        shippingAddressZip: '',
-        isNewUser: true,
-        srcCorrelationId: '',
-        maskedConsumer: null,
-        maskedCard: null,
-        encryptedPayload: '',
-        assuranceData: null,
-        isGuestCheckout: true,
-      };
-
       const response: ICheckoutResponse = {
-        checkoutResponse: responseData,
-        dcfActionCode: 'COMPLETE',
+        checkoutResponse: 'checkout response',
+        dcfActionCode: DcfActionCode.complete,
         unbindAppInstance: false,
         idToken: 'some token',
       };

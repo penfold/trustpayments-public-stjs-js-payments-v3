@@ -148,24 +148,20 @@ export interface IAssuranceData {
   consumerVerificationResults: string;
 }
 
-export interface ICheckoutResponse {
-  checkoutResponse: ICheckoutResponseData;
-  dcfActionCode: 'COMPLETE' | 'CHANGE_CARD' | 'ADD_CARD' | 'SWITCH_CONSUMER' | 'CANCEL' | 'ERROR',
-  unbindAppInstance: boolean;
-  idToken: string;
+export enum DcfActionCode {
+  complete = 'COMPLETE',
+  changeCard = 'CHANGE_CARD',
+  addCard = 'ADD_CARD',
+  switchConsumer = 'SWITCH_CONSUMER',
+  cancel = 'CANCEL',
+  error = 'ERROR'
 }
 
-export interface ICheckoutResponseData {
-  srcCorrelationId: string;
-  srciTransactionId: string;
-  maskedCard: IMaskedCard;
-  shippingAddressZip: string;
-  shippingCountryCode: string;
-  maskedConsumer: IMaskedConsumer;
-  encryptedPayload: string;
-  assuranceData: IAssuranceData;
-  isGuestCheckout: boolean;
-  isNewUser: boolean;
+export interface ICheckoutResponse {
+  checkoutResponse: string;
+  dcfActionCode: DcfActionCode,
+  unbindAppInstance: boolean;
+  idToken: string;
 }
 
 export interface ISrcProfileList {
@@ -197,11 +193,18 @@ export interface IUnbindAppInstanceResponse {
 
 export interface ISrc {
   init(initData: ISrcInitData): Promise<void>;
+
   isRecognized(): Promise<IIsRecognizedResponse>;
+
   getSrcProfile(idTokens: string[]): Promise<ISrcProfileList>;
+
   identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse>;
+
   initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse>;
+
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
+
   checkout(data: ICheckoutData): Promise<ICheckoutResponse>;
+
   unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse>;
 }
