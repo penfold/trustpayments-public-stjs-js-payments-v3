@@ -78,7 +78,6 @@ class VisaClickToPayPage(BasePage):
 
     def fill_otp_field_and_check(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-
         self.get_code_and_fill_otp_field()
         # if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
         #     mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
@@ -99,7 +98,7 @@ class VisaClickToPayPage(BasePage):
         self._actions.send_keys(VisaClickToPayLocators.otp_input, one_time_code)
 
     def get_last_unseen_otp(self):
-        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(10)
+        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(20)
         code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[len(mail_ids) - 1])))
         return code
 
@@ -244,7 +243,7 @@ class VisaClickToPayPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_text == expected_text, assertion_message
 
-    def get_logs(self, expected_name, max_try=5):
+    def get_logs(self, expected_name, max_try=10):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
         logs = ''
         while max_try:
@@ -269,3 +268,7 @@ class VisaClickToPayPage(BasePage):
 
     def click_add_new_card_on_vctp_popup(self):
         self._actions.click(VisaClickToPayLocators.add_new_card_btn)
+
+    def wait_for_visa_popup_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(VisaClickToPayLocators.vctp_iframe)
+        self._actions.switch_to_default_content()

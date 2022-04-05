@@ -3,9 +3,11 @@
 from assertpy import assert_that
 from behave import use_step_matcher, step
 
+from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from utils.enums.card import Card
-from utils.helpers.gmail_service import EMAIL_LOGIN
+from utils.enums.shared_dict_keys import SharedDictKey
+from utils.helpers.request_executor import add_to_shared_dict
 from utils.helpers.resources_reader import get_translation_from_json
 
 use_step_matcher('re')
@@ -55,11 +57,16 @@ def step_impl(context, param):
 def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     email = {
-        'valid': EMAIL_LOGIN,
+        'valid': CONFIGURATION.VCTP_EMAIL_1,
         'not registered': 'notregistered@testemail.com',
         'invalid format': 'test@123',
-        'empty': ''
+        'empty': '',
+        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
+        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
+        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
+        'vctp_4': CONFIGURATION.VCTP_EMAIL_4,
     }
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
     vctp_page.fill_email_input(email[email_state])
     vctp_page.click_submit_email_btn()
 
@@ -159,10 +166,17 @@ def step_impl(context):
     assert_that(context.otp_after_first_login).is_equal_to(context.otp_after_resend)
 
 
-@step('User login to VISA_CTP account with valid credentials')
-def step_impl(context):
+@step('User login to (?P<email_state>.+) account with valid credentials')
+def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    vctp_page.fill_email_input(EMAIL_LOGIN)
+    email = {
+        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
+        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
+        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
+        'vctp_4': CONFIGURATION.VCTP_EMAIL_4,
+    }
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
+    vctp_page.fill_email_input(email[email_state])
     vctp_page.click_submit_email_btn()
     vctp_page.fill_otp_field_and_check()
 
@@ -190,6 +204,7 @@ def step_impl(context, register):
         vctp_page.fill_cvv_field_on_visa_popup()
     elif register in 'and cancels payment':
         vctp_page.click_cancel_checkout_btn()
+    vctp_page.wait_for_visa_popup_to_disappear()
 
 
 @step('User see that first card on the list is (?P<is_selected>.+)')
