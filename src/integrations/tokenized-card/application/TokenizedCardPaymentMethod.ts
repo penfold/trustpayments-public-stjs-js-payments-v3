@@ -26,6 +26,7 @@ import { TransportServiceGatewayClient } from '../../../application/core/service
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
 import { FormState } from '../../../application/core/models/constants/FormState';
+import { RESPONSE_STATUS_CODES } from '../../../application/core/models/constants/ResponseStatusCodes';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, ITokenizedCardPayGatewayRequest, IRequestTypeResponse> {
@@ -61,14 +62,12 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
   }
 
-  start(data): Observable<IPaymentResult<IRequestTypeResponse>> {
+  start(data: ITokenizedCardPayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
     this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: this.store.getState().tokenizedJwt });
     this.requestProcessingService = this.requestProcessingInitializer.initialize(this.gatewayClient);
     data = {
       ...data,
       formId: this.formId,
-      pan: '',
-      expirationDate: '',
       termurl: TERM_URL,
     };
 
@@ -77,9 +76,9 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
         return requestProcessingService.process(data);
       }),
-      map(response => this.mapPaymentResponse(response, data)),
+      map(response => this.mapPaymentResponse(response)),
       tap(response =>{
-        if(response.status === PaymentStatus.ERROR) {
+        if(response.status === PaymentStatus.ERROR && Number(response.error.code) === RESPONSE_STATUS_CODES.invalidfield) {
           this.messageBus.publish({
             type: MessageBus.EVENTS_PUBLIC.TOKENIZED_CARD_PAYMENT_METHOD_FAILED,
             data: response.error,
@@ -98,6 +97,8 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   }
 
   private handleResponseError(responseOrError, data: ITokenizedCardPayGatewayRequest) {
+    responseOrError.formId = data.formId;
+
     if(!responseOrError.requesttypedescription) {
       return throwError(responseOrError);
     }
@@ -110,12 +111,14 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   }
 
   private mapPaymentResponse(
-    response: IRequestTypeResponse,
-    request: ITokenizedCardPayGatewayRequest
+    response: IRequestTypeResponse
   ): IPaymentResult<IRequestTypeResponse> {
     const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
       status: this.resolvePaymentStatus(response),
-      data: response,
+      data: {
+        ...response,
+        formId: this.formId,
+      },
       paymentMethodName: TokenizedCardPaymentMethodName,
     };
 
@@ -132,10 +135,6 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   private resolvePaymentStatus(response: IRequestTypeResponse): PaymentStatus {
     if(Number(response.errorcode) !== 0) {
       return PaymentStatus.ERROR;
-    }
-
-    if(response.isCancelled) {
-      return PaymentStatus.CANCEL;
     }
 
     return PaymentStatus.SUCCESS;
@@ -170,14 +169,14 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
     console.log('TOKENIZED Payment method started', this.cvv)
 
-    // this.messageBus.publish({
-    //     type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-    //     data: {
-    //       name: TokenizedCardPaymentMethodName,
-    //       data: {
-    //         securitycode: this.cvv?.value || '',
-    //       },
-    //     },
-    //   });
+    this.messageBus.publish({
+        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+        data: {
+          name: TokenizedCardPaymentMethodName,
+          data: {
+            securitycode: this.cvv?.value || '',
+          },
+        },
+      });
   }
 }
