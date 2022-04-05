@@ -1,5 +1,5 @@
 import { anyFunction, anyString, anything, instance, mock, objectContaining, spy, verify, when } from 'ts-mockito';
-import { NEVER, of, Subject, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
@@ -15,7 +15,6 @@ import { IdentificationFailureReason } from '../../digital-terminal/Identificati
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { SimpleMessageBus } from '../../../../application/core/shared/message-bus/SimpleMessageBus';
-import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { IUpdateView } from '../interfaces/IUpdateView';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';

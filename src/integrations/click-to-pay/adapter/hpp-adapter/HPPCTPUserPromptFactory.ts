@@ -1,13 +1,17 @@
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Service } from 'typedi';
 import { IInitiateIdentityValidationResponse } from '../../digital-terminal/ISrc';
+import './hpp-adapter.scss';
+import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 
 @Service()
 export class HPPCTPUserPromptFactory {
+  constructor(private translator: ITranslator) {
+  }
+
   createEmailForm(result: Subject<string>): HTMLFormElement {
     const fieldName = 'st-ctp-email';
     const formElement = document.createElement('form');
-    const emailPattern = '[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'; // eslint-disable-line no-useless-escape
     formElement.addEventListener('submit', event => {
       event.preventDefault();
       event.stopPropagation();
@@ -19,15 +23,13 @@ export class HPPCTPUserPromptFactory {
       }
     });
 
-    formElement.innerHTML = `<h2 class="st-hpp-prompt__header">Sign in to Click to Pay</h2>
-  <div class="st-form__field">
-    <label for="st-form-price" class="st-form__label">
-      Email address:
+    formElement.innerHTML = `<div class="st-hpp-prompt__field-wrapper">
+    <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}:</span>
+    <label class="st-hpp-prompt__field">
+      <span class="st-hpp-prompt__field-label">${this.translator.translate('Email address')}:</span>
+      <input type="email" inputmode="email" name="${fieldName}" required class="st-hpp-prompt__field-input"/>
     </label>
-    <input type="email" inputmode="email" pattern="${emailPattern}" name="${fieldName}" required class="st-form__input" />
-  </div>
-  <div class="st-form__group st-form__group--submit">
-    <button type="submit" class="st-form__button">
+    <button type="submit" class="st-hpp-prompt__button">
       Continue
     </button>
   </div>`;
@@ -36,29 +38,30 @@ export class HPPCTPUserPromptFactory {
   }
 
   createOTPForm(result: Subject<string>, validationResponse: IInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>): HTMLFormElement {
-    const otpCodePattern = '[0-9]{6}$';
     const fieldName = 'st-ctp-code';
     const formElement = document.createElement('form');
+    const otpInputsNames = new Array(6).fill('').map((value, index) => `${fieldName}${index}`);
     formElement.addEventListener('submit', event => {
       event.preventDefault();
       event.stopPropagation();
 
       if (formElement.checkValidity()) {
-        result.next(formElement.elements[fieldName]?.value);
+        const otpCode = otpInputsNames.map(name => formElement.elements[name]?.value).join('');
+        result.next(otpCode);
       }
     });
 
     formElement.innerHTML = `
-  <p class="st-hpp-prompt__text">Enter the code sent to ${validationResponse.maskedValidationChannel}</p>
-  <div class="number-inputs">
-    <input type="text"  inputmode="numeric" pattern="${otpCodePattern}" name="${fieldName}" class="st-form__input" autocomplete="off"/>
+  <div class="st-ctp-prompt__otp-wrapper">
+  <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the code sent to ')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
+  <div class="st-ctp-prompt__otp-inputs">
+    ${otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
   </div>
-  <div class="st-form__group st-form__group--submit">
-    <a href="#" class="st-form__resend" id="st-ctp-opt-resend">Resend</a>
-    <button type="submit" class="st-form__button">
-      Continue
+    <a href="#" class="st-hpp-prompt__link" id="st-ctp-opt-resend">${this.translator.translate('Resend')}</a>
+    <button type="submit" class="st-hpp-prompt__button">
+      Verify
     </button>
-  </div>`;
+ </div>`;
 
     formElement.querySelector('#st-ctp-opt-resend').addEventListener('click', event => {
       event.preventDefault();
@@ -67,6 +70,8 @@ export class HPPCTPUserPromptFactory {
         resendSubject.next(true);
       }
     });
+
+    otpInputsNames.forEach(value => this.setOTPInputListeners(formElement.elements[value]));
 
     return formElement;
   }
@@ -81,5 +86,21 @@ export class HPPCTPUserPromptFactory {
     headerElement.querySelector('#st-hpp-prompt__close-btn').addEventListener('click', event => closeCallback(event));
 
     return headerElement;
+  }
+
+  private setOTPInputListeners(input: HTMLInputElement) {
+    input.addEventListener('beforeinput', event => {
+      if (input.value.length > 0) {
+        input.select();
+      }
+    });
+
+    input.addEventListener('input', event => {
+      if (!input.value?.trim()) {
+        return true;
+      }
+
+      (input.nextElementSibling as HTMLElement)?.focus();
+    });
   }
 }

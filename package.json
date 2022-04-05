@@ -125,7 +125,7 @@
     "jest-each": "27.5.1",
     "jest-fetch-mock": "3.0.3",
     "jest-get-type": "27.5.1",
-    "lint-staged": "12.1.5",
+    "lint-staged": "11.2.6",
     "live-server": "1.2.1",
     "local-web-server": "5.1.1",
     "mini-css-extract-plugin": "2.3.0",
