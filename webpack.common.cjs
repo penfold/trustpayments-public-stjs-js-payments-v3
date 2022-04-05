@@ -9,7 +9,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
-    "test":["./src/test.ts"],
     st: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
