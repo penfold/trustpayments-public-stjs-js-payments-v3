@@ -25,11 +25,11 @@
     "npm": "8.3.0"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js && npm run build:declarations",
-    "build:prod": "webpack --config webpack.prod.js && npm run build:declarations",
-    "build:mock": "webpack --config webpack.mock.js && npm run build:declarations",
-    "build:dev": "webpack --config webpack.dev.js && npm run build:declarations",
-    "build:rc": "webpack --config webpack.rc.js && npm run build:declarations",
+    "build": "webpack --config webpack.prod.cjs && npm run build:declarations",
+    "build:prod": "webpack --config webpack.prod.cjs && npm run build:declarations",
+    "build:mock": "webpack --config webpack.mock.cjs && npm run build:declarations",
+    "build:dev": "webpack --config webpack.dev.cjs && npm run build:declarations",
+    "build:rc": "webpack --config webpack.rc.cjs && npm run build:declarations",
     "prod": "npm run build",
     "test": "jest",
     "test:watch": "jest --watchAll",
@@ -44,7 +44,7 @@
     "prettier": "npx prettier --write \"./src/**/*.{ts,js,css,json}\"",
     "example": "ws --rewrite '/* -> /dist/$1' --https",
     "start:automated": "webpack serve --color --progress --config webpack.test.js",
-    "start:bundle": "webpack serve --color --progress --config webpack.dev.js",
+    "start:bundle": "webpack serve --color --progress --config webpack.dev.cjs",
     "example:html:dev": "npm run start --prefix ./example/html",
     "example:html:start": "run-p start:bundle example:html:dev",
     "start": "npm run example:html:start",
@@ -56,14 +56,14 @@
     "example:vue:start": "run-p start:bundle example:vue:dev",
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
-    "prepare": "husky install",
-    "postinstall": "npm run install --prefix ./node_modules/@sentry/cli"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/trustpayments-public/stjs/js-payments.git"
   },
   "author": "",
+  "type": "module",
   "license": "MIT",
   "bugs": {
     "url": "https://gitlab.com/trustpayments-public/stjs/js-payments/-/issues"
@@ -79,7 +79,7 @@
     "node-forge": "1.3.0",
     "minimist": "1.2.6",
     "string-width": "4.2.3",
-    "strip-ansi": "6.0.1"
+    "is-fullwidth-code-point": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.17.8",
