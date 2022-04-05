@@ -75,7 +75,7 @@ export class DigitalTerminal {
 
   unbindAppInstance(): Observable<undefined> {
     this.idTokens = [];
-    this.srcProfiles = { 
+    this.srcProfiles = {
       srcProfiles: {},
       aggregatedCards: [],
     };

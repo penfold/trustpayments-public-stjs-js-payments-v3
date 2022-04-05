@@ -26,11 +26,13 @@ export class CardListGenerator {
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
   ]);
 
-  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder, private hppUpdateViewCallback: HPPUpdateViewCallback) {}
+  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder, private hppUpdateViewCallback: HPPUpdateViewCallback) {
+  }
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
+    container.innerHTML = '';
     this.cardList = cardList;
     cardList.forEach((card, index) => {
       const cardContent = this.cardContent(card, index === 0);
@@ -62,6 +64,21 @@ export class CardListGenerator {
     wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
     container.prepend(wrapper);
     document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+  }
+
+  openNewCardForm(): void {
+    this.openForm();
+    this.clearSelection();
+  }
+
+  hideForm(): void {
+    document.getElementById('st-ctp-cards').innerHTML = '';
+    this.hppUpdateViewCallback.callUpdateViewCallback({
+      displayCardForm: true,
+      displaySubmitButton: true,
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+    });
   }
 
   private addCardContent(): string {
@@ -132,7 +149,7 @@ export class CardListGenerator {
     const check = checked ? ' checked' : '';
 
     if (checked) {
-      this.hppUpdateViewCallback.callUpdateViewCallback({ 
+      this.hppUpdateViewCallback.callUpdateViewCallback({
         displayMaskedCardNumber: card.panLastFour.toString(),
         displayCardType: card.srcName.toLowerCase(),
         displayCardForm: false,
@@ -142,16 +159,16 @@ export class CardListGenerator {
 
     return `
       <span class="st-card__checkbox">${
-        card.isActive
-          ? '<label><input id="radio' +
-            card.srcDigitalCardId +
-            '" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="' +
-            card.srcDigitalCardId +
-            '"' +
-            check +
-            '><span class="st-card__checkbox-radio"></span></label>'
-          : ''
-      }</span>
+      card.isActive
+        ? '<label><input id="radio' +
+        card.srcDigitalCardId +
+        '" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="' +
+        card.srcDigitalCardId +
+        '"' +
+        check +
+        '><span class="st-card__checkbox-radio"></span></label>'
+        : ''
+    }</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
@@ -217,7 +234,7 @@ export class CardListGenerator {
   }
 
   private handleAddCardButtonClick(): void {
-    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+    this.hppUpdateViewCallback.callUpdateViewCallback({
       displayMaskedCardNumber: null,
       displayCardType: null,
       displayCardForm: false,
@@ -246,9 +263,9 @@ export class CardListGenerator {
     this.clearSelection();
     const checkboxElement = (document.getElementById('radio' + id) as HTMLInputElement);
     checkboxElement.checked = true;
-    const selectedCard = this.cardList.filter(card => card.srcDigitalCardId === id)
+    const selectedCard = this.cardList.filter(card => card.srcDigitalCardId === id);
 
-    this.hppUpdateViewCallback.callUpdateViewCallback({ 
+    this.hppUpdateViewCallback.callUpdateViewCallback({
       displayMaskedCardNumber: selectedCard[0].panLastFour.toString(),
       displayCardType: selectedCard[0].srcName.toLowerCase(),
       displayCardForm: false,
@@ -267,16 +284,6 @@ export class CardListGenerator {
     for (let i = 0; i < formRows.length; i++) {
       (formRows[i] as HTMLDivElement).style.display = 'block';
     }
-  }
-
-  private hideForm(): void {
-    document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      displayCardForm: true, 
-      displaySubmitButton: true, 
-      displayMaskedCardNumber: null,
-      displayCardType: null,
-    });
   }
 
   private showValidationStatus(id: string, message: string) {
