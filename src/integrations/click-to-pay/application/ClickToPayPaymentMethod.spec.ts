@@ -9,7 +9,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constant
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { ClickToPayAdapterName } from '../adapter/ClickToPayAdapterName';
-import { ICheckoutResponse } from '../digital-terminal/ISrc';
+import { DcfActionCode, ICheckoutResponse } from '../digital-terminal/ISrc';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ClickToPayPaymentMethodName } from '../models/ClickToPayPaymentMethodName';
@@ -51,7 +51,7 @@ describe('ClickToPayPaymentMethod', () => {
       idToken: 'some token',
       checkoutResponse: null,
       unbindAppInstance: false,
-      dcfActionCode: 'COMPLETE',
+      dcfActionCode: DcfActionCode.complete,
     };
 
     beforeEach(() => {
@@ -84,7 +84,7 @@ describe('ClickToPayPaymentMethod', () => {
       ['CANCEL', PaymentStatus.CANCEL],
       ['ERROR', PaymentStatus.ERROR],
       ['', PaymentStatus.FAILURE],
-    ] as [ICheckoutResponse['dcfActionCode'], PaymentStatus][])('payment status should be mapped from checkout dcfActionCode:', (dcfActionCode, paymentStatus) => {
+    ] as [DcfActionCode, PaymentStatus][])('payment status should be mapped from checkout dcfActionCode:', (dcfActionCode, paymentStatus) => {
       it(`"${dcfActionCode}" => "${paymentStatus}"`, done => {
         when(frameQueryingService.query(objectContaining({ type: PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT }), MERCHANT_PARENT_FRAME)).thenReturn(of({
               ...checkoutResponse,

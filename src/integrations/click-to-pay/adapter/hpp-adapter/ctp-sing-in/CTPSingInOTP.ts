@@ -2,15 +2,19 @@ import { Subject } from 'rxjs';
 import { ITranslator } from '../../../../../application/core/shared/translator/ITranslator';
 import { IInitiateIdentityValidationResponse } from '../../../digital-terminal/ISrc';
 
+const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
+
 export class CTPSIgnInOTP {
-  private errorFieldClass = 'st-hpp-prompt__field-error';
-  private errorElement: HTMLElement;
-  private fieldClass = 'st-ctp-prompt__otp-inputs';
-  private fieldElement: HTMLElement;
-  private fieldErrorClass = 'st-ctp-prompt__otp-inputs--invalid';
+  private readonly errorFieldClass = 'st-hpp-prompt__field-error';
+  private readonly fieldClass = 'st-ctp-prompt__otp-inputs';
+  private readonly fieldErrorClass = 'st-ctp-prompt__otp-inputs--invalid';
+  private readonly closeButtonId = 'st-hpp-prompt__otp-close';
+  private readonly fieldName = 'st-ctp-code';
   private container: HTMLElement;
-  private closeButtonId = 'st-hpp-prompt__otp-close';
+  private fieldElement: HTMLElement;
+  private errorElement: HTMLElement;
   private cancelCallback: () => void;
+  private otpInputsNames = new Array(6).fill('').map((value, index) => `${this.fieldName}${index}`);
 
   constructor(private translator: ITranslator) {
   }
@@ -39,32 +43,30 @@ export class CTPSIgnInOTP {
   }
 
   show(validationResponse: IInitiateIdentityValidationResponse, resultSubject: Subject<string>, resendSubject: Subject<boolean>) {
-    const fieldName = 'st-ctp-code';
     const formElement = document.createElement('form');
-    const otpInputsNames = new Array(6).fill('').map((value, index) => `${fieldName}${index}`);
     const wrapperElement = document.createElement('div');
     formElement.addEventListener('submit', event => {
       event.preventDefault();
       event.stopPropagation();
 
       if (formElement.checkValidity()) {
-        const otpCode = otpInputsNames.map(name => formElement.elements[name]?.value).join('');
+        const otpCode = this.otpInputsNames.map(name => formElement.elements[name]?.value).join('');
         resultSubject.next(otpCode);
       }
     });
 
     formElement.innerHTML = `
       <div class="st-ctp-prompt__otp-wrapper">
-      <div class="st-ctp-prompt__otp-header">
-        <img src="" class="st-ctp-promp__otp-logo" alt="">
-        <span class="st-ctp-promp__otp-close" id="${this.closeButtonId}">&times;</span>
+      <div class="st-ctp-prompt__header">
+        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
+        <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
       </div>
       <div class="st-hpp-prompt__title">Confirm it is you.</div>
       <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the code sent to ')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
       <div class="${this.fieldClass}">
-        ${otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
+        ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
+      <span class="${this.errorFieldClass} st-hpp-prompt__otp-input-error"></span>
       </div>
-      <span class="${this.errorFieldClass}"></span>
         <a href="#" class="st-hpp-prompt__link" id="st-ctp-opt-resend">${this.translator.translate('Resend')}</a>
         <button type="submit" class="st-hpp-prompt__button">
           Verify
@@ -83,7 +85,7 @@ export class CTPSIgnInOTP {
       resendSubject.next(true);
     });
 
-    otpInputsNames.forEach(value => this.setInputListener(formElement.elements[value]));
+    this.otpInputsNames.forEach(value => this.setInputListener(formElement.elements[value]));
 
     this.errorElement = formElement.querySelector(`.${this.errorFieldClass}`);
     this.fieldElement = formElement.querySelector(`.${this.fieldClass}`);
@@ -92,29 +94,46 @@ export class CTPSIgnInOTP {
     wrapperElement.classList.add('st-hpp-prompt');
     wrapperElement.appendChild(formElement);
     this.container.appendChild(wrapperElement);
-    // return fromEvent(formElement, 'submit').pipe(
-    //   tap(event => {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //   }),
-    //   filter(() => formElement.checkValidity()),
-    //   map(() => otpInputsNames.map(name => formElement.elements[name]?.value).join(''))
-    // );
+    (formElement.querySelector('input:first-of-type') as HTMLInputElement)?.focus();
   }
 
   private setInputListener(input: HTMLInputElement) {
     input.addEventListener('beforeinput', event => {
+      const digitsRegexp = /^\d+/g;
+      if (event.data && !digitsRegexp.test(event.data)) {
+        event.preventDefault();
+        return;
+      }
+
       if (input.value.length > 0) {
         input.select();
       }
     });
 
     input.addEventListener('input', event => {
+      this.clearError();
       if (!input.value?.trim()) {
         return true;
       }
 
       (input.nextElementSibling as HTMLElement)?.focus();
+    });
+
+    input.addEventListener('paste', event => {
+      event.preventDefault();
+      const pastedData = event.clipboardData?.getData('text/plain')?.trim();
+      const isValidCode = typeof pastedData === 'string' && /^\d{6}$/.test(pastedData);
+
+      if (isValidCode) {
+        this.fillOTPInputs(pastedData);
+      }
+    });
+  }
+
+  private fillOTPInputs(code: string) {
+    const splitCode = code.split('');
+    this.otpInputsNames.forEach((fieldName, index) => {
+      (this.container.querySelector(`form input[name="${fieldName}"]`) as HTMLInputElement).value = splitCode[index] || '';
     });
   }
 }

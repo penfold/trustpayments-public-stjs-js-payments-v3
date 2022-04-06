@@ -33,6 +33,7 @@
       }
     ],
     "unit-allowed-list": [
+      "fr",
       "px",
       "rem",
       "em",

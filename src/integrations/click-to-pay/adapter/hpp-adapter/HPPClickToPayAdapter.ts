@@ -16,7 +16,7 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
-import { ICheckoutResponse } from '../../digital-terminal/ISrc';
+import { DcfActionCode, ICheckoutResponse } from '../../digital-terminal/ISrc';
 import { untilDestroy } from '../../../../shared/services/message-bus/operators/untilDestroy';
 import { IUpdateView } from '../interfaces/IUpdateView';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
@@ -145,9 +145,24 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
         tap(response => this.initParams?.onCheckout?.call(null, response)),
+        tap(response => this.handleCheckoutResponse(response)),
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
+  }
+
+  private handleCheckoutResponse(response: ICheckoutResponse) {
+    if (response.dcfActionCode === DcfActionCode.changeCard || response.dcfActionCode === DcfActionCode.complete) {
+      this.showCardList();
+    }
+
+    if (response.dcfActionCode === DcfActionCode.addCard) {
+      this.cardListGenerator.openNewCardForm();
+    }
+
+    if (response.unbindAppInstance) {
+      this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
+    }
   }
 
   private disableHiddenFormFields(updateData: IUpdateView) {

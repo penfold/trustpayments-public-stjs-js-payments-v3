@@ -132,6 +132,7 @@ module.exports = {
         exclude: [
           path.resolve(__dirname, './src/client/st/st.css'),
           path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/card-list/CardListGenerator.scss'),
           path.resolve(__dirname, './src/integrations/click-to-pay/adapter/hpp-adapter/hpp-adapter.scss'),
         ],
       },
@@ -139,6 +140,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, './src/client/st/st.css'),
           path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/card-list/CardListGenerator.scss'),
           path.resolve(__dirname, './src/integrations/click-to-pay/adapter/hpp-adapter/hpp-adapter.scss'),
         ],
         use: ['style-loader', 'css-loader', 'sass-loader']

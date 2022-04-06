@@ -1,6 +1,7 @@
 import { fromEvent, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { ITranslator } from '../../../../../application/core/shared/translator/ITranslator';
+const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
 
 export class CTPSingInEmail {
   private errorFieldClass = 'st-hpp-prompt__field-error';
@@ -36,6 +37,9 @@ export class CTPSingInEmail {
     const wrapperElement = document.createElement('div');
 
     formElement.innerHTML = `<div class="st-hpp-prompt__field-wrapper">
+      <div class="st-ctp-prompt__header">
+        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
+      </div>
     <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}:</span>
     <label class="${this.fieldClass}">
       <span class="st-hpp-prompt__field-label">${this.translator.translate('Email address')}:</span>
