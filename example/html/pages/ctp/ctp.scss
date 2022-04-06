@@ -21,7 +21,7 @@
 .st-form__group--submit {
   margin-left: auto;
   flex-direction: column;
-  
+
   #merchant-submit-label {
     margin-top: 10px;
   }
@@ -97,9 +97,4 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 10px 25px;
-}
-
-.st-add-card__pan-validation {
-  @extend %message;
-  visibility: visible;
 }
