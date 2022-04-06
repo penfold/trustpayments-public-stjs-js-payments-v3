@@ -4,6 +4,12 @@ import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
+// @ts-ignore
+import trolleyIcon from '../../../application/core/services/icon/images/trolley.svg';
+// @ts-ignore
+import cardIcon from '../../../application/core/services/icon/images/card.svg';
+// @ts-ignore
+import personIcon from '../../../application/core/services/icon/images/person.svg';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
@@ -11,6 +17,7 @@ import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
 import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
 import { NewCardFieldName } from './NewCardFieldName';
+import './CardListGenerator.scss';
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
@@ -26,8 +33,12 @@ export class CardListGenerator {
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
   ]);
 
-  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder, private hppUpdateViewCallback: HPPUpdateViewCallback) {
-  }
+  constructor(
+    private digitalTerminal: DigitalTerminal,
+    private translator: ITranslator,
+    private srcNameFinder: SrcNameFinder,
+    private hppUpdateViewCallback: HPPUpdateViewCallback
+  ) {}
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
@@ -61,9 +72,17 @@ export class CardListGenerator {
   displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
+    const tooltip = document.createElement('div');
+    wrapper.innerHTML = this.addUserInformationContent(
+      userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress
+    );
     container.prepend(wrapper);
-    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+    document
+      .getElementById(this.notYouElementId)
+      .addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+    tooltip.innerHTML = this.createTooltip();
+    document.getElementById('st-ctp-welcome').appendChild(tooltip);
+    this.addEventHandlersToUserInformation();
   }
 
   openNewCardForm(): void {
@@ -93,39 +112,63 @@ export class CardListGenerator {
       </div>
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
-        <input id="pan" type="text" name="${NewCardFieldName.pan}">
-        <div id="pan-validation-status" class="st-add-card__pan-validation"></div>
+        <input id="vctp-pan" type="text" name="${NewCardFieldName.pan}">
+        <div id="vctp-pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
           Expiry date <span class="st-add-card__details-asterix"></span>
-          <select id="expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
+          <select id="vctp-expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
+          <select id="vctp-expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
         </span>
       </div>
       <div class="st-add-card__details">
         Security code <span class="st-add-card__details-asterix"></span><br>
-        <input id="cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
+        <input id="vctp-cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
   }
 
   private addEventHandlers(formId: string): void {
-    document.getElementById(formId).querySelector('input[name=' + NewCardFieldName.pan + ']').addEventListener('change', event => this.handleChangedPan(event));
+    document
+      .getElementById(formId)
+      .querySelector('input[name=' + NewCardFieldName.pan + ']')
+      .addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+  }
+
+  private addEventHandlersToUserInformation(): void {
+    document.getElementById('st-ctp-welcome__info-icon').addEventListener('click', () => {
+      this.showTooltip();
+    });
+    document.getElementById('st-tooltip__close-button').addEventListener('click', () => {
+      this.hideTooltip();
+    });
   }
 
   private addUserInformationContent(emailAddress: string): string {
     return `
+      <div id="st-ctp-welcome" class="st-ctp-welcome">
+        <span>Welcome back to</span>
+        <span class="st-ctp-welcome__logo">
+          <img src="${logo}" alt="">
+        </span>
+        <span>Click To Pay</span>
+        <span class="st-ctp-welcome__info-icon" id="st-ctp-welcome__info-icon">&#9432;</span>
+      </div>
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
         <?xml version="1.0" encoding="UTF-8"?>
         <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
           <circle cx="129.38" cy="60" r="60"/>
           <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
         </svg>
-        <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
+        <p class="st-ctp-user-details__information">${this.translator.translate(
+          'Hello'
+        )} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate(
+      'Not you?'
+    )}</span></p>
       </div>
     `;
   }
@@ -135,13 +178,11 @@ export class CardListGenerator {
       this.panValidationStatusSubscription.unsubscribe();
     }
     this.panValidationStatusSubscription = this.panValidationStatus
-      .pipe(
-        distinctUntilChanged()
-      )
+      .pipe(distinctUntilChanged())
       .subscribe(result =>
         result
-          ? this.hideValidationStatus('pan-validation-status')
-          : this.showValidationStatus('pan-validation-status', PAN_VALIDATION_STATUS_FAILED)
+          ? this.hideValidationStatus('vctp-pan-validation-status')
+          : this.showValidationStatus('vctp-pan-validation-status', PAN_VALIDATION_STATUS_FAILED)
       );
   }
 
@@ -186,10 +227,10 @@ export class CardListGenerator {
   }
 
   private clearForm(): void {
-    (document.getElementById('cvv') as HTMLInputElement).value = '';
-    (document.getElementById('pan') as HTMLInputElement).value = '';
-    (document.getElementById('expiryDateMonthId') as HTMLSelectElement).value = '';
-    (document.getElementById('expiryDateYearId') as HTMLSelectElement).value = '';
+    (document.getElementById('vctp-cvv') as HTMLInputElement).value = '';
+    (document.getElementById('vctp-pan') as HTMLInputElement).value = '';
+    (document.getElementById('vctp-expiryDateMonthId') as HTMLSelectElement).value = '';
+    (document.getElementById('vctp-expiryDateYearId') as HTMLSelectElement).value = '';
     this.panValidationStatus.next(true);
   }
 
@@ -201,14 +242,32 @@ export class CardListGenerator {
 
   private closeForm(): void {
     document.getElementById('st-add-card__button').style.visibility = 'visible';
-    const formRows = document.getElementsByClassName('st-add-card__details');
-    for (let i = 0; i < formRows.length; i++) {
-      (formRows[i] as HTMLDivElement).style.display = 'none';
-    }
+    document.querySelectorAll('div.st-add-card__details').forEach(div => {
+      (div as HTMLDivElement).style.display = 'none';
+    });
+  }
+
+  private createTooltip(): string {
+    return `
+    <div class="st-tooltip" id="st-tooltip">
+      <div style="justify-content: flex-end">
+        <span class="st-tooltip__close-button" id="st-tooltip__close-button">&times;</span>
+      </div>
+      <div style="justify-content: center">
+        <div>
+          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
+        </div>
+      </div>
+      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div></div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>You can choose to be remembered on your device and browser for faster checkout.</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>Built on industry standards for online transactions and supported by global payment brands.</div>
+    </div>
+    `;
   }
 
   private fillUpExpiryMonth(): void {
-    const select = document.getElementById('expiryDateMonthId');
+    const select = document.getElementById('vctp-expiryDateMonthId');
     const option = document.createElement('option') as HTMLOptionElement;
     option.value = option.innerHTML = '';
     select.appendChild(option);
@@ -221,7 +280,7 @@ export class CardListGenerator {
   }
 
   private fillUpExpiryYear(): void {
-    const select = document.getElementById('expiryDateYearId');
+    const select = document.getElementById('vctp-expiryDateYearId');
     const currentYear = new Date().getFullYear();
     const option = document.createElement('option') as HTMLOptionElement;
     option.value = option.innerHTML = '';
@@ -261,7 +320,7 @@ export class CardListGenerator {
     this.closeForm();
     this.clearForm();
     this.clearSelection();
-    const checkboxElement = (document.getElementById('radio' + id) as HTMLInputElement);
+    const checkboxElement = document.getElementById('radio' + id) as HTMLInputElement;
     checkboxElement.checked = true;
     const selectedCard = this.cardList.filter(card => card.srcDigitalCardId === id);
 
@@ -278,12 +337,19 @@ export class CardListGenerator {
     document.getElementById(id).innerHTML = '';
   }
 
+  private hideTooltip(): void {
+    document.getElementById('st-tooltip').classList.remove('st-tooltip--visible');
+  }
+
   private openForm(): void {
     document.getElementById('st-add-card__button').style.visibility = 'hidden';
-    const formRows = document.getElementsByClassName('st-add-card__details');
-    for (let i = 0; i < formRows.length; i++) {
-      (formRows[i] as HTMLDivElement).style.display = 'block';
-    }
+    document.querySelectorAll('div.st-add-card__details').forEach(div => {
+      (div as HTMLDivElement).style.display = 'block';
+    });
+  }
+
+  private showTooltip(): void {
+    document.getElementById('st-tooltip').classList.add('st-tooltip--visible');
   }
 
   private showValidationStatus(id: string, message: string) {

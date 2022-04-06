@@ -1,3 +1,70 @@
+@import '../../../shared/styles/scss/placeholders';
+@import '../../../shared/styles/scss/variables';
+
+.st-add-card__pan-validation {
+  @extend %message;
+  visibility: visible;
+}
+
+.st-tooltip {
+  background-color: #fff;
+  border-radius: 5px;
+  border: solid 1px gray;
+  display: none;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 10px 10px 20px 10px;
+  position: absolute;
+  right: -30px;
+  top: 30px;
+  width: 250px;
+  z-index: 1000;
+
+  div {
+    display: flex;
+  }
+}
+
+.st-tooltip--visible {
+  display: block;
+}
+
+.st-tooltip__close-button {
+  color: #8C8B8A;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.st-tooltip__logo {
+  height: 16px;
+  vertical-align: middle;
+}
+
+.st-ctp-welcome {
+  align-items: center;
+  display: flex;
+  font-size: 18px;
+  font-wieght: 800;
+  justify-content: center;
+  line-height: 18px;
+  position: relative;
+}
+
+.st-ctp-welcome__logo {
+  display: inline-block;
+  padding: 0 10px;
+  width: 24px;
+
+  img {
+    width: 24px;
+  }
+}
+
+.st-ctp-welcome__info-icon {
+  color: rgb(118, 162, 191);
+  cursor: pointer;
+  padding: 0 10px;
+}
 
 .st-cards {
   .st-card, .st-add-card {
