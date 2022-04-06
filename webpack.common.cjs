@@ -9,48 +9,49 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
+    "test":["./src/test.ts"],
     st: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/client/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/client/st/ST.ts',
+      './src/client/st/ST.ts'
     ],
     controlFrame: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/application/components/control-frame/control-frame.ts',
+      './src/application/components/control-frame/control-frame.ts'
     ],
     creditCardNumber: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/application/components/card-number/card-number.ts',
+      './src/application/components/card-number/card-number.ts'
     ],
     expirationDate: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/application/components/expiration-date/expiration-date.ts',
+      './src/application/components/expiration-date/expiration-date.ts'
     ],
     securityCode: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/application/components/security-code/security-code.ts',
+      './src/application/components/security-code/security-code.ts'
     ],
     animatedCard: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
-      './src/application/components/animated-card/animated-card.ts',
-    ],
+      './src/application/components/animated-card/animated-card.ts'
+    ]
   },
   output: {
     filename: '[name].js',
@@ -58,7 +59,7 @@ module.exports = {
     library: 'SecureTrading',
     libraryExport: 'default',
     libraryTarget: 'umd',
-    publicPath: '',
+    publicPath: ''
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -66,63 +67,63 @@ module.exports = {
       filename: 'card-number.html',
       template: './src/application/components/index.html',
       templateParameters: {
-        partial: 'creditCardNumber',
+        partial: 'creditCardNumber'
       },
-      chunks: ['creditCardNumber'],
+      chunks: ['creditCardNumber']
     }),
     new HtmlWebpackPlugin({
       filename: 'expiration-date.html',
       template: './src/application/components/index.html',
       templateParameters: {
-        partial: 'expirationDate',
+        partial: 'expirationDate'
       },
-      chunks: ['expirationDate'],
+      chunks: ['expirationDate']
     }),
     new HtmlWebpackPlugin({
       filename: 'security-code.html',
       template: './src/application/components/index.html',
       templateParameters: {
-        partial: 'securityCode',
+        partial: 'securityCode'
       },
-      chunks: ['securityCode'],
+      chunks: ['securityCode']
     }),
     new HtmlWebpackPlugin({
       filename: 'animated-card.html',
       template: './src/application/components/index.html',
       templateParameters: {
-        partial: 'animatedCard',
+        partial: 'animatedCard'
       },
-      chunks: ['animatedCard'],
+      chunks: ['animatedCard']
     }),
     new HtmlWebpackPlugin({
       filename: 'control-frame.html',
       template: './src/application/components/index.html',
       templateParameters: {
-        partial: 'controlFrame',
+        partial: 'controlFrame'
       },
-      chunks: ['controlFrame'],
+      chunks: ['controlFrame']
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[id].css',
+      chunkFilename: '[id].css'
     }),
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
         to: 'images/[name][ext]',
-        force: true,
-      }],
+        force: true
+      }]
     }),
     new StyleLintPlugin({
-      context: path.join(__dirname, 'src'),
+      context: path.join(__dirname, 'src')
     }),
     new webpack.ProvidePlugin({
       process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-    }),
+      Buffer: ['buffer', 'Buffer']
+    })
   ],
   optimization: {
-    minimizer: [new TerserPlugin({ extractComments: false })],
+    minimizer: [new TerserPlugin({ extractComments: false })]
   },
   module: {
     rules: [
@@ -131,15 +132,15 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         exclude: [
           path.resolve(__dirname, './src/client/st/st.css'),
-          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
-        ],
+          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss')
+        ]
       },
       {
         include: [
           path.resolve(__dirname, './src/client/st/st.css'),
-          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
+          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss')
         ],
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(svg)$/,
@@ -147,13 +148,13 @@ module.exports = {
           loader: 'svg-url-loader',
           options: {
             encoding: 'base64',
-            iesafe: true,
-          },
-        },
+            iesafe: true
+          }
+        }
       },
       {
         test: /\.(png|jpg|gif)$/,
-        type: 'asset/resource',
+        type: 'asset/resource'
       },
       {
         test: /\.tsx?|js$/,
@@ -167,23 +168,23 @@ module.exports = {
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
           path.join(__dirname, 'node_modules/topo'),
-          path.join(__dirname, 'node_modules/caniuse-lite'),
-        ],
+          path.join(__dirname, 'node_modules/caniuse-lite')
+        ]
       },
       {
         test: /\.ts$/,
         enforce: 'pre',
         use: [
           {
-            loader: 'source-map-loader',
-          },
+            loader: 'source-map-loader'
+          }
         ],
-        exclude: /node_modules/,
-      },
-    ],
+        exclude: /node_modules/
+      }
+    ]
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.cjs'],
     fallback: {
       'fs': false,
       'tls': false,
@@ -195,7 +196,7 @@ module.exports = {
       'crypto': require.resolve('crypto-browserify/'),
       'util': require.resolve('util/'),
       'stream': require.resolve('stream-browserify/'),
-      'buffer': require.resolve('buffer/'),
-    },
-  },
+      'buffer': require.resolve('buffer/')
+    }
+  }
 };
