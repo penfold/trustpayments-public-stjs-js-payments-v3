@@ -67,7 +67,7 @@ export class ConfigResolver {
       translations: this.getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this.setVisaCheckoutConfig(config.visaCheckout),
       [threeDSecureConfigName]: this.setThreeDSecureConfig(config[threeDSecureConfigName]),
-      [TokenizedCardPaymentConfigName]: this.getValueOrDefault(config[TokenizedCardPaymentConfigName], DefaultConfig[TokenizedCardPaymentConfigName]),
+      [TokenizedCardPaymentConfigName]: { ...DefaultConfig[TokenizedCardPaymentConfigName], ...config[TokenizedCardPaymentConfigName] },
     };
     if (!environment.production) {
       console.error(validatedConfig);

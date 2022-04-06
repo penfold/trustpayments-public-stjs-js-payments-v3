@@ -1,4 +1,4 @@
-import { finalize, Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
@@ -14,7 +14,7 @@ import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../../application/core/models/
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { TokenizedCardPaymentMethodName } from '../models/ITokenizedCardPaymentMethod';
+import { TokenizedCardPaymentMethodName, TokenizedCardPaymentSecurityCode } from '../models/ITokenizedCardPaymentMethod';
 import { ITokenizedCardPayGatewayRequest, ITokenizedCardPaymentConfig } from '../models/ITokenizedCardPayment';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
@@ -73,27 +73,37 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
     return this.requestProcessingService.pipe(
       switchMap(requestProcessingService => {
-
         return requestProcessingService.process(data);
       }),
       map(response => this.mapPaymentResponse(response)),
-      tap(response =>{
-        if(response.status === PaymentStatus.ERROR && Number(response.error.code) === RESPONSE_STATUS_CODES.invalidfield) {
-          this.messageBus.publish({
-            type: MessageBus.EVENTS_PUBLIC.TOKENIZED_CARD_PAYMENT_METHOD_FAILED,
-            data: response.error,
-          },  EventScope.ALL_FRAMES);
-        }
-
-      }),
-      catchError(response => this.handleResponseError(response, data)),
-      finalize(()=>{
-        this.messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
-          data: FormState.AVAILABLE,
-        },  EventScope.ALL_FRAMES);
+      tap(response => this.handleFormValidation(response)),
+      catchError(response => {
+        this.unblockForm();
+        return this.handleResponseError(response, data);
       })
     );
+  }
+
+  private handleFormValidation(response: IPaymentResult<IRequestTypeResponse>){
+    if(Number(response.data.errorcode) === RESPONSE_STATUS_CODES.invalidfield
+      && response.data?.errordata instanceof Array
+      && response.data?.errordata.indexOf(TokenizedCardPaymentSecurityCode) >= 0) {
+      this.messageBus.publish({
+        type: MessageBus.EVENTS_PUBLIC.TOKENIZED_CARD_PAYMENT_METHOD_FAILED,
+        data: response.error,
+      }, EventScope.ALL_FRAMES);
+    }
+
+    if(response.status === PaymentStatus.ERROR) {
+      this.unblockForm();
+    }
+  }
+
+  private unblockForm() {
+    this.messageBus.publish({
+      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
+      data: FormState.AVAILABLE,
+    }, EventScope.ALL_FRAMES);
   }
 
   private handleResponseError(responseOrError, data: ITokenizedCardPayGatewayRequest) {
@@ -152,31 +162,29 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
         type: MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE,
       });
 
-        this.startPaymentEvent();
+      this.startPaymentEvent();
 
     });
   }
 
   private startPaymentEvent() {
-    if(!this.cvv?.validity){
-      return
+    if(!this.cvv?.validity) {
+      return;
     }
 
     this.messageBus.publish({
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
       data: FormState.BLOCKED,
-    },  EventScope.ALL_FRAMES);
-
-    console.log('TOKENIZED Payment method started', this.cvv)
+    }, EventScope.ALL_FRAMES);
 
     this.messageBus.publish({
-        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        name: TokenizedCardPaymentMethodName,
         data: {
-          name: TokenizedCardPaymentMethodName,
-          data: {
-            securitycode: this.cvv?.value || '',
-          },
+          securitycode: this.cvv?.value,
         },
-      });
+      },
+    });
   }
 }
