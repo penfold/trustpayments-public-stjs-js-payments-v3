@@ -10,13 +10,17 @@ const jwt = 'test'
 
 describe('TokenizedCardPaymentAdapter', () => {
 
-  beforeEach(() => {
+  beforeAll(() => {
     tokenizedCardPaymentAdapter = new TokenizedCardPaymentAdapter(messageBus)
     jest.spyOn(messageBus, 'publish');
-    tokenizedCardPaymentAdapter.updateTokenizedJWT(jwt)
   })
 
   describe('on updateTokenizedJWT()', () => {
+
+    beforeEach(() => {
+      tokenizedCardPaymentAdapter.updateTokenizedJWT(jwt)
+    })
+
     it('should send the TOKENIZED_JWT_UPDATED event with new JWT', () => {
       expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.TOKENIZED_JWT_UPDATED, data: jwt })
     })
