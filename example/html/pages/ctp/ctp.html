@@ -647,7 +647,9 @@
             printLogs('CTP - user identified: ');
             printLogs(JSON.stringify(result, null, 2));
             if (result.isSuccessful) {
-              adapterInstance.showCardList();
+              adapterInstance.showCardList().catch(error => {
+                console.error(error);
+              });
             }
           })
           .catch(function(e) {
@@ -659,8 +661,12 @@
     function checkIfUserIsRecognized(adapterInstance) {
       adapterInstance.isRecognized().then(function(isRecognized) {
         if (isRecognized) {
-          adapterInstance.showCardList();
+          adapterInstance.showCardList().catch(error => {
+            console.error(error);
+          });
         }
+      }).catch(error => {
+        console.error(error);
       });
     }
 
