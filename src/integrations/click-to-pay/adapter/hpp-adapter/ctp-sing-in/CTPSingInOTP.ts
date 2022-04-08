@@ -62,7 +62,7 @@ export class CTPSIgnInOTP {
         <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
       </div>
       <div class="st-hpp-prompt__title">Confirm it is you.</div>
-      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the code sent to ')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
+      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
       <span class="${this.errorFieldClass} st-hpp-prompt__otp-input-error"></span>
