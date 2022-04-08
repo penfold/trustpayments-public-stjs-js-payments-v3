@@ -1,6 +1,6 @@
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { Service } from 'typedi';
-import { map, mapTo } from 'rxjs/operators';
+import { catchError, map, mapTo } from 'rxjs/operators';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { ClickToPayPaymentMethodName } from '../models/ClickToPayPaymentMethodName';
@@ -19,9 +19,10 @@ import { DcfActionCode, ICheckoutResponse } from '../digital-terminal/ISrc';
 export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig> {
   private requestProcessingService: Observable<IRequestProcessingService>;
 
-  constructor(private frameQueryingService: IFrameQueryingService,
-              private requestProcessingInitializer: RequestProcessingInitializer) {
-  }
+  constructor(
+    private frameQueryingService: IFrameQueryingService,
+    private requestProcessingInitializer: RequestProcessingInitializer
+  ) {}
 
   getName(): string {
     return ClickToPayPaymentMethodName;
@@ -50,7 +51,17 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
           paymentMethodName: this.getName(),
           error: null,
           status: this.getPaymentStatus(checkoutResponse.dcfActionCode),
-        }))
+        })),
+        catchError(error =>
+          of({
+            status: PaymentStatus.ERROR,
+            error: {
+              code: error.error.reason,
+              message: error.error.message,
+            },
+            paymentMethodName: this.getName(),
+          })
+        )
       );
   }
 
