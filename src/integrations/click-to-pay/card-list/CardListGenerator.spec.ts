@@ -1,4 +1,4 @@
-import { instance, mock, when } from 'ts-mockito';
+import { instance, mock, objectContaining, verify, when } from 'ts-mockito';
 import { SrcName } from '../digital-terminal/SrcName';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
@@ -6,6 +6,7 @@ import { ITranslator } from '../../../application/core/shared/translator/ITransl
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
+import { IUpdateView } from '../adapter/interfaces/IUpdateView';
 import { CardListGenerator } from './CardListGenerator';
 import { cardListMock } from './card-list-mock';
 
@@ -143,5 +144,28 @@ describe('CardListGenerator', () => {
 
     cardListGenerator.displayUserInformation(containerId, userInformation as Partial<Record<SrcName, ISrcProfileList>>);
     expect(document.body.outerHTML).toBe(expected);
+  });
+
+  describe('openNewCardForm()', () => {
+    const containerId = 'test-id';
+    beforeEach(() => {
+      document.body.innerHTML = '<form id="formId"><div id="test-id"></div></form>';
+      cardListGenerator.displayCards('formId', containerId, cardListMock);
+    });
+
+    it('should clear selected card id', () => {
+      cardListGenerator.openNewCardForm();
+      expect(Array.from(document.getElementsByName('srcDigitalCardId')).some((element: HTMLInputElement) => element.checked)).toBe(false);
+    });
+
+    it('should call updateViewCallback', () => {
+      cardListGenerator.openNewCardForm();
+      verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({
+        displayMaskedCardNumber: null,
+        displayCardType: null,
+        displayCardForm: false,
+        displaySubmitButton: true,
+      } as IUpdateView))).once();
+    });
   });
 });
