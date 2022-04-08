@@ -1,7 +1,6 @@
 (function(ST) {
   window.addEventListener('load', function() {
     let acsMessage = 'acs-off';
-
     function getConfig() {
       return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest;
@@ -51,6 +50,7 @@
 
     function handleAcsPopup() {
       return new MutationObserver(function(entries) {
+
         if (document.getElementById('Cardinal-ElementContainer')) {
           acsMessage = 'acs-on';
           window.ReactNativeWebView.postMessage(acsMessage);
@@ -67,10 +67,22 @@
       handleAcsPopup().observe(document.body, {attributes: false, childList: true, characterData: false, subtree:true});
       var st = ST(config);
       st.Components(config.components);
+
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       updateJwtListener(st);
+
+      if (document.getElementById('windowOpen')){
+        alert('sd')
+        document.getElementById('windowOpen').addEventListener('click', function(){
+          st.GooglePay(config.googlePay);
+
+        })
+      }
+
+      alert('ssss')
     }
+
 
     getConfig()
       .then(function(config) {

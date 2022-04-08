@@ -85,6 +85,7 @@ const App = () => {
         />
       )}
       <View>
+        <Text onPress={replace}> open window</Text>
         <Text style={styles.footer}>© Trust Payments 2020</Text>
       </View>
     </ScrollView>
