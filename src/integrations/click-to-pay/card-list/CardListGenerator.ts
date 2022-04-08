@@ -238,6 +238,13 @@ export class CardListGenerator {
     document.getElementsByName('srcDigitalCardId').forEach((element: HTMLInputElement) => {
       element.checked = false;
     });
+
+    this.hppUpdateViewCallback.callUpdateViewCallback({
+      displayMaskedCardNumber: null,
+      displayCardType: null,
+      displayCardForm: false,
+      displaySubmitButton: true,
+    });
   }
 
   private closeForm(): void {
