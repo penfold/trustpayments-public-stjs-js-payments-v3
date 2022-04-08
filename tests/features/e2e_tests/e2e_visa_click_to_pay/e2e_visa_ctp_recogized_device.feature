@@ -85,7 +85,7 @@ Feature: Visa Click To Pay
     And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
     And User chooses to register his card with Visa
     And User clicks Pay Securely button
-    And User fills billing address form on Visa checkout popup
+    And User fills billing address form on Visa checkout popup and continues
     And User reviews VISA_CTP checkout page confirm payment
     Then User will see that VISA_CTP checkout is completed
     When User opens example page VISA_CTP
