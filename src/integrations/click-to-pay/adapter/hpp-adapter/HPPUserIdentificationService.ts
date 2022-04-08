@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, NEVER, Observable, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, NEVER, Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { Service } from 'typedi';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
@@ -8,56 +8,59 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IUserIdentificationService } from '../../digital-terminal/interfaces/IUserIdentificationService';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
-import { untilDestroy } from '../../../../shared/services/message-bus/operators/untilDestroy';
-import { HPPCTPUserPromptFactory } from './HPPCTPUserPromptFactory';
-import { HPPCTPUserPromptService } from './HPPCTPUserPromptService';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
+import { CTPSingInEmail } from './ctp-sing-in/CTPSingInEmail';
+import { CTPSIgnInOTP } from './ctp-sing-in/CTPSingInOTP';
 
 @Service()
 export class HPPUserIdentificationService implements IUserIdentificationService {
   private initParams: IHPPClickToPayAdapterInitParams;
+  private emailPrompt: CTPSingInEmail;
+  private otpPrompt: CTPSIgnInOTP;
+  private repeatTrigger$ = new BehaviorSubject(false);
 
-  constructor(private hppCTPUserPromptService: HPPCTPUserPromptService,
-              private hppCTPUserPromptFactory: HPPCTPUserPromptFactory,
-              private translator: ITranslator,
+  constructor(private translator: ITranslator,
               private messageBus: IMessageBus,
               private hppUpdateViewCallback: HPPUpdateViewCallback) {
-    this.hppCTPUserPromptService.getStateChanges().pipe(
-      filter(value => value === false),
-      untilDestroy(this.messageBus)
-    ).subscribe(() =>
-      this.hppUpdateViewCallback.callUpdateViewCallback({ 
-        displayCardForm: false, 
-        displaySubmitButton: true,
-        displayMaskedCardNumber: null,
-        displayCardType: null,
-      })
-    );
+    this.emailPrompt = new CTPSingInEmail(this.translator);
+    this.otpPrompt = new CTPSIgnInOTP(this.translator);
   }
 
   setInitParams(initParams: IHPPClickToPayAdapterInitParams) {
     this.initParams = initParams;
+    this.emailPrompt.setContainer(this.initParams.signInContainerId);
+    this.otpPrompt.setContainer(this.initParams.signInContainerId);
   }
 
   identifyUser(
     srcAggregate: SrcAggregate,
     identificationData?: IIdentificationData
   ): Observable<ICompleteIdValidationResponse> {
-    let emailSource: Observable<string>;
 
-    if (identificationData?.email) {
-      emailSource = of(identificationData.email);
-    } else {
-      emailSource = this.askForEmail();
-    }
+    return this.repeatTrigger$.pipe(
+      switchMap(forceEmailPrompt => {
+        let emailSource: Observable<string>;
+        const shouldAskForEmail = !identificationData?.email || !!forceEmailPrompt;
+        if (shouldAskForEmail) {
+          emailSource = this.askForEmail();
+        } else {
+          emailSource = of(identificationData.email);
+        }
 
-    return this.getSrcNameForEmail(emailSource, srcAggregate).pipe(
+        return this.getSrcNameForEmail(emailSource, srcAggregate, shouldAskForEmail);
+      }),
       switchMap(srcName => this.completeIdentification(srcName, srcAggregate))
     );
   }
 
-  private getSrcNameForEmail(emailSource: Observable<string>, srcAggregate: SrcAggregate): Observable<SrcName> {
+  private showEmailError(errorResponse) {
+    if (errorResponse?.error?.details) {
+      this.emailPrompt.showError(errorResponse.error.details.map(e => e.message).join('\n'));
+    }
+  }
+
+  private getSrcNameForEmail(emailSource: Observable<string>, srcAggregate: SrcAggregate, captureErrors: boolean): Observable<SrcName> {
     return emailSource.pipe(
       switchMap(email =>
         srcAggregate.identityLookup({
@@ -66,14 +69,19 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
         }).pipe(
           tap(result => {
             if (result?.consumerPresent === false) {
-              this.hppCTPUserPromptService.clearNotifications();
-              this.hppCTPUserPromptService.showNotification(this.getUnrecognizedEmailErrorMessage());
-            } else {
-              this.hppCTPUserPromptService.clearNotifications();
+              this.emailPrompt.showError(this.getUnrecognizedEmailErrorMessage());
             }
           }),
           filter(result => result?.consumerPresent),
-          map(result => result.srcNames[0])
+          map(result => result.srcNames[0]),
+          catchError(errorResponse => {
+            if (captureErrors) {
+              this.showEmailError(errorResponse);
+              return NEVER;
+            } else {
+              return throwError(errorResponse);
+            }
+          })
         )
       )
     );
@@ -91,49 +99,46 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
               switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger)),
               switchMap(code => srcAggregate.completeIdentityValidation(srcName, code)
                 .pipe(
-                  tap(() => this.hppCTPUserPromptService.hide()),
+                  tap(() => this.emailPrompt.close()),
                   catchError(error => this.handleInvalidOTPCode(error))
                 )
-              ),
+              )
             )
         )
       );
   }
 
   private handleInvalidOTPCode(error) {
-    this.hppCTPUserPromptService.clearNotifications();
-    this.hppCTPUserPromptService.showNotification(this.getInvalidOTPCodeMessage());
+    this.otpPrompt.showError(this.getInvalidOTPCodeMessage());
     return NEVER;
   }
 
   private askForEmail(): Observable<string> {
-    const result = new ReplaySubject<string>();
-    const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
-
-    this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      displayCardForm: true, 
+    this.hppUpdateViewCallback.callUpdateViewCallback({
+      displayCardForm: true,
       displaySubmitButton: true,
       displayMaskedCardNumber: null,
       displayCardType: null,
     });
-    this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
-    return result.asObservable();
+    return this.emailPrompt.show();
   }
 
   private askForCode(validationResponse: IInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>): Observable<string> {
-    const result = new ReplaySubject<string>();
-    const formElement = this.hppCTPUserPromptFactory.createOTPForm(result, validationResponse, resendSubject);
+    const resultSubject = new ReplaySubject<string>();
 
-    this.hppUpdateViewCallback.callUpdateViewCallback({ 
-      displayCardForm: false, 
+    this.hppUpdateViewCallback.callUpdateViewCallback({
+      displayCardForm: false,
       displaySubmitButton: false,
       displayMaskedCardNumber: null,
       displayCardType: null,
     });
-    this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
+    this.emailPrompt.close();
 
-    return result.asObservable();
+    this.otpPrompt.onCancel(() => this.repeatTrigger$.next(true));
+
+    this.otpPrompt.show(validationResponse, resultSubject, resendSubject);
+    return resultSubject;
   }
 
   private getUnrecognizedEmailErrorMessage(): string {
@@ -142,9 +147,5 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
 
   private getInvalidOTPCodeMessage(): string {
     return this.translator.translate('The code you have entered is incorrect.');
-  }
-
-  private getTargetElement(): HTMLElement {
-    return document.getElementById(this.initParams.signInContainerId);
   }
 }

@@ -24,6 +24,7 @@ import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
 import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
 import { HPPFormFieldName } from './HPPFormFieldName';
+import './hpp-adapter.scss';
 
 @Service()
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
