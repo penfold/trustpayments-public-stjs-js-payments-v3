@@ -2,6 +2,7 @@
 
 from assertpy import assert_that
 from behave import use_step_matcher, step
+from behave import when
 
 from pages.page_factory import Pages
 from utils.enums.card import Card
@@ -83,7 +84,7 @@ def step_impl(context, otp):
         vctp_page.click_submit_otp_btn()
 
 
-#TODO
+# TODO
 @step('User will see that VISA_CTP checkout is (?P<param>.+)')
 def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -95,6 +96,9 @@ def step_impl(context, param):
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'ERROR')
     elif param in 'cancelled':
         vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'CANCEL')
+    elif param in 'logout':
+        vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'SWITCH_CONSUMER')
+
 
 @step('User selects (?P<card>.+) card from cards list view')
 def step_impl(context, card):
@@ -224,6 +228,14 @@ def step_impl(context):
     vctp_page.is_card_validation_message_visible(expected_text)
 
 
+@step('User will not see previously added card in card list')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    masked_card_number = vctp_page.get_masked_card_number_from_card_list('1')
+    expected_card_number = context.pan[-4:]
+    assert_that(expected_card_number).is_not_equal_to(masked_card_number)
+
+
 @step('User clicks Not you button')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -244,10 +256,22 @@ def step_impl(context):
     assert_that(expected_card_number).is_equal_to(masked_card_number)
 
 
-@step('User fills billing address form on Visa checkout popup')
+@step('User fills billing address form on Visa checkout popup and (?P<action>.+)')
+def step_impl(context, action):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    # for registered user
+    if action in 'continues':
+        vctp_page.fill_required_address_fields()
+    # option for unregistered user
+    elif action in 'saves address for delivery':
+        vctp_page.click_use_this_address_for_delivery()
+        vctp_page.fill_required_address_fields()
+
+
+# step for unregistered user
+@step('User confirms entered address')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    vctp_page.fill_required_address_fields()
     vctp_page.confirm_user_address()
 
 
@@ -303,3 +327,76 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_first_masked_address_on_the_list()
     vctp_page.click_add_new_card_on_vctp_popup()
+
+
+@step('User changes expiration date, and security code to (?P<expiration_date>.+), (?P<security_code>.+)')
+def step_impl(context, expiration_date, security_code):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.edit_expiration_date_and_cvv_on_popup(expiration_date, security_code)
+    vctp_page.verify_update_card_success_message()
+
+
+@when('User selects Switch address on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_address_menu_btn()
+    vctp_page.click_switch_address_btn()
+
+
+@step('User chooses card address from the list of available addresses')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.switch_address_from_list(False)
+
+
+@step('User removes card from VISA_CTP wallet')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.clik_remove_card()
+
+
+@step('User selects Delete address on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_address_menu_btn()
+
+
+@step('User confirms address deletion')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_remove_address()
+    vctp_page.verify_remove_address_success_message()
+
+
+# step for unregistered user
+@when('User edits address details on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_edit_address_as_unregistered_user()
+
+
+# step for unregistered user
+@step('User updates billing address form')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.update_required_address_fields()
+
+
+# step for unregistered user
+@step('User clicks edit card details on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_edit_card_as_unregistered_user()
+
+
+# step for unregistered user
+@step('User clears VISA_CTP payment from')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.clear_payment_form()
+
+
+@when('User signs out from VISA_CTP on popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_sign_out()
