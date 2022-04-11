@@ -123,10 +123,6 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
       return PaymentStatus.ERROR;
     }
 
-    if(response.isCancelled) {
-      return PaymentStatus.CANCEL;
-    }
-
     return PaymentStatus.SUCCESS;
   }
 

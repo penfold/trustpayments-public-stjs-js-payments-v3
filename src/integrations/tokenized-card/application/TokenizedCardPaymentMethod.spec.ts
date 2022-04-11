@@ -1,5 +1,6 @@
 import { anything, capture, instance, mock, resetCalls, spy, when } from 'ts-mockito';
 import { of } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -40,8 +41,6 @@ const config: ITokenizedCardPaymentConfig = {
 const startData = {
   securitycode: '1234',
 }
-
-const processData = { ...startData, formId: 'st-form-tokenized', termurl: 'https://termurl.com' }
 
 const paymentResponse: IRequestTypeResponse = {
   errorcode: '0',
@@ -127,9 +126,10 @@ describe('TokenizedCardPaymentMethod', () => {
         }])
     })
 
-    //TODO fix the timeout problem and add test cases
     it('performs request processing and returns the PaymentResult', done => {
-      when(processingServiceMock.process(processData)).thenReturn(of(paymentResponse));
+      when(processingServiceMock.process(anything())).thenReturn(of(paymentResponse));
+      when(requestProcessingInitializerMock.initialize(anything())).thenReturn(of(mapTo(instance(processingServiceMock))).pipe((mapTo(instance(processingServiceMock)))));
+
       sut.start(startData).subscribe(result => {
         expect(result).toEqual({
           status: PaymentStatus.SUCCESS,
