@@ -38,27 +38,27 @@ const config: ITokenizedCardPaymentConfig = {
   formId: 'st-form-tokenized',
 }
 
-const startData = {
-  securitycode: '1234',
-}
-
-const paymentResponse: IRequestTypeResponse = {
-  errorcode: '0',
-};
+const startData =  {
+    formId: config.formId,
+    securitycode: '1234',
+    termurl: 'test',
+  }
 
 describe('TokenizedCardPaymentMethod', () => {
+  beforeAll(() => {
+    sut = setSut()
+  })
+
   afterEach(() => {
     resetCalls(messageBusSpied)
   })
 
   it('should be the instance of TokenizedCardPaymentMethod', () => {
-    sut = setSut()
     expect(sut).toBeInstanceOf(TokenizedCardPaymentMethod)
   })
 
   describe('on getName()', () => {
     it('should return TokenizedCardPaymentMethodName', () => {
-      sut = setSut()
       expect(sut.getName()).toEqual(TokenizedCardPaymentMethodName)
     })
   })
@@ -67,7 +67,6 @@ describe('TokenizedCardPaymentMethod', () => {
    describe('afet receiving TOKENIZED_CARD_START_PAYMENT_METHOD event', () => {
      beforeEach(() => {
        when(frameQueryingServiceMock.query(anything(), anything())).thenReturn(of({}));
-       sut = setSut()
        sut.init(config)
      })
 
@@ -111,8 +110,7 @@ describe('TokenizedCardPaymentMethod', () => {
   describe('on start()', () => {
     beforeEach(() => {
       when(storeMock.getState()).thenReturn({ storage: {},tokenizedJwt: 'test' })
-      when(requestProcessingInitializerMock.initialize(anything())).thenReturn(of(instance(processingServiceMock)))
-      sut = setSut()
+      when(requestProcessingInitializerMock.initialize(instance(gatewayClientMock))).thenReturn(of(mapTo(instance(processingServiceMock))).pipe((mapTo(instance(processingServiceMock)))));
      })
 
     it('should publish JWT_REPLACED event', () => {
@@ -126,9 +124,13 @@ describe('TokenizedCardPaymentMethod', () => {
         }])
     })
 
-    it('performs request processing and returns the PaymentResult', done => {
+    it('should perform request processing and returns the success status', done => {
+      const paymentResponse: IRequestTypeResponse = {
+        errorcode: '0',
+        formId: config.formId,
+      };
+
       when(processingServiceMock.process(anything())).thenReturn(of(paymentResponse));
-      when(requestProcessingInitializerMock.initialize(anything())).thenReturn(of(mapTo(instance(processingServiceMock))).pipe((mapTo(instance(processingServiceMock)))));
 
       sut.start(startData).subscribe(result => {
         expect(result).toEqual({
@@ -138,6 +140,28 @@ describe('TokenizedCardPaymentMethod', () => {
         });
         done()
          });
+    });
+
+    it('should perform request processing and returns the error status', done => {
+      const paymentResponse: IRequestTypeResponse = {
+        errorcode: '1',
+        formId: config.formId,
+      };
+
+      when(processingServiceMock.process(anything())).thenReturn(of(paymentResponse));
+
+      sut.start(startData).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.ERROR,
+          data: paymentResponse,
+          paymentMethodName: TokenizedCardPaymentMethodName,
+          error: {
+            code: +paymentResponse.errorcode,
+            message: undefined,
+          },
+        });
+        done()
+      });
     });
   })
 })
