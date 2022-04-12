@@ -18,11 +18,12 @@ module.exports = {
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts'],
     predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
+    demo: ['./pages/demo/demo.ts'],
   },
   output: {
     filename: '[name].js',
     path: path.join(__dirname, 'dist'),
-    publicPath: ''
+    publicPath: '',
   },
   plugins: [
     new WebpackManifestPlugin(),
@@ -57,14 +58,20 @@ module.exports = {
       chunks: ['minimal'],
       publicPath: './',
     }),
+    new HtmlWebpackPlugin({
+      filename: 'demo.html',
+      template: './pages/demo/demo.html',
+      chunks: ['demo'],
+      publicPath: './',
+    }),
     new CopyPlugin({
       patterns: [
         {
           from: 'img/*.png',
           to: '',
           force: true,
-        }
-      ]
+        },
+      ],
     }),
     new CopyPlugin({
       patterns: [
@@ -72,8 +79,8 @@ module.exports = {
           from: 'img/*.webp',
           to: '',
           force: true,
-        }
-      ]
+        },
+      ],
     }),
     new CopyPlugin({
       patterns: [
@@ -81,8 +88,8 @@ module.exports = {
           from: 'img/*.svg',
           to: '',
           force: true,
-        }
-      ]
+        },
+      ],
     }),
     new CopyPlugin({
       patterns: [
@@ -90,26 +97,26 @@ module.exports = {
           from: 'json/*.json',
           to: '',
           force: true,
-          noErrorOnMissing: true
-        }
-      ]
+          noErrorOnMissing: true,
+        },
+      ],
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, ''),
       files: [
         'pages/**/*.scss',
         'styles/**/*.scss',
-      ]
+      ],
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[id].css'
+      chunkFilename: '[id].css',
     }),
     new webpack.SourceMapDevToolPlugin({}),
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
-    })
+    }),
   ],
   module: {
     rules: [
@@ -129,7 +136,7 @@ module.exports = {
       {
         test: /\.tsx?|js$/,
         use: 'babel-loader',
-        include: [path.join(__dirname, 'pages'), path.join(__dirname, 'shared'), path.resolve('./node_modules/buffer')]
+        include: [path.join(__dirname, 'pages'), path.join(__dirname, 'shared'), path.resolve('./node_modules/buffer')],
       },
       {
         test: /\.ts$/,
@@ -138,28 +145,28 @@ module.exports = {
           {
             loader: 'tslint-loader',
             options: {
-              emitErrors: true
-            }
-          }
+              emitErrors: true,
+            },
+          },
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
-    ]
+    ],
   },
   resolve: {
     extensions: ['.ts', '.js'],
     fallback: {
-      "fs": false,
-      "tls": false,
-      "net": false,
-      "path": false,
-      "zlib": false,
-      "http": false,
-      "https": false,
-      "crypto": require.resolve("crypto-browserify/"),
-      "util": require.resolve("util/"),
-      "stream": require.resolve("stream-browserify/"),
-      "buffer": require.resolve("buffer/")
+      'fs': false,
+      'tls': false,
+      'net': false,
+      'path': false,
+      'zlib': false,
+      'http': false,
+      'https': false,
+      'crypto': require.resolve('crypto-browserify/'),
+      'util': require.resolve('util/'),
+      'stream': require.resolve('stream-browserify/'),
+      'buffer': require.resolve('buffer/'),
     },
-  }
+  },
 };
