@@ -1,4 +1,3 @@
-import { IStRequest } from '../../../application/core/models/IStRequest';
 import { IStyle } from '../../../shared/model/config/IStyle';
 
 export interface ITokenizedCardPaymentConfig {
@@ -10,6 +9,7 @@ export interface ITokenizedCardPaymentConfig {
 }
 
 export interface ITokenizedCardPayGatewayRequest {
-  requestData: IStRequest,
-  merchantUrl?: string
+  formId: string;
+  securitycode: string
+  termurl: string
 }
