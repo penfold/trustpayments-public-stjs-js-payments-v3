@@ -107,7 +107,7 @@ export class SecurityCodeTokenized extends Input {
       const inputStyle: IStyle = config[TokenizedCardPaymentConfigName]?.style || config?.styles?.securityCode;
       this.setAttributes({
         pattern: TOKENIZED_SECURITY_CODE_PATTERN,
-        placeholder: config[TokenizedCardPaymentConfigName]?.placeholder || this.translator.translate('***'),
+        placeholder: config[TokenizedCardPaymentConfigName]?.placeholder,
       });
 
       const stylerStyle = { ...config?.styles?.defaultStyles, ...inputStyle };

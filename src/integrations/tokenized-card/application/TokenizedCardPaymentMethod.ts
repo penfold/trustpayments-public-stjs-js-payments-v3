@@ -1,5 +1,5 @@
-import { finalize, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -14,7 +14,7 @@ import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../../application/core/models/
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { TokenizedCardPaymentMethodName } from '../models/ITokenizedCardPaymentMethod';
+import { TokenizedCardPaymentMethodName, TokenizedCardPaymentSecurityCode } from '../models/ITokenizedCardPaymentMethod';
 import { ITokenizedCardPayGatewayRequest, ITokenizedCardPaymentConfig } from '../models/ITokenizedCardPayment';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
@@ -26,6 +26,7 @@ import { TransportServiceGatewayClient } from '../../../application/core/service
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
 import { FormState } from '../../../application/core/models/constants/FormState';
+import { RESPONSE_STATUS_CODES } from '../../../application/core/models/constants/ResponseStatusCodes';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, ITokenizedCardPayGatewayRequest, IRequestTypeResponse> {
@@ -61,7 +62,7 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
   }
 
-  start(data): Observable<IPaymentResult<IRequestTypeResponse>> {
+  start(data: ITokenizedCardPayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
     this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: this.store.getState().tokenizedJwt });
     this.requestProcessingService = this.requestProcessingInitializer.initialize(this.gatewayClient);
     data = {
@@ -72,21 +73,42 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
 
     return this.requestProcessingService.pipe(
       switchMap(requestProcessingService => {
-
         return requestProcessingService.process(data);
       }),
-      map(response => this.mapPaymentResponse(response, data)),
-      catchError(response => this.handleResponseError(response, data)),
-      finalize(()=>{
-        this.messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
-          data: FormState.AVAILABLE,
-        },  EventScope.ALL_FRAMES);
+      map(response => this.mapPaymentResponse(response)),
+      tap(response => this.handleFormValidation(response)),
+      catchError(response => {
+        this.unblockForm();
+        return this.handleResponseError(response, data);
       })
     );
   }
 
+  private handleFormValidation(response: IPaymentResult<IRequestTypeResponse>){
+    if(Number(response.data.errorcode) === RESPONSE_STATUS_CODES.invalidfield
+      && response.data?.errordata instanceof Array
+      && response.data?.errordata.indexOf(TokenizedCardPaymentSecurityCode) >= 0) {
+      this.messageBus.publish({
+        type: MessageBus.EVENTS_PUBLIC.TOKENIZED_CARD_PAYMENT_METHOD_FAILED,
+        data: response.error,
+      }, EventScope.ALL_FRAMES);
+    }
+
+    if(response.status === PaymentStatus.ERROR) {
+      this.unblockForm();
+    }
+  }
+
+  private unblockForm() {
+    this.messageBus.publish({
+      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
+      data: FormState.AVAILABLE,
+    }, EventScope.ALL_FRAMES);
+  }
+
   private handleResponseError(responseOrError, data: ITokenizedCardPayGatewayRequest) {
+    responseOrError.formId = data.formId;
+
     if(!responseOrError.requesttypedescription) {
       return throwError(responseOrError);
     }
@@ -99,12 +121,14 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
   }
 
   private mapPaymentResponse(
-    response: IRequestTypeResponse,
-    request: ITokenizedCardPayGatewayRequest
+    response: IRequestTypeResponse
   ): IPaymentResult<IRequestTypeResponse> {
     const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
       status: this.resolvePaymentStatus(response),
-      data: response,
+      data: {
+        ...response,
+        formId: this.formId,
+      },
       paymentMethodName: TokenizedCardPaymentMethodName,
     };
 
@@ -138,29 +162,29 @@ export class TokenizedCardPaymentMethod implements IPaymentMethod<IConfig, IToke
         type: MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE,
       });
 
-        this.startPaymentEvent();
+      this.startPaymentEvent();
 
     });
   }
 
   private startPaymentEvent() {
-    if(!this.cvv?.validity){
-      return
+    if(!this.cvv?.validity) {
+      return;
     }
 
     this.messageBus.publish({
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
       data: FormState.BLOCKED,
-    },  EventScope.ALL_FRAMES);
+    }, EventScope.ALL_FRAMES);
 
     this.messageBus.publish({
-        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        name: TokenizedCardPaymentMethodName,
         data: {
-          name: TokenizedCardPaymentMethodName,
-          data: {
-            securitycode: this.cvv.value,
-          },
+          securitycode: this.cvv?.value,
         },
-      });
+      },
+    });
   }
 }

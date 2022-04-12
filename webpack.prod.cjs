@@ -2,7 +2,7 @@ const path = require('path');
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
-const common = require('./webpack.common.js');
+const common = require('./webpack.common.cjs');
 const releaseVersion = require('./package.json').version;
 
 const plugins = [
