@@ -16,7 +16,7 @@ export class PaymentResultSubmitter {
 
   prepareForm(data: SubmitData): HTMLFormElement {
     const config = this.configProvider.getConfig();
-    const form = document.getElementById(data.formId ||config.formId) as HTMLFormElement;
+    const form = document.getElementById(data.formId || config.formId) as HTMLFormElement;
     const dataToSubmit: SubmitData = this.pickDataToSubmit(data, [
       ...PaymentResultSubmitter.REQUIRED_SUBMIT_FIELDS,
       ...config.submitFields,

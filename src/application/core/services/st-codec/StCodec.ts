@@ -25,6 +25,7 @@ import { EventScope } from '../../models/constants/EventScope';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IRequestObject } from '../../models/IRequestObject';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { RESPONSE_STATUS_CODES } from '../../models/constants/ResponseStatusCodes';
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IResponsePayload } from './interfaces/IResponsePayload';
@@ -122,7 +123,7 @@ export class StCodec {
     'SUBSCRIPTION',
     'ACCOUNTCHECK',
   ];
-  private static STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
+  private static STATUS_CODES = RESPONSE_STATUS_CODES;
 
   private static getMessageBus(): IMessageBus {
     return StCodec.messageBus || (StCodec.messageBus = Container.get(MessageBusToken));
@@ -196,7 +197,7 @@ export class StCodec {
       return;
     }
 
-    if (String(errorcode) === StCodec.STATUS_CODES.ok) {
+    if (Number(errorcode) === StCodec.STATUS_CODES.ok) {
       StCodec.publishResponse(responseContent, jwtResponse);
       return;
     }

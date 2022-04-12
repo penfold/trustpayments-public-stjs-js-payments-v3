@@ -45,6 +45,12 @@ export class SecurityCodeTokenized extends Input {
     this.messageBus.subscribeType(MessageBus.EVENTS.VALIDATE_TOKENIZED_SECURITY_CODE, () => {
       this.validation.validate(this.inputElement, this.messageElement);
     });
+
+    this.validation.backendValidation(
+      this.inputElement,
+      this.messageElement,
+      PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_METHOD_FAILED
+    );
   }
 
   getLabel(): string {
@@ -81,13 +87,15 @@ export class SecurityCodeTokenized extends Input {
       this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_START_PAYMENT_METHOD });
     }
   }
+
   protected onKeydown(event: KeyboardEvent): void {
     super.onKeydown(event);
-    if (Validation.isEnter(event)) {
+    if(Validation.isEnter(event)) {
       this.validation.validate(this.inputElement, this.messageElement);
       this.sendState();
     }
   }
+
   private resetInputListener() {
     this.messageBus.subscribeType(PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT, () => {
       this.resetInput();
@@ -99,7 +107,7 @@ export class SecurityCodeTokenized extends Input {
       const inputStyle: IStyle = config[TokenizedCardPaymentConfigName]?.style || config?.styles?.securityCode;
       this.setAttributes({
         pattern: TOKENIZED_SECURITY_CODE_PATTERN,
-        placeholder: config[TokenizedCardPaymentConfigName]?.placeholder || this.translator.translate('***'),
+        placeholder: config[TokenizedCardPaymentConfigName]?.placeholder,
       });
 
       const stylerStyle = { ...config?.styles?.defaultStyles, ...inputStyle };
