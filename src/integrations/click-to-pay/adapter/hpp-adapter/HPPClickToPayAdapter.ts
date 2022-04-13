@@ -154,7 +154,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   }
 
   private handleCheckoutResponse(response: ICheckoutResponse) {
-    if (response.dcfActionCode === DcfActionCode.changeCard || response.dcfActionCode === DcfActionCode.complete) {
+    if (response.dcfActionCode === DcfActionCode.changeCard) {
       this.showCardList().catch(error => {
         console.error(error);
       });
