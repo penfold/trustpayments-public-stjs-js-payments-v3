@@ -38,13 +38,11 @@ const config: ITokenizedCardPaymentConfig = {
   formId: 'st-form-tokenized',
 }
 
-const startData = {
-  securitycode: '1234',
-}
-
-const paymentResponse: IRequestTypeResponse = {
-  errorcode: '0',
-};
+const startData =  {
+    formId: config.formId,
+    securitycode: '1234',
+    termurl: 'test',
+  }
 
 describe('TokenizedCardPaymentMethod', () => {
   beforeAll(() => {
@@ -126,7 +124,12 @@ describe('TokenizedCardPaymentMethod', () => {
         }])
     })
 
-    it('performs request processing and returns the PaymentResult', done => {
+    it('should perform request processing and returns the success status', done => {
+      const paymentResponse: IRequestTypeResponse = {
+        errorcode: '0',
+        formId: config.formId,
+      };
+
       when(processingServiceMock.process(anything())).thenReturn(of(paymentResponse));
 
       sut.start(startData).subscribe(result => {
@@ -137,6 +140,28 @@ describe('TokenizedCardPaymentMethod', () => {
         });
         done()
          });
+    });
+
+    it('should perform request processing and returns the error status', done => {
+      const paymentResponse: IRequestTypeResponse = {
+        errorcode: '1',
+        formId: config.formId,
+      };
+
+      when(processingServiceMock.process(anything())).thenReturn(of(paymentResponse));
+
+      sut.start(startData).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.ERROR,
+          data: paymentResponse,
+          paymentMethodName: TokenizedCardPaymentMethodName,
+          error: {
+            code: +paymentResponse.errorcode,
+            message: undefined,
+          },
+        });
+        done()
+      });
     });
   })
 })
