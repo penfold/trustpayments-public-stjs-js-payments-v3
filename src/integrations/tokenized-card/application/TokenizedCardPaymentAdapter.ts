@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 
 @Service()
 export class TokenizedCardPaymentAdapter {
@@ -18,7 +19,7 @@ export class TokenizedCardPaymentAdapter {
     this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT });
   }
 
-  checkJwt(jwt: string){
-    this.jwtDecoder.decode(jwt)
+  private checkJwt(jwt: string): IStJwtObj{
+   return this.jwtDecoder.decode(jwt)
   }
 }

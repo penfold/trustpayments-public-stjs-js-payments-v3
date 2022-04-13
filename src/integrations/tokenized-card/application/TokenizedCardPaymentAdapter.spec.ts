@@ -1,17 +1,22 @@
+import { instance, mock } from 'ts-mockito';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { TokenizedCardPaymentAdapter } from './TokenizedCardPaymentAdapter';
 
 const messageBus = new SimpleMessageBus()
 
 let tokenizedCardPaymentAdapter: TokenizedCardPaymentAdapter
+let jwtDecoder: JwtDecoder
 
 const jwt = 'test'
 
 describe('TokenizedCardPaymentAdapter', () => {
 
   beforeAll(() => {
-    tokenizedCardPaymentAdapter = new TokenizedCardPaymentAdapter(messageBus)
+
+    jwtDecoder = mock(JwtDecoder);
+    tokenizedCardPaymentAdapter = new TokenizedCardPaymentAdapter(messageBus, instance(jwtDecoder))
     jest.spyOn(messageBus, 'publish');
   })
 
