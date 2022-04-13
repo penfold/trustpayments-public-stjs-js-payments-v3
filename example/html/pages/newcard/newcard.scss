@@ -20,6 +20,10 @@
     ul {
       li{
         overflow-wrap: break-word;
+
+        &.bold {
+          font-weight: bold;
+        }
       }
     }
   }

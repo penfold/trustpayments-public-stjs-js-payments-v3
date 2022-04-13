@@ -18,7 +18,8 @@ module.exports = {
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts'],
     predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
-    demo: ['./pages/demo/demo.ts'],
+    tokenizedcard: ['./pages/tokenizedcard/tokenizedcard.ts'],
+    newcard: ['./pages/newcard/newcard.ts'],
   },
   output: {
     filename: '[name].js',
@@ -59,9 +60,15 @@ module.exports = {
       publicPath: './',
     }),
     new HtmlWebpackPlugin({
-      filename: 'demo.html',
-      template: './pages/demo/demo.html',
-      chunks: ['demo'],
+      filename: 'tokenizedcard.html',
+      template: './pages/tokenizedcard/tokenizedcard.html',
+      chunks: ['tokenizedcard'],
+      publicPath: './',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'newcard.html',
+      template: './pages/newcard/newcard.html',
+      chunks: ['newcard'],
       publicPath: './',
     }),
     new CopyPlugin({
