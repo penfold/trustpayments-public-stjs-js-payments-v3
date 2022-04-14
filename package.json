@@ -70,6 +70,7 @@
   },
   "homepage": "https://gitlab.com/trustpayments-public/stjs/js-payments/-/blob/master/README.md",
   "resolutions": {
+    "async": "3.2.2",
     "glob-parent": "6.0.2",
     "trim-newlines": "4.0.2",
     "axios": "0.24.0",
