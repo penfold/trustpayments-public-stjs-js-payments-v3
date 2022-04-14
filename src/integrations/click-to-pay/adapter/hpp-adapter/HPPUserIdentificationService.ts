@@ -54,9 +54,24 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     );
   }
 
+  // TODO add typings for errorResponse
   private showEmailError(errorResponse) {
-    if (errorResponse?.error?.details) {
-      this.emailPrompt.showError(errorResponse.error.details.map(e => e.message).join('\n'));
+    this.emailPrompt.showError(this.getErrorMessage(errorResponse));
+  }
+
+  private getErrorMessage(errorResponse): string {
+    const hasErrorDetails = errorResponse?.error?.details?.some(error => error.message);
+    const defaultUnknownErrorMessage = this.translator.translate('Something went wrong, try again or use another email.');
+
+    if (hasErrorDetails) {
+      return errorResponse.error.details.map(e => e.message).join('\n');
+    }
+
+    switch (errorResponse.error?.reason) {
+      case 'ACCT_INACCESSIBLE':
+        return this.translator.translate('Account assigned to this email is currently not accessible');
+      default:
+        return defaultUnknownErrorMessage;
     }
   }
 
