@@ -19,6 +19,15 @@ Feature: E2E ZIP Payments
       | billingstreet           | test                                                  |
       | billingpostcode         | PO1 3AX                                               |
       | billingcountryiso2a     | GB                                                    |
+      | customerfirstname       | FirstName                                             |
+      | customerlastname        | LastName                                              |
+      | customeremail           | email@email.com                                       |
+      | customerpremise         | Premise                                               |
+      | customertown            | test                                                  |
+      | customercounty          | test                                                  |
+      | customerstreet          | test                                                  |
+      | customerpostcode        | PO1 3AX                                               |
+      | customercountryiso2a    | GB                                                    |
       | orderreference          | 123445                                                |
       | currencyiso3a           | GBP                                                   |
       | baseamount              | 1000                                                  |
