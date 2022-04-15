@@ -16,7 +16,7 @@ class InlineConfigBuilder:
                         'customercountryiso2a', 'expirydate', 'iban', 'locale',
                         'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
                         'threedbypasspaymenttypes', 'successfulurlredirect', 'errorurlredirect', 'cancelurlredirect',
-                        'returnurl']
+                        'returnurl', 'credentialsonfile', 'parenttransactionreference']
 
         for prop in properties:
             key = prop['key']

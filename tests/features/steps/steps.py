@@ -10,7 +10,8 @@ from behave import given, step, then, use_step_matcher
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
-from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm
+from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm, \
+    create_tokenized_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt
 from utils.enums.config import screenshots
 from utils.enums.config_apm import ConfigApm
@@ -75,6 +76,18 @@ def step_impl(context, jwt_config):
     jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
     jwt = encode_jwt(jwt_payload_dict)
     context.INLINE_E2E_CONFIG = create_inline_config(context.INLINE_E2E_CONFIG_DICT, jwt)
+
+
+@step('JS library configured with Tokenized Card (?P<jwt_config>.+) with additional attributes')
+def step_impl(context,  jwt_config):
+    # map jwt config file (payload part) to dictionary object
+    jwt_payload_dict = get_jwt_config_from_json(ConfigJwt[jwt_config].value)['payload']
+    # override/add default sitereference from config
+    jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
+    # build payload base on additional attributes
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
+    jwt = encode_jwt(jwt_payload_dict)
+    context.INLINE_TOKENIZED_E2E_CONFIG = create_tokenized_inline_config(jwt)
 
 
 @step('User accept success alert')

@@ -7,4 +7,4 @@ e2e-app-html-smoke:
     - .parallel-e2e-tests
     - .services-app-html-smoke-merchant
     - .rules-when-release
-  parallel: 26
+  parallel: 27

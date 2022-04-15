@@ -282,6 +282,8 @@ def step_impl(context, language):
         'Expiration date': payment_page.validate_expiration_date_iframe_element_text,
         'Expiration date placeholder': payment_page.validate_expiration_date_placeholder_text,
         'Security code': payment_page.validate_security_code_iframe_element_text,
+        'Tokenized security code': payment_page.validate_tokenized_security_code_iframe_element_text,
+        'Tokenized pay button': payment_page.validate_tokenized_submit_btn_specific_translation,
         'Pay': payment_page.validate_submit_btn_specific_translation
     }
     with soft_assertions():

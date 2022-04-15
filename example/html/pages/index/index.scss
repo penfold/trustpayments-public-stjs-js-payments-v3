@@ -36,3 +36,20 @@
     }
   }
 }
+
+section {
+  max-width: 800px;
+  margin: 0 auto;
+
+  &#tokenized-card-payment {
+    display: none;
+  }
+
+  .st-form {
+    padding: 10px 0;
+  }
+  
+  select {
+    padding: 10px 20px;
+  }
+}
