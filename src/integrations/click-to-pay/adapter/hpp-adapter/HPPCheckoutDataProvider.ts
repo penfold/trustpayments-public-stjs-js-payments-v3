@@ -1,50 +1,59 @@
 import { Service } from 'typedi';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, switchMap } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { IConsumer } from '../../digital-terminal/ISrc';
 import { ICardData } from '../../digital-terminal/interfaces/ICardData';
-import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { NewCardFieldName } from '../../card-list/NewCardFieldName';
 import { environment } from '../../../../environments/environment';
+import { JwtProvider } from '../../../../shared/services/jwt-provider/JwtProvider';
+import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
+import { HPPFormValues } from '../interfaces/HPPFormValues';
 import { HPPFormFieldName } from './HPPFormFieldName';
+import { HPPFormValuesProvider } from './HPPFormValuesProvider';
 
 @Service()
 export class HPPCheckoutDataProvider {
   private formElement: HTMLFormElement;
 
+  constructor(private jwtProvider: JwtProvider, private hppFormValuesProvider: HPPFormValuesProvider) {
+  }
+
   getCheckoutData(formId: string): Observable<IInitialCheckoutData> {
     this.formElement = document.querySelector(`form#${formId}`);
     this.preventExistingCallbacks();
 
-    return this.captureCheckoutDataOnSubmit();
+    return this.jwtProvider.getJwtPayload()
+      .pipe(
+        switchMap(jwtPayload => this.captureCheckoutDataOnSubmit(jwtPayload))
+      );
   }
 
-  private captureCheckoutDataOnSubmit(): Observable<IInitialCheckoutData> {
+  private captureCheckoutDataOnSubmit(jwtPayload): Observable<IInitialCheckoutData> {
     return fromEvent(this.formElement, 'submit').pipe(
       filter(() => this.shouldClickToPayBeUsed()),
       tap(event => event.preventDefault()),
-      map(() => this.getCheckoutDataFromForm())
+      map(() => this.getCheckoutDataFromForm(jwtPayload))
     );
   }
 
-  private getCheckoutDataFromForm(): IInitialCheckoutData {
+  private getCheckoutDataFromForm(jwtPayload: IStJwtPayload, formValues: HPPFormValues = this.hppFormValuesProvider.getFormValues(this.formElement)): IInitialCheckoutData {
     const data: IInitialCheckoutData = {
-      consumer: this.getConsumerData(),
-      srcDigitalCardId: this.getFormFieldValue(HPPFormFieldName.srcCardId),
-      newCardData: this.isCardListVisible() ? this.getRecognizedUserNewCardData() : this.getNewCardData(),
+      consumer: this.getConsumerData(jwtPayload, formValues),
+      srcDigitalCardId: formValues.srcDigitalCardId,
+      newCardData: this.hppFormValuesProvider.isCardListVisible(this.formElement) ? this.getRecognizedUserNewCardData(jwtPayload, formValues) : this.getNewCardData(jwtPayload, formValues),
     };
 
     return this.normalizeCheckoutData(data);
   }
 
-  private getConsumerData(): IConsumer {
+  private getConsumerData(jwtPayload: IStJwtPayload, formValues: HPPFormValues): IConsumer {
     const consumerData: IConsumer = {};
-    const billingEmail = this.getFormFieldValue(HPPFormFieldName.billingEmail);
-    const billingCountry = this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a);
-    const billingFullName = `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim() || null;
-    const billingFirstName = this.getFormFieldValue(HPPFormFieldName.billingFirstName);
-    const billingLastName = this.getFormFieldValue(HPPFormFieldName.billingLastName);
+    const billingEmail = formValues[HPPFormFieldName.billingEmail] || jwtPayload.billingemail;
+    const billingCountry = formValues[HPPFormFieldName.billingCountryIso2a] || jwtPayload.billingcountryiso2a;
+    const billingFullName = this.getFullName(jwtPayload, formValues);
+    const billingFirstName = formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname;
+    const billingLastName = formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname;
 
     if (billingFirstName) {
       consumerData.firstName = billingFirstName;
@@ -72,83 +81,64 @@ export class HPPCheckoutDataProvider {
     return consumerData;
   }
 
-  private getNewCardData(): ICardData {
+  private getNewCardData(jwtPayload: IStJwtPayload, formValues: HPPFormValues): ICardData {
     return {
-      primaryAccountNumber: this.getFormFieldValue(HPPFormFieldName.pan),
-      panExpirationMonth: this.getFormFieldValue(HPPFormFieldName.cardExpiryMonth),
-      panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
-      cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
-      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim(),
-      cardholderFirstName: this.getFormFieldValue(HPPFormFieldName.billingFirstName),
-      cardholderLastName: this.getFormFieldValue(HPPFormFieldName.billingLastName),
+      primaryAccountNumber: formValues[HPPFormFieldName.pan] || jwtPayload.pan,
+      panExpirationMonth: formValues[HPPFormFieldName.cardExpiryMonth] || jwtPayload.expirydate?.split('/')[0],
+      panExpirationYear: formValues[HPPFormFieldName.cardExpiryYear] || jwtPayload.expirydate?.split('/')[1],
+      cardSecurityCode: formValues[HPPFormFieldName.cardSecurityCode] || jwtPayload.securitycode,
+      cardholderFullName: this.getFullName(jwtPayload, formValues),
+      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname,
+      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname,
       billingAddress: {
         name: '',
-        city: this.getFormFieldValue(HPPFormFieldName.billingTown),
-        countryCode: this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a),
-        line1: this.getFormFieldValue(HPPFormFieldName.billingPremise),
-        line2: this.getFormFieldValue(HPPFormFieldName.billingStreet),
+        city: formValues[HPPFormFieldName.billingTown] || jwtPayload.billingtown,
+        countryCode: formValues[HPPFormFieldName.billingCountryIso2a] || jwtPayload.billingcountryiso2a,
+        line1: formValues[HPPFormFieldName.billingPremise] || jwtPayload.billingpremise,
+        line2: formValues[HPPFormFieldName.billingStreet] || jwtPayload.billingstreet,
         line3: '',
-        zip: this.getFormFieldValue(HPPFormFieldName.billingPostCode),
-        state: this.getFormFieldValue(HPPFormFieldName.billingCounty),
+        zip: formValues[HPPFormFieldName.billingPostCode] || jwtPayload.billingpostcode,
+        state: formValues[HPPFormFieldName.billingCounty] || jwtPayload.billingcounty,
       },
 
     };
   }
 
-  private getRecognizedUserNewCardData(): ICardData {
+  private getRecognizedUserNewCardData(jwtPayload: IStJwtPayload, formValues: HPPFormValues): ICardData {
     return {
-      primaryAccountNumber: this.normalizePan(this.getFormFieldValue(NewCardFieldName.pan)),
-      panExpirationMonth: this.getFormFieldValue(NewCardFieldName.expiryMonth),
-      panExpirationYear: this.getFormFieldValue(NewCardFieldName.expiryYear),
-      cardSecurityCode: this.getFormFieldValue(NewCardFieldName.securityCode),
-      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim(),
-      cardholderFirstName: this.getFormFieldValue(HPPFormFieldName.billingFirstName),
-      cardholderLastName: this.getFormFieldValue(HPPFormFieldName.billingLastName),
+      primaryAccountNumber: this.normalizePan(formValues[NewCardFieldName.pan]), // ??????
+      panExpirationMonth: formValues[NewCardFieldName.expiryMonth],
+      panExpirationYear: formValues[NewCardFieldName.expiryYear],
+      cardSecurityCode: formValues[NewCardFieldName.securityCode],
+      cardholderFullName: this.getFullName(jwtPayload, formValues),
+      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname,
+      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname,
       billingAddress: {
         name: '',
-        city: this.getFormFieldValue(HPPFormFieldName.billingTown),
-        countryCode: this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a),
-        line1: this.getFormFieldValue(HPPFormFieldName.billingPremise),
-        line2: this.getFormFieldValue(HPPFormFieldName.billingStreet),
+        city: formValues[HPPFormFieldName.billingTown] || jwtPayload.billingtown,
+        countryCode: formValues[HPPFormFieldName.billingCountryIso2a] || jwtPayload.billingcountryiso2a,
+        line1: formValues[HPPFormFieldName.billingPremise] || jwtPayload.billingpremise,
+        line2: formValues[HPPFormFieldName.billingStreet] || jwtPayload.billingstreet,
         line3: '',
-        zip: this.getFormFieldValue(HPPFormFieldName.billingPostCode),
-        state: this.getFormFieldValue(HPPFormFieldName.billingCounty),
+        zip: formValues[HPPFormFieldName.billingPostCode] || jwtPayload.billingpostcode,
+        state: formValues[HPPFormFieldName.billingCounty] || jwtPayload.billingcounty,
       },
     };
   }
 
-  private getFormFieldValue(fieldName: HPPFormFieldName | NewCardFieldName): string {
-    const element = this.formElement?.elements.namedItem(fieldName);
-
-    if (!element) {
-      return '';
-    }
-
-    if (DomMethods.isRadioNodeList(element)) {
-      return element.value;
-    }
-
-    if (element.attributes.getNamedItem('type')?.value === 'radio') {
-      return (element as HTMLInputElement).checked ? (element as HTMLInputElement).value : '';
-    }
-
-    return (element as HTMLInputElement).value || '';
-  }
-
-  private isRegisterCardEnabled(): boolean {
-    return (this.formElement?.elements.namedItem(HPPFormFieldName.register) as HTMLInputElement)?.checked;
-  }
-
-  private isCardListVisible(): boolean {
-    return !!this.formElement.elements.namedItem(NewCardFieldName.pan);
+  private getFullName(jwtPayload: IStJwtPayload, formValues: HPPFormValues) {
+    const firstName = formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname || '';
+    const lastName = formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname || '';
+    return `${firstName} ${lastName}`.trim();
   }
 
   private shouldClickToPayBeUsed(): boolean {
-    return this.isRegisterCardEnabled() || this.isCardListVisible();
+    return this.hppFormValuesProvider.isRegisterCardEnabled(this.formElement)
+      || this.hppFormValuesProvider.isCardListVisible(this.formElement);
   }
 
   private normalizePan(originalPan: string): string {
-    return originalPan.replace(/\s/g, '');
+    return originalPan?.replace(/\s/g, '');
   }
 
   private normalizeCheckoutData(data: IInitialCheckoutData) {
@@ -182,7 +172,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingOnSubmitCallback.call(window,window);
+        existingOnSubmitCallback.call(window, window);
       };
     }
 
@@ -191,7 +181,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingSubmitClickCallback.call(window,window);
+        existingSubmitClickCallback.call(window, window);
       };
     }
 
