@@ -98,7 +98,7 @@ def step_impl(context, option):
 @when('User chooses country and bank on Token page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.select_uk_from_country_dropdown()
+    # payment_page.select_uk_from_country_dropdown()
     payment_page.select_ozone_modelo_bank_from__dropdown()
     payment_page.scroll_to_token_terms_link()
     payment_page.click_accept_button()
@@ -127,7 +127,7 @@ def step_impl(context):
 @step('User fills ZIP phone number field')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.fill_phone_number('7380327185')
+    payment_page.fill_phone_number('7380336237')
 
 
 @step('User fills ZIP one time password')
