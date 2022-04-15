@@ -45,6 +45,13 @@ module.exports = {
       './src/testing/ServicesOverrides.ts',
       './src/application/components/security-code/security-code.ts'
     ],
+    securityCodeTokenized: [
+      './src/shared/imports/polyfills.ts',
+      './src/bootstrap.ts',
+      './src/application/dependency-injection/ServiceDefinitions.ts',
+      './src/testing/ServicesOverrides.ts',
+      './src/application/components/security-code-tokenized/security-code-tokenized.ts',
+    ],
     animatedCard: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
@@ -86,6 +93,14 @@ module.exports = {
         partial: 'securityCode'
       },
       chunks: ['securityCode']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'security-code-tokenized.html',
+      template: './src/application/components/index.html',
+      templateParameters: {
+        partial: 'securityCodeTokenized',
+      },
+      chunks: ['securityCodeTokenized'],
     }),
     new HtmlWebpackPlugin({
       filename: 'animated-card.html',

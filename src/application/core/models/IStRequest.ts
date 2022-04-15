@@ -1,16 +1,17 @@
 export interface IStRequest {
+  cachetoken?: string;
+  expirydate?: string;
+  formId?: string;
+  fraudcontroltransactionid?: string;
+  md?: string;
+  pan?: string;
+  pares?: string;
+  paymenttypedescription?: string;
   requesttypedescription?: string;
   requesttypedescriptions?: string[];
-  expirydate?: string;
-  pan?: string;
   securitycode?: string;
   termurl?: string;
-  fraudcontroltransactionid?: string;
-  cachetoken?: string;
   threedresponse?: string;
-  pares?: string;
-  md?: string;
   walletsource?: string;
   wallettoken?: string;
-  paymenttypedescription?: string;
 }

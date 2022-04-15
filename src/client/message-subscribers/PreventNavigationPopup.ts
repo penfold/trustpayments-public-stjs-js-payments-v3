@@ -28,5 +28,6 @@ export class PreventNavigationPopup implements IMessageSubscriber {
     messageBus
       .pipe(ofType(PUBLIC_EVENTS.DESTROY), first())
       .subscribe(() => this.window.removeEventListener('beforeunload', beforeUnloadHandler));
+
   }
 }

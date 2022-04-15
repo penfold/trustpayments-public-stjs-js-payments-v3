@@ -21,6 +21,7 @@ import { SentryService } from '../sentry/SentryService';
 import { MisconfigurationError } from '../sentry/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 
 @Service()
 export class ConfigResolver {
@@ -66,6 +67,7 @@ export class ConfigResolver {
       translations: this.getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this.setVisaCheckoutConfig(config.visaCheckout),
       [threeDSecureConfigName]: this.setThreeDSecureConfig(config[threeDSecureConfigName]),
+      [TokenizedCardPaymentConfigName]: { ...DefaultConfig[TokenizedCardPaymentConfigName], ...config[TokenizedCardPaymentConfigName] },
     };
     if (!environment.production) {
       console.error(validatedConfig);
