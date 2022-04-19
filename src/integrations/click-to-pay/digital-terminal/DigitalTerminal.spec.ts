@@ -9,23 +9,28 @@ import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
 import { DcfActionCode, ICheckoutData, ICheckoutResponse } from './ISrc';
 import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
+import { LocaleProvider } from './LocaleProvider';
 
 describe('DigitalTerminal', () => {
   let srcAggregateMock: SrcAggregate;
   let checkoutDataTransformerMock: CheckoutDataTransformer;
   let userIdentificationServiceMock: IUserIdentificationService;
   let digitalTerminal: DigitalTerminal;
+  let localeProvider: LocaleProvider;
 
   beforeEach(() => {
     srcAggregateMock = mock(SrcAggregate);
     checkoutDataTransformerMock = mock(CheckoutDataTransformer);
     userIdentificationServiceMock = mock<IUserIdentificationService>();
+    localeProvider = mock(LocaleProvider);
     digitalTerminal = new DigitalTerminal(
       instance(srcAggregateMock),
-      instance(checkoutDataTransformerMock)
+      instance(checkoutDataTransformerMock),
+      instance(localeProvider),
     );
 
     when(srcAggregateMock.init(anything())).thenReturn(of(undefined));
+    when(localeProvider.getUserLocaleFromJwt()).thenReturn('fr_FR');
   });
 
   describe('init()', () => {
@@ -38,7 +43,10 @@ describe('DigitalTerminal', () => {
         .subscribe(() => {
           verify(srcAggregateMock.init(deepEqual({
             srciDpaId,
-            dpaTransactionOptions,
+            dpaTransactionOptions: {
+              ...dpaTransactionOptions,
+              dpaLocale: 'fr_FR',
+            },
             srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
             srciTransactionId: anyString(),
           }))).once();
