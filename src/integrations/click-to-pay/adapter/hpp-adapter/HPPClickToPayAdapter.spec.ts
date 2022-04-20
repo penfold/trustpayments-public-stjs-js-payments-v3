@@ -221,6 +221,26 @@ describe('HPPClickToPayAdapter', () => {
         );
       });
 
+      it(`when checkout response contains dcfActionCode = ${DcfActionCode.cancel} it should clear card list form and card selection`, done => {
+        const mockCheckoutResponse: ICheckoutResponse = {
+          checkoutResponse: '',
+          dcfActionCode: DcfActionCode.cancel,
+          unbindAppInstance: false,
+          idToken: '',
+        };
+        when(digitalTerminalMock.checkout(anything())).thenReturn(of(mockCheckoutResponse));
+
+        sut.init(initParams).then(adapterInstance => {
+            formSubmitEventMock.asObservable().subscribe(() => {
+              verify(cardListGeneratorMock.reset()).once();
+
+              done();
+            });
+            formSubmitEventMock.next();
+          }
+        );
+      });
+
       it('when checkout response contains unbindAppInstance = true it should unbind instance using Digital Terminal and hide card list, regardless of returned ddcfActionCode', done => {
         const mockCheckoutResponse: ICheckoutResponse = {
           checkoutResponse: '',

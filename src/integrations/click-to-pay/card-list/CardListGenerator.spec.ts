@@ -9,6 +9,7 @@ import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { IUpdateView } from '../adapter/interfaces/IUpdateView';
 import { CardListGenerator } from './CardListGenerator';
 import { cardListMock } from './card-list-mock';
+import { NewCardFieldName } from './NewCardFieldName';
 
 describe('CardListGenerator', () => {
   let cardListGenerator: CardListGenerator;
@@ -166,6 +167,29 @@ describe('CardListGenerator', () => {
         displayCardForm: false,
         displaySubmitButton: true,
       } as IUpdateView))).once();
+    });
+  });
+
+  describe('reset()', () => {
+    let newCardFields: HTMLInputElement[];
+
+    beforeEach(() => {
+      document.body.innerHTML = '<form id="formId"><div id="test-id"></div></form>';
+      cardListGenerator.displayCards('formId', 'test-id', cardListMock);
+      newCardFields = [
+        document.querySelector(`[name="${NewCardFieldName.pan}"]`),
+        document.querySelector(`[name="${NewCardFieldName.expiryYear}"]`),
+        document.querySelector(`[name="${NewCardFieldName.expiryMonth}"]`),
+        document.querySelector(`[name="${NewCardFieldName.securityCode}"]`),
+      ];
+    });
+
+    it('should clear new card form', () => {
+      newCardFields.forEach(field => field.value = 'random value');
+      console.dir(newCardFields.map(e => e.value));
+      cardListGenerator.reset();
+      console.dir(newCardFields.map(e => e.value));
+      expect(newCardFields.some((e: HTMLInputElement) => !!e.value)).toBe(false);
     });
   });
 });

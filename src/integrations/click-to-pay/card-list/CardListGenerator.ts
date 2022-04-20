@@ -38,7 +38,8 @@ export class CardListGenerator {
     private translator: ITranslator,
     private srcNameFinder: SrcNameFinder,
     private hppUpdateViewCallback: HPPUpdateViewCallback
-  ) {}
+  ) {
+  }
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
@@ -98,6 +99,11 @@ export class CardListGenerator {
       displayMaskedCardNumber: null,
       displayCardType: null,
     });
+  }
+
+  reset() {
+    this.clearForm();
+    this.clearSelection();
   }
 
   private addCardContent(): string {
@@ -165,8 +171,8 @@ export class CardListGenerator {
           <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
         </svg>
         <p class="st-ctp-user-details__information">${this.translator.translate(
-          'Hello'
-        )} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate(
+      'Hello'
+    )} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate(
       'Not you?'
     )}</span></p>
       </div>
