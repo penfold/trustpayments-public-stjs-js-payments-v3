@@ -74,7 +74,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
         );
         this.cardListGenerator.displayUserInformation(this.initParams.cardListContainerId, cardList.srcProfiles);
       }),
-      catchError(error => throwError(() => new Error('SRCProfiles are not available'))),
+      catchError(error => throwError(() => new Error('SRCProfiles are not available')))
     ));
   }
 
@@ -162,6 +162,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
     if (response.dcfActionCode === DcfActionCode.addCard) {
       this.cardListGenerator.openNewCardForm();
+    }
+
+    if (response.dcfActionCode === DcfActionCode.cancel) {
+      this.cardListGenerator.reset();
     }
 
     if (response.unbindAppInstance) {
