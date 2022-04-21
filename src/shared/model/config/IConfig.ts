@@ -3,6 +3,8 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { GooglePayConfigName, IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
+import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
+import { ITokenizedCardPaymentConfig } from '../../../integrations/tokenized-card/models/ITokenizedCardPayment';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
@@ -25,6 +27,7 @@ export interface IConfig {
   fieldsToSubmit?: string[];
   formId?: string;
   [GooglePayConfigName]?: IGooglePayConfig;
+  [TokenizedCardPaymentConfigName]?: ITokenizedCardPaymentConfig;
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;

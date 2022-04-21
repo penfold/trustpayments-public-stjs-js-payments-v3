@@ -17,15 +17,11 @@ export class JsInitResponseService {
   ) {
   }
 
-  getJsInitResponse(): Observable<IThreeDInitResponse> {
-    if (this.jsInitResponse$) {
-      return this.jsInitResponse$;
-    }
-
+  getJsInitResponse(gatewayClient?: IGatewayClient): Observable<IThreeDInitResponse> {
     this.jsInitResponse$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
       startWith({ type: PUBLIC_EVENTS.UPDATE_JWT }),
-      switchMap(() => this.gatewayClient.jsInit()),
+      switchMap(() => gatewayClient?.jsInit() || this.gatewayClient.jsInit()),
       shareReplay(1),
     );
 

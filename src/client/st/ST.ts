@@ -59,6 +59,13 @@ import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapte
 import { IClickToPayAdapter } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayClientAdapter';
 import { IClickToPayAdapterInitParams } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
+import { TokenizedCardPaymentAdapter } from '../../integrations/tokenized-card/application/TokenizedCardPaymentAdapter';
+import {
+  TokenizedCardPaymentConfigName,
+  TokenizedCardPaymentMethodName,
+} from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
+import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
+import { DefaultConfig } from '../../application/core/models/constants/config-resolver/DefaultConfig';
 
 declare const ST_VERSION: string | undefined;
 
@@ -125,6 +132,7 @@ export class ST {
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
     private sentryService: SentryService,
+    private tokenizedCardPaymentAdapter: TokenizedCardPaymentAdapter,
     private clickToPayAdapterFactory: ClickToPayAdapterFactory
   ) {
   }
@@ -292,6 +300,49 @@ export class ST {
         },
         EventScope.THIS_FRAME
       );
+    });
+  }
+
+  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter> {
+    if (!jwtCard) {
+      return;
+    }
+
+    tokenizedCardPaymentConfig = {
+      ...DefaultConfig[TokenizedCardPaymentConfigName],
+      ...tokenizedCardPaymentConfig,
+    };
+
+    console.log('TOKENIZED ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
+
+    this.tokenizedCardPaymentAdapter.updateTokenizedJWT(jwtCard);
+
+    this.messageBus.publish<ISetPartialConfig<ITokenizedCardPaymentConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: TokenizedCardPaymentConfigName,
+          config: tokenizedCardPaymentConfig,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<ITokenizedCardPaymentConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: TokenizedCardPaymentMethodName,
+            config: tokenizedCardPaymentConfig,
+          },
+        },
+        EventScope.THIS_FRAME
+      );
+    });
+
+    return new Promise((resolve) => {
+      resolve(this.tokenizedCardPaymentAdapter);
     });
   }
 

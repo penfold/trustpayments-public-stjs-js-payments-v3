@@ -2,15 +2,11 @@ import { Service } from 'typedi';
 import { IStyle } from '../../shared/model/config/IStyle';
 import {
   ANIMATED_CARD_COMPONENT,
-  ANIMATED_CARD_COMPONENT_NAME,
   CARD_NUMBER_COMPONENT,
-  CARD_NUMBER_COMPONENT_NAME,
   CONTROL_FRAME_COMPONENT,
-  CONTROL_FRAME_COMPONENT_NAME,
   EXPIRATION_DATE_COMPONENT,
-  EXPIRATION_DATE_COMPONENT_NAME,
   SECURITY_CODE_COMPONENT,
-  SECURITY_CODE_COMPONENT_NAME,
+  TOKENIZED_SECURITY_CODE_COMPONENT,
 } from '../../application/core/models/constants/Selectors';
 import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 
@@ -18,11 +14,12 @@ import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 export class IframeFactory {
   private static URLS = new Map(
     Object.entries({
-      [CARD_NUMBER_COMPONENT_NAME]: CARD_NUMBER_COMPONENT,
-      [EXPIRATION_DATE_COMPONENT_NAME]: EXPIRATION_DATE_COMPONENT,
-      [SECURITY_CODE_COMPONENT_NAME]: SECURITY_CODE_COMPONENT,
-      [ANIMATED_CARD_COMPONENT_NAME]: ANIMATED_CARD_COMPONENT,
-      [CONTROL_FRAME_COMPONENT_NAME]: CONTROL_FRAME_COMPONENT,
+      cardNumber: CARD_NUMBER_COMPONENT,
+      expirationDate: EXPIRATION_DATE_COMPONENT,
+      securityCode: SECURITY_CODE_COMPONENT,
+      securityCodeTokenized: TOKENIZED_SECURITY_CODE_COMPONENT,
+      animatedCard: ANIMATED_CARD_COMPONENT,
+      controlFrame: CONTROL_FRAME_COMPONENT,
     })
   );
 
