@@ -21,6 +21,30 @@ Feature: Logs
       | GOOGLE_PAY_CONFIG | PAYMENT INIT COMPLETED |
       | BASIC_CONFIG      | PAYMENT INIT FAILED    |
 
+  Scenario: Init logs verification for Tokenized Card payments
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And JS library configured with Tokenized Card BASE_JWT with additional attributes
+      | key                        | value            |
+      | requesttypedescriptions    | THREEDQUERY AUTH |
+      | credentialsonfile          | 2                |
+      | parenttransactionreference | 56-9-2255170     |
+    And User opens example page WITH_TOKENIZED_CARD
+    And User waits for Tokenized Card payment to be loaded
+    And User waits for Pay button to be active
+    When User fills Tokenized Card payment security code with 123
+    And User clicks Pay button on Tokenized Card payment form
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And User will see following logs
+      | name          | step                   |
+      | CARD          | PAYMENT INIT STARTED   |
+      | CARD          | PAYMENT INIT COMPLETED |
+      | TokenizedCard | PAYMENT INIT STARTED   |
+      | TokenizedCard | PAYMENT INIT COMPLETED |
+      | TokenizedCard | PAYMENT STARTED        |
+      | TokenizedCard | PAYMENT COMPLETED      |
+
 
   Scenario Outline: Init logs verification for Digital wallets - <config>
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes

@@ -40,6 +40,7 @@ export const MERCHANT_PARENT_FRAME = 'st-parent-frame';
 export const CARD_NUMBER_COMPONENT = `${environment.FRAME_URL}/card-number.html`;
 export const EXPIRATION_DATE_COMPONENT = `${environment.FRAME_URL}/expiration-date.html`;
 export const SECURITY_CODE_COMPONENT = `${environment.FRAME_URL}/security-code.html`;
+export const TOKENIZED_SECURITY_CODE_COMPONENT = `${environment.FRAME_URL}/security-code-tokenized.html`;
 export const CONTROL_FRAME_COMPONENT = `${environment.FRAME_URL}/control-frame.html`;
 export const ANIMATED_CARD_COMPONENT = `${environment.FRAME_URL}/animated-card.html`;
 

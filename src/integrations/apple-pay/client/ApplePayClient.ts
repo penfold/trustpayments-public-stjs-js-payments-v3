@@ -56,7 +56,7 @@ export class ApplePayClient {
           'Can make payment',
         );
       }),
-      mapTo(undefined),
+      mapTo(undefined)
     );
   }
 
@@ -73,6 +73,7 @@ export class ApplePayClient {
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
     const notAvailable = (reason: string): Observable<never> => {
+      console.warn(`ApplePay not available: ${reason}`);
       return throwError(() => new ApplePayInitError(`ApplePay not available: ${reason}`));
     }
 

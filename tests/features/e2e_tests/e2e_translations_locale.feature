@@ -10,7 +10,13 @@ Feature: Payment form translations from jwt locale
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | locale                  | <locale>         |
-    And User opens example page
+    And JS library configured with Tokenized Card BASE_JWT with additional attributes
+      | key                        | value            |
+      | requesttypedescriptions    | THREEDQUERY AUTH |
+      | credentialsonfile          | 2                |
+      | parenttransactionreference | 56-9-2255170     |
+    And User opens example page WITH_TOKENIZED_CARD
+    And User waits for Tokenized Card payment to be loaded
     And User waits for Pay button to be active
     Then User will see labels displayed on page translated into "<locale>"
       | fields                      |
@@ -18,6 +24,8 @@ Feature: Payment form translations from jwt locale
       | Expiration date             |
       | Expiration date placeholder |
       | Security code               |
+      | Tokenized security code     |
+      | Tokenized pay button        |
       | Pay                         |
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields translated into "<locale>"

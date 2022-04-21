@@ -11,14 +11,18 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | orderreference          | order-01                                               |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | GB                                                     |
+      | currencyiso3a           | GBP                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ALIPAY from APM list
@@ -31,19 +35,23 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value               |
-      | requesttypedescriptions | AUTH                |
-      | currencyiso3a           | USD                 |
-      | orderreference          | order-01            |
-      | billingcountryiso2a     | UY                  |
-      | baseamount              | 123                 |
-      | billingemail            | FirstName@email.pl  |
-      | billingdob              | 1980-02-01          |
-      | billingfirstname        | <billingfirstname>  |
-      | billinglastname         | <billinglastname>   |
-      | billingprefixname       | <billingprefixname> |
-      | billingmiddlename       | <billingmiddlename> |
-      | billingsuffixname       | <billingsuffixname> |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | currencyiso3a           | USD                                                    |
+      | orderreference          | order-01                                               |
+      | billingcountryiso2a     | UY                                                     |
+      | baseamount              | 123                                                    |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingfirstname        | <billingfirstname>                                     |
+      | billinglastname         | <billinglastname>                                      |
+      | billingprefixname       | <billingprefixname>                                    |
+      | billingmiddlename       | <billingmiddlename>                                    |
+      | billingsuffixname       | <billingsuffixname>                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ALIPAY from APM list
@@ -64,15 +72,19 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                 |
-      | requesttypedescriptions | AUTH                  |
-      | baseamount              | 70                    |
-      | orderreference          | order-01              |
-      | billingfirstname        | FirstName             |
-      | billingemail            | FirstName@email.pl    |
-      | billingdob              | 1980-02-01            |
-      | billingcountryiso2a     | <billingcountryiso2a> |
-      | currencyiso3a           | <currencyiso3a>       |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | orderreference          | order-01                                               |
+      | billingfirstname        | FirstName                                              |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | <billingcountryiso2a>                                  |
+      | currencyiso3a           | <currencyiso3a>                                        |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -89,11 +101,15 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | currencyiso3a           | USD   |
-      | billingcountryiso2a     | UY    |
-      | baseamount              | 123   |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | currencyiso3a           | USD                                                    |
+      | billingcountryiso2a     | UY                                                     |
+      | baseamount              | 123                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -104,25 +120,33 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingdob              | 1980-02-01         |
-      | billingcountryiso2a     | UY                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | orderreference          | order-01                                               |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-02           |
-      | baseamount              | 707                |
-      | billinglastname         | LastNameUpdated    |
-      | billingemail            | FirstName@email.pl |
-      | billingdob              | 1980-02-01         |
-      | billingcountryiso2a     | UY                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | orderreference          | order-02                                               |
+      | baseamount              | 707                                                    |
+      | billinglastname         | LastNameUpdated                                        |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses ALIPAY from APM list
@@ -135,23 +159,31 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingdob              | 1980-02-01         |
-      | billingcountryiso2a     | UY                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 707                |
-      | billingfirstname        | FirstNameUpdated   |
-      | billingemail            | FirstName@email.pl |
-      | billingdob              | 1980-02-01         |
-      | billingcountryiso2a     | CZ                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billingfirstname        | FirstNameUpdated                                       |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | CZ                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -162,21 +194,29 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 70                 |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingdob              | 1980-02-01         |
-      | billingcountryiso2a     | UY                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | orderreference          | order-01                                               |
+      | baseamount              | 70                                                     |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | baseamount              | 707   |
-      | billingcountryiso2a     | UY    |
-      | currencyiso3a           | USD   |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -187,15 +227,19 @@ Feature: E2E Alipay Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value               |
-      | requesttypedescriptions | THREEDQUERY RISKDEC |
-      | orderreference          | order-01            |
-      | baseamount              | 70                  |
-      | billingfirstname        | FirstName           |
-      | billingemail            | FirstName@email.pl  |
-      | billingdob              | 1980-02-01          |
-      | billingcountryiso2a     | UY                  |
-      | currencyiso3a           | USD                 |
+      | key                     | value                                                  |
+      | requesttypedescriptions | THREEDQUERY RISKDEC                                    |
+      | orderreference          | order-01                                               |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingcountryiso2a     | UY                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ALIPAY from APM list
