@@ -34,5 +34,22 @@
   "Pay by Bank": "Pay by Bank",
   "Add new card": "Add new card",
   "Hello": "Hello",
-  "Not you?": "Not you?"
+  "Not you?": "Not you?",
+  "Expiry date": "Expiry date",
+  "Welcome back to": "Welcome back to",
+  "Pay with confidence with trusted brands": "Pay with confidence with trusted brands",
+  "For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <click-to-pay-icon>, and your card is accepted.": "For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <click-to-pay-icon>, and your card is accepted.",
+  "You can choose to be remembered on your device and browser for faster checkout.": "You can choose to be remembered on your device and browser for faster checkout.",
+  "Built on industry standards for online transactions and supported by global payment brands.": "Built on industry standards for online transactions and supported by global payment brands.",
+  "Something went wrong, try again or use another email.": "Something went wrong, try again or use another email.",
+  "Account assigned to this email is currently not accessible": "Account assigned to this email is currently not accessible",
+  "The email address you have entered is not registered for Click to Pay.": "The email address you have entered is not registered for Click to Pay.",
+  "The code you have entered is incorrect.": "The code you have entered is incorrect.",
+  "Enter your email address to access your cards": "Enter your email address to access your cards",
+  "Email address": "Email address",
+  "Continue": "Continue",
+  "Confirm it is you.": "Confirm it is you.",
+  "Enter the one-time code Visa sent to": "Enter the one-time code Visa sent to",
+  "Resend": "Resend",
+  "Verify": "Verify"
 }
