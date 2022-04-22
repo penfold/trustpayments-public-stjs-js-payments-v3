@@ -83,38 +83,50 @@ class VisaClickToPayPage(BasePage):
     def click_submit_email_btn(self):
         self._actions.click(VisaClickToPayLocators.submit_email_btn)
 
-    def fill_otp_field_and_check(self):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-
-        self.get_code_and_fill_otp_field()
-        # if self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
-        #     mail_ids = gmail_service.get_last_five_mail_ids_with_wait(3)
-        #     self.get_code_and_fill_otp_field(mail_ids)
-
     def get_code_and_fill_otp_field(self):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-        while self._actions.is_element_displayed(VisaClickToPayLocators.otp_input):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.resend_otp_btn)
+        while self._actions.is_element_displayed(VisaClickToPayLocators.resend_otp_btn):
             code = self.get_last_unseen_otp()
+            self.clear_otp_field()
             self.fill_otp_field(code)
             self.click_submit_otp_btn()
-            time.sleep(3)
+            time.sleep(4)
 
     def fill_otp_field(self, one_time_code):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_input)
-        while self._actions.get_element_attribute(VisaClickToPayLocators.otp_input, 'value'):
-            self._actions.delete_on_input(VisaClickToPayLocators.otp_input)
-        self._actions.send_keys(VisaClickToPayLocators.otp_input, one_time_code)
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_otp_input_field('0'))
+        for index, code in enumerate(list(one_time_code)):
+            self._actions.send_keys(VisaClickToPayLocators.get_otp_input_field(index), code)
+
+    def clear_otp_field(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_otp_input_field('0'))
+        for index in range(0, 6):
+            self._actions.delete_on_input(VisaClickToPayLocators.get_otp_input_field(index))
 
     def get_last_unseen_otp(self):
-        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(20)
-        code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[len(mail_ids) - 1])))
-        return code
+        max_try = 3
+        # pylint: disable=bare-except
+        while max_try:
+            try:
+                mail_ids = gmail_service.get_unseen_mail_ids_with_wait(120)
+                code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[len(mail_ids) - 1])))
+                if len(code) == 6:
+                    max_try = 0
+                    return code
+                else:
+                    max_try -= 1
+            except:
+                max_try -= 1
 
     def click_submit_otp_btn(self):
         self._actions.click(VisaClickToPayLocators.submit_otp_btn)
 
-    def get_validation_message(self):
-        return self._actions.get_text_with_wait(VisaClickToPayLocators.validation_message)
+    def get_otp_validation_message(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.otp_invalid_input)
+        return self._actions.get_text_with_wait(VisaClickToPayLocators.otp_validation_message)
+
+    def get_login_validation_message(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.login_invalid_input)
+        return self._actions.get_text_with_wait(VisaClickToPayLocators.login_validation_message)
 
     def clear_email_input(self):
         self._actions.clear_input(VisaClickToPayLocators.email_input)
@@ -146,17 +158,32 @@ class VisaClickToPayPage(BasePage):
             if number in card.text:
                 card.click()
 
+    def fill_card_details_on_card_list_view(self, card_number, expiration_date, cvv):
+        self._actions.send_keys(VisaClickToPayLocators.pan_input, card_number)
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month, expiration_date[:2])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year, '20' + expiration_date[3::])
+        self._actions.send_keys(VisaClickToPayLocators.cvv_input, cvv)
+
     def fill_card_details_in_modal(self, card_number, expiration_date, cvv):
         self._actions.switch_to_default_iframe()
         self._actions.send_keys(VisaClickToPayLocators.card_number_modal_input, card_number)
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month, expiration_date[:2])
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year, '20' + expiration_date[3::])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month_modal, expiration_date[:2])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year_modal, '20' + expiration_date[3::])
         self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
 
     def get_masked_card_number_from_card_list(self, number):
         masked_card_number = self._actions.get_text_with_wait(
             VisaClickToPayLocators.get_masked_card_number_locator_from_cards_list(number))[-4:]
         return masked_card_number
+
+    def wait_until_removed_card_is_not_visible_on_card_list(self, masked_card_number):
+        max_try = 5
+        while max_try:
+            if self.get_masked_card_number_from_card_list('1') != masked_card_number:
+                return
+            else:
+                time.sleep(1)
+                max_try -= 1
 
     def is_first_card_auto_selected(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.cards_section)
@@ -169,6 +196,12 @@ class VisaClickToPayPage(BasePage):
     def click_not_you_btn(self):
         self._actions.click(VisaClickToPayLocators.not_you_btn)
 
+    def get_submit_button_label(self):
+        return self._actions.get_text(VisaClickToPayLocators.pay_securely_btn)
+
+    def get_merchant_submit_label(self):
+        return self._actions.get_text(VisaClickToPayLocators.merchant_submit_label)
+
     # Visa Checkout view
     def fill_required_address_fields(self):
         address_fields = {
@@ -176,16 +209,16 @@ class VisaClickToPayPage(BasePage):
             'lastName': 'Test',
             'line1': 'Willow Grove',
             'city': 'Willow Grove',
-            'stateProvinceCode': 'PA',
+            # 'stateProvinceCode': 'PA',
             'postalCode': '19001',
-            'phone-number-field': '9343242342',
+            'phone-number-field': '07052724889',
             'email': f'{get_string(5, 1)}@testemail.com',
         }
-
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         for field_locator, value in address_fields.items():
             self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator),
                                     value)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.continue_btn)
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
     # for unregistered user
@@ -195,15 +228,32 @@ class VisaClickToPayPage(BasePage):
             'lastName': 'TestSecond',
             'line1': '332-498 Whispering Pines Dr',
             'city': 'Charlotte',
-            'stateProvinceCode': 'NC',
+            # 'stateProvinceCode': 'NC',
             'postalCode': '28217',
-            'phone-number-field': '9343242342'}
-
+            'phone-number-field': '7205789868'
+          }
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_address_field_locator_from_visa_popup('firstName'))
         for field_locator, value in address_fields.items():
-            self._actions.clear_input(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator))
-            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator),
-                                    value)
+            self.clear_address_fields(field_locator)
+            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), value)
+        self.fill_province_code_field_if_exist()
         self._actions.click(VisaClickToPayLocators.continue_btn)
+
+    def clear_address_fields(self, field_locator):
+        while self._actions.get_element_attribute(
+                VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), 'value'):
+            self._actions.delete_on_input(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator))
+
+    def fill_province_code_field_if_exist(self):
+        if self._waits.wait_and_check_is_element_displayed(
+                VisaClickToPayLocators.get_address_field_locator_from_visa_popup('stateProvinceCode'), max_try=1):
+            self._actions.send_keys(
+                VisaClickToPayLocators.get_address_field_locator_from_visa_popup('stateProvinceCode'), 'NC')
+
+    def fill_phone_number_field(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup('phone-number-field'),
+                                                                                                 '07052724889')
 
     def get_masked_card_number_from_visa_ctp_popup(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
@@ -216,12 +266,19 @@ class VisaClickToPayPage(BasePage):
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
+    def click_terms_of_service_checkbox(self):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.terms_of_service_checkbox, max_try=10):
+            self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+            self._actions.scroll_directly_to_element(VisaClickToPayLocators.terms_of_service_checkbox)
+            self._actions.click(VisaClickToPayLocators.terms_of_service_checkbox)
+
     def confirm_payment(self):
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def fill_cvv_field_on_visa_popup(self):
-        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup, max_try=5):
             self._actions.send_keys(VisaClickToPayLocators.cvv_input_on_visa_popup, '123')
             self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
@@ -263,6 +320,7 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.add_new_address_plus_btn)
 
     def is_register_checkbox_available(self):
+        self._actions.switch_to_default_content()
         return self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.register_card_checkbox)
 
     def click_use_this_address_for_delivery(self):
@@ -296,8 +354,8 @@ class VisaClickToPayPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_text == expected_text, assertion_message
 
-    def get_logs(self, expected_name, max_try=5):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
+    def get_logs(self, expected_name, max_try=10):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_submit_counter)
         logs = ''
         while max_try:
             logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
@@ -318,7 +376,7 @@ class VisaClickToPayPage(BasePage):
 
     def click_first_masked_address_on_the_list(self):
         self._waits.wait_until_iframe_is_presented_and_check_is_possible_switch_to_it(
-            VisaClickToPayLocators.vctp_iframe, max_try=2)
+                VisaClickToPayLocators.vctp_iframe, max_try=1)
         self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
 
     def click_add_new_card_on_vctp_popup(self):
@@ -363,6 +421,10 @@ class VisaClickToPayPage(BasePage):
         chosen_address = random.randrange(1, len(available_addresses))
         self._actions.scroll_directly_to_element(VisaClickToPayLocators.get_available_address_from_list(chosen_address))
         self._actions.click_by_javascript(VisaClickToPayLocators.get_available_address_from_list(chosen_address))
+
+    def wait_for_visa_popup_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(VisaClickToPayLocators.vctp_iframe)
+        self._actions.switch_to_default_content()
 
     def click_sign_out(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
