@@ -92,8 +92,8 @@ export class SrcAggregate {
     );
   }
 
-  unbindAppInstance(): Observable<undefined> {
-    return this.forkJoinSrcs(src => src.unbindAppInstance()).pipe(mapTo(undefined));
+  unbindAppInstance(tokens: string[]): Observable<undefined> {
+    return this.forkJoinSrcs(src => src.unbindAppInstance(tokens)).pipe(mapTo(undefined));
   }
 
   private forkJoinSrcs<T>(callback: (src: ISrc) => Promise<T>): Observable<Partial<Record<SrcName, T>>> {

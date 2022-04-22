@@ -206,5 +206,5 @@ export interface ISrc {
 
   checkout(data: ICheckoutData): Promise<ICheckoutResponse>;
 
-  unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse>;
+  unbindAppInstance(idToken?: string | string[]): Promise<IUnbindAppInstanceResponse>;
 }
