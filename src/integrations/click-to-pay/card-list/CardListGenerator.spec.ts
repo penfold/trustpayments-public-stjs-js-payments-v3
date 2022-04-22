@@ -24,7 +24,7 @@ describe('CardListGenerator', () => {
     hppUpdateViewCallback = mock(HPPUpdateViewCallback);
     srcNameFinderMock = mock(SrcNameFinder);
     when(translator.translate('Hello')).thenReturn('Hello');
-    when(translator.translate('Not you?')).thenReturn('Not you?');
+    when(translator.translate('not you?')).thenReturn('not you?');
     cardListGenerator = new CardListGenerator(instance(digitalTerminal), instance(translator), instance(srcNameFinderMock), instance(hppUpdateViewCallback));
   });
 
@@ -133,12 +133,7 @@ describe('CardListGenerator', () => {
     </div>
     </div></div>
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
-        <!--?xml version="1.0" encoding="UTF-8"?-->
-        <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="129.38" cy="60" r="60"></circle>
-          <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"></path>
-        </svg>
-        <p class="st-ctp-user-details__information">Hello s*****@test.com <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">Not you?</span></p>
+        s*****@test.com (<span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">not you?</span>)
       </div>
     </div></div></body>`;
     document.body.innerHTML = '<div id="test-id"></div>';

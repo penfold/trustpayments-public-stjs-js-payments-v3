@@ -111,15 +111,16 @@ input.st-hpp-prompt__field-input {
 }
 
 .st-hpp-prompt__button {
-  padding: $ctp-field-padding;
-  display: inline-block;
-  width: 100%;
+  align-self: center;
   background-color: $ctp-black;
   border: 0;
-  text-transform: uppercase;
   color: #eef1f6;
-  align-self: center;
+  cursor: pointer;
+  display: inline-block;
   height: $ctp-button-height;
+  padding: $ctp-field-padding;
+  text-transform: uppercase;
+  width: 100%;
 }
 
 input.st-ctp-prompt__otp-input {

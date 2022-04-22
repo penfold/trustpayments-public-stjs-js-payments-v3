@@ -40,7 +40,7 @@ export class CTPSingInEmail {
       <div class="st-ctp-prompt__header">
         <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
       </div>
-    <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}:</span>
+    <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}</span>
     <label class="${this.fieldClass}">
       <span class="st-hpp-prompt__field-label">${this.translator.translate('Email address')}:</span>
       <input type="email" inputmode="email" name="${fieldName}" required class="st-hpp-prompt__field-input"/>

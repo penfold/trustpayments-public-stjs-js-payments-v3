@@ -3,6 +3,10 @@ import { ITranslator } from '../../../../../application/core/shared/translator/I
 import { IInitiateIdentityValidationResponse } from '../../../digital-terminal/ISrc';
 
 const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
+const visa = require( '../../../../../application/core/services/icon/images/visa.svg');
+const mastercard = require('../../../../../application/core/services/icon/images/mastercard.svg');
+const amex = require('../../../../../application/core/services/icon/images/amex.svg');
+const discover = require('../../../../../application/core/services/icon/images/discover.svg');
 
 export class CTPSIgnInOTP {
   private readonly errorFieldClass = 'st-hpp-prompt__field-error';
@@ -55,14 +59,22 @@ export class CTPSIgnInOTP {
       }
     });
 
+    const validationChannels = (validationResponse.maskedValidationChannel as string).split(',');
+
     formElement.innerHTML = `
       <div class="st-ctp-prompt__otp-wrapper">
       <div class="st-ctp-prompt__header">
-        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
+        <span class="st-ctp-prompt__logo">
+          <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
+          <img src="${visa}" class="st-ctp-prompt__logo-img" alt="">
+          <img src="${mastercard}" class="st-ctp-prompt__logo-img" alt="">
+          <img src="${amex}" class="st-ctp-prompt__logo-img" alt="" style='filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)'>
+          <img src="${discover}" class="st-ctp-prompt__logo-img" alt="">
+        </span>
         <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
       </div>
       <div class="st-hpp-prompt__title">Confirm it is you.</div>
-      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
+      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>${this.translator.translate('phone')} ${validationChannels[1]}<br/>${this.translator.translate('Email')} ${validationChannels[0]}</div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
       <span class="${this.errorFieldClass} st-hpp-prompt__otp-input-error"></span>
@@ -117,6 +129,12 @@ export class CTPSIgnInOTP {
       }
 
       (input.nextElementSibling as HTMLElement)?.focus();
+    });
+
+    input.addEventListener('keydown', event => {
+      if (event.code === 'Backspace' && (event.target as HTMLInputElement).value === '') {
+        (input.previousElementSibling as HTMLElement)?.focus();
+      }
     });
 
     input.addEventListener('paste', event => {

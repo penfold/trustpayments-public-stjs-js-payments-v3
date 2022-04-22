@@ -61,7 +61,7 @@
 }
 
 .st-ctp-welcome__info-icon {
-  color: rgb(118, 162, 191);
+  color: rgb(60, 145, 174);
   cursor: pointer;
   padding: 0 10px;
 }
@@ -230,8 +230,9 @@
 }
 
 .st-ctp-user-details__wrapper {
-  display: flex;
   align-items: center;
+  color: rgb(132, 132, 132);
+  display: flex;
   justify-content: center;
 }
 
@@ -247,12 +248,9 @@
 }
 
 .st-ctp-user-details__not--you {
-  font-size: 14px;
-  color: #e71b59;
-  transition: .3s;
+  color: rgb(60, 145, 174);
   cursor: pointer;
-
-  &:hover {
-    color: rgba(231, 27, 89, 0.8);
-  }
+  font-size: 16px;
+  font-weight: bold;
+  transition: .3s;
 }
