@@ -49,6 +49,7 @@ describe('VisaSrcProvider', () => {
     describe('livestatus = 1', () => {
       beforeEach(() => {
         when(configProviderMock.getConfig$()).thenReturn(of({ livestatus: 1 }));
+        visaSrcProvider = new VisaSrcProvider(instance(configProviderMock));
       });
 
       it('injects prod SRC SDK when livestatus = 1', done => {
