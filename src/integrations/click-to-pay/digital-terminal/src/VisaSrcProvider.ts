@@ -15,7 +15,7 @@ export class VisaSrcProvider implements ISrcProvider {
   private src: Observable<ISrc>;
 
   constructor(private configProvider: ConfigProvider) {
-    this.sdkUrl = configProvider.getConfig$().pipe(
+    this.sdkUrl = this.configProvider.getConfig$().pipe(
       map(config => {
         const { PROD, SANDBOX } = environment.CLICK_TO_PAY.VISA.SRC_SDK_URL;
 
