@@ -117,13 +117,13 @@ export class CardListGenerator {
         </span>
       </div>
       <div class="st-add-card__details">
-        Card number <span class="st-add-card__details-asterix"></span>
+        ${this.translator.translate('Card number')} <span class="st-add-card__details-asterix"></span>
         <input id="vctp-pan" type="text" name="${NewCardFieldName.pan}">
         <div id="vctp-pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
-          Expiry date <span class="st-add-card__details-asterix"></span>
+          ${this.translator.translate('Expiry date')} <span class="st-add-card__details-asterix"></span>
           <select id="vctp-expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
@@ -131,7 +131,7 @@ export class CardListGenerator {
         </span>
       </div>
       <div class="st-add-card__details">
-        Security code <span class="st-add-card__details-asterix"></span><br>
+        ${this.translator.translate('Security code')} <span class="st-add-card__details-asterix"></span><br>
         <input id="vctp-cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
@@ -157,7 +157,7 @@ export class CardListGenerator {
   private addUserInformationContent(emailAddress: string): string {
     return `
       <div id="st-ctp-welcome" class="st-ctp-welcome">
-        <span>Welcome back to</span>
+        <span>${this.translator.translate('Welcome back to')}</span>
         <span class="st-ctp-welcome__logo">
           <img src="${logo}" alt="">
         </span>
@@ -271,10 +271,10 @@ export class CardListGenerator {
           <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
         </div>
       </div>
-      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div></div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>You can choose to be remembered on your device and browser for faster checkout.</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>Built on industry standards for online transactions and supported by global payment brands.</div>
+      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">${this.translator.translate('Pay with confidence with trusted brands')}</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">${this.translator.translate('For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <click-to-pay-icon>, and your card is accepted.').replace('<click-to-pay-icon>', ' <img class="st-tooltip__logo" src="${logo}" alt="">')}</div></div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>${this.translator.translate('You can choose to be remembered on your device and browser for faster checkout.')}</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>${this.translator.translate('Built on industry standards for online transactions and supported by global payment brands.')}</div>
     </div>
     `;
   }
