@@ -4,8 +4,9 @@ import time
 
 # imap need to be enabled on gmail account and access for less secure devices need to be anabled for that google account
 from configuration import CONFIGURATION
+from utils.enums.shared_dict_keys import SharedDictKey
+from utils.helpers.request_executor import shared_dict
 
-EMAIL_LOGIN = CONFIGURATION.VCTP_LOGIN
 EMAIL_PASSWORD = CONFIGURATION.VCTP_PASSWORD
 
 SMTP_SERVER = 'imap.gmail.com'
@@ -16,7 +17,7 @@ def gmail_login():
     # pylint: disable=invalid-name
     try:
         mail = imaplib.IMAP4_SSL(SMTP_SERVER)
-        mail.login(EMAIL_LOGIN, EMAIL_PASSWORD)
+        mail.login(shared_dict[SharedDictKey.VCTP_EMAIL_LOGIN.value], EMAIL_PASSWORD)
         mail.select('inbox')
         return mail
     except Exception as e:
