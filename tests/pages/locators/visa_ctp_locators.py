@@ -50,6 +50,9 @@ class VisaClickToPayLocators:
     card_validation_message: By = (By.ID, 'vctp-pan-validation-status')
     not_you_btn: By = (By.ID, 'st-ctp-user-details__not--you')
     merchant_submit_label: By = (By.ID, 'merchant-submit-label')
+    info_button: By = (By.XPATH, '//*[@id="st-ctp-welcome__info-icon"]')
+    info_popup_elements: By = (By.XPATH, '//*[@id="st-tooltip"]/div')
+    info_popup_close_button: By = (By.XPATH, '//*[@id="st-tooltip__close-button"]')
 
     @classmethod
     def get_masked_card_number_locator_from_cards_list(cls, value) -> By.XPATH:
@@ -77,6 +80,13 @@ class VisaClickToPayLocators:
     remember_me_checkbox: By = (By.XPATH, '//label[@for=\'remember-me\']')
     cancel_checkout_btn: By = (By.XPATH, '//button[@aria-label=\'Cancel and return to merchant\']')
     terms_of_service_checkbox: By = (By.XPATH, '//label[@for=\'termsOfService\']/div[1]')
+    first_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'firstName\')]')
+    last_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'lastName\')]')
+    street_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'line1\')]')
+    street_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'streetNumber\')]')
+    phone_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'phone-number-field\')]')
+    email_address_placeholder: By = (
+    By.XPATH, '//div[contains(@class, \'formControl\')]/label[contains(@for, \'email\')]')
 
     # Alternative methods
     card_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-card-row\']//button[contains(@id,\'menubutton\')]')
@@ -102,7 +112,8 @@ class VisaClickToPayLocators:
     address_success_delete_message: By = (By.XPATH,
                                           '//span[contains(text(), \'Your address was deleted successfully\')]')
     add_address_popup_btn: By = (By.XPATH, '//button[@aria-label=\'Add Address\']')
-    sign_out_btn: By = (By.XPATH, '//*[@id="app"]//section//section[1]/div//button[contains(@aria-label, \'account information\')]')
+    sign_out_btn: By = (
+        By.XPATH, '//*[@id="app"]//section//section[1]/div//button[contains(@aria-label, \'account information\')]')
     sign_out_btn_confirm: By = (By.XPATH, '//*[@id="app"]//section//section[1]//div//ul//button')
     card_number_modal_input: By = (By.ID, 'pan')
     expiry_date_list_month_modal: By = (By.ID, 'expiryDateMonthId')

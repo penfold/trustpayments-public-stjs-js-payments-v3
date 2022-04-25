@@ -1,8 +1,10 @@
 # type: ignore[no-redef]
 
-from assertpy import assert_that
-from behave import use_step_matcher, step
+from assertpy import assert_that, soft_assertions
+from behave import use_step_matcher, step, then
+
 from configuration import CONFIGURATION
+from pages.locators.visa_ctp_locators import VisaClickToPayLocators
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.enums.shared_dict_keys import SharedDictKey
@@ -459,3 +461,32 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_sign_out()
+
+
+@then('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
+def step_impl(context, language):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    labels = {
+        'Visa first name label': VisaClickToPayLocators.first_name_placeholder,
+        'Visa last name label': VisaClickToPayLocators.last_name_placeholder,
+        'Visa street name label': VisaClickToPayLocators.street_name_placeholder,
+        'Visa street number label': VisaClickToPayLocators.street_number_placeholder,
+        'Visa e-mail address label': VisaClickToPayLocators.email_address_placeholder,
+        'Visa Pay now button': VisaClickToPayLocators.pay_now_btn,
+    }
+    with soft_assertions():
+        for row in context.table:
+            vctp_page.validate_visa_ctp_translation(labels[row['fields']], language, row['fields'])
+
+
+@then('User can open additional information hint')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_more_information_hint_button()
+
+
+@step('User can get acquainted with VISA_CTP details')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.verify_visa_info_popup_elements()
+    vctp_page.click_close_more_information_hint()

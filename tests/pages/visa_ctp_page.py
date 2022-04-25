@@ -11,6 +11,7 @@ from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
 from utils.helpers.random_data_generator import get_string
 from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_translation_from_json
 
 
 class VisaClickToPayPage(BasePage):
@@ -168,7 +169,8 @@ class VisaClickToPayPage(BasePage):
         self._actions.switch_to_default_iframe()
         self._actions.send_keys(VisaClickToPayLocators.card_number_modal_input, card_number)
         self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month_modal, expiration_date[:2])
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year_modal, '20' + expiration_date[3::])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year_modal,
+                                             '20' + expiration_date[3::])
         self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
 
     def get_masked_card_number_from_card_list(self, number):
@@ -231,29 +233,32 @@ class VisaClickToPayPage(BasePage):
             # 'stateProvinceCode': 'NC',
             'postalCode': '28217',
             'phone-number-field': '7205789868'
-          }
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_address_field_locator_from_visa_popup('firstName'))
+        }
+        self._waits.wait_for_element_to_be_displayed(
+            VisaClickToPayLocators.get_address_field_locator_from_visa_popup('firstName'))
         for field_locator, value in address_fields.items():
             self.clear_address_fields(field_locator)
-            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), value)
+            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator),
+                                    value)
         self.fill_province_code_field_if_exist()
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
     def clear_address_fields(self, field_locator):
         while self._actions.get_element_attribute(
-                VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), 'value'):
-            self._actions.delete_on_input(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator))
+            VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), 'value'):
+            self._actions.delete_on_input(
+                VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator))
 
     def fill_province_code_field_if_exist(self):
         if self._waits.wait_and_check_is_element_displayed(
-                VisaClickToPayLocators.get_address_field_locator_from_visa_popup('stateProvinceCode'), max_try=1):
+            VisaClickToPayLocators.get_address_field_locator_from_visa_popup('stateProvinceCode'), max_try=1):
             self._actions.send_keys(
                 VisaClickToPayLocators.get_address_field_locator_from_visa_popup('stateProvinceCode'), 'NC')
 
     def fill_phone_number_field(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup('phone-number-field'),
-                                                                                                 '07052724889')
+                                '07052724889')
 
     def get_masked_card_number_from_visa_ctp_popup(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
@@ -267,7 +272,8 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
     def click_terms_of_service_checkbox(self):
-        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.terms_of_service_checkbox, max_try=10):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.terms_of_service_checkbox,
+                                                           max_try=10):
             self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
             self._actions.scroll_directly_to_element(VisaClickToPayLocators.terms_of_service_checkbox)
             self._actions.click(VisaClickToPayLocators.terms_of_service_checkbox)
@@ -376,7 +382,7 @@ class VisaClickToPayPage(BasePage):
 
     def click_first_masked_address_on_the_list(self):
         self._waits.wait_until_iframe_is_presented_and_check_is_possible_switch_to_it(
-                VisaClickToPayLocators.vctp_iframe, max_try=1)
+            VisaClickToPayLocators.vctp_iframe, max_try=1)
         self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
 
     def click_add_new_card_on_vctp_popup(self):
@@ -431,3 +437,32 @@ class VisaClickToPayPage(BasePage):
         self.close_warning_banner()
         self._actions.click(VisaClickToPayLocators.sign_out_btn)
         self._actions.click(VisaClickToPayLocators.sign_out_btn_confirm)
+
+    def validate_visa_ctp_translation(self, element, language, label):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.pay_now_btn)
+        self.validate_visa_ctp_element_translation(element, language, label)
+        self._actions.switch_to_default_iframe()
+
+    def validate_visa_ctp_element_translation(self, element, language, key):
+        actual_translation = self.get_visa_ctp_label_translation(element)
+        expected_translation = get_translation_from_json(language, key)
+        assertion_message = f'Translation is not correct: should be {expected_translation} but is {actual_translation}'
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+        assert actual_translation == expected_translation, assertion_message
+
+    def get_visa_ctp_label_translation(self, locator):
+        element_translation = self._actions.get_text(locator)
+        return element_translation
+
+    def click_more_information_hint_button(self):
+        self._actions.click(VisaClickToPayLocators.info_button)
+
+    def click_close_more_information_hint(self):
+        self._actions.click(VisaClickToPayLocators.info_popup_close_button)
+
+    def verify_visa_info_popup_elements(self):
+        elements_list = self._actions.find_elements(VisaClickToPayLocators.info_popup_elements)
+        assertion_message = f'Info popup consists of 6 elements but only {len(elements_list)} were visible'
+        assert_that(elements_list).is_not_empty()
+        assert_that(len(elements_list), assertion_message).is_equal_to(6)

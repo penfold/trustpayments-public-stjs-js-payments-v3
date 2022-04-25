@@ -147,3 +147,22 @@ Feature: Visa Click To Pay for unregistered user
 #      | callback_type |
 #      | cancel        |
 #      | submit        |
+  Scenario: DCF translations - checking language preference
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library authenticated by jwt BASE_JWT_DE with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+    And User chooses to register his card with Visa
+    And User clicks Pay Securely button
+    Then User will see labels displayed on VISA_CTP popup translated into "de_DE"
+      | fields                    |
+      | Visa first name label     |
+      | Visa last name label      |
+      | Visa street name label    |
+      | Visa street number label  |
+      | Visa e-mail address label |
+      | Visa Pay now button       |
+
+

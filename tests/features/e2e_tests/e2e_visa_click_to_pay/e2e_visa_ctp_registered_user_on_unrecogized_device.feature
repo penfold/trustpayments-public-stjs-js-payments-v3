@@ -204,6 +204,21 @@ Feature: Visa Click To Pay
     Then User will see VISA_CTP card validation message
 
 
+   Scenario: Checking more information tooltip as a registered user
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User selects Look up my cards
+    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User fills valid VISA_CTP one time password
+    And User see that first card on the list is auto-selected
+    Then User can open additional information hint
+    And User can get acquainted with VISA_CTP details
+
+
+
   #TODO - to confirm - probably it will not be possible cancel payment on login view
 #  Scenario: Successful payment after cancel on login view
 #    Given JS library configured by inline config BASIC_CONFIG
