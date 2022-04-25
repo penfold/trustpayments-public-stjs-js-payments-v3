@@ -38,8 +38,10 @@
     "build:declarations": "npx dts-bundle-generator ./src/declarations.ts -o ./dist/index.d.ts --project tsconfig.json --no-banner",
     "testdocker": "docker pull \"securetrading1/js-payments-testing:$DOCKER_BRANCH\" && docker run -d -p 8443:8443 -p 8760:8760 -it \"securetrading1/js-payments-testing:$DOCKER_BRANCH\"",
     "behave": "npm run testdocker && cd js-payments-testing &&",
-    "export:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/application/core/translations/$npm_package_config_locale.json -t src/translations/$npm_package_config_locale.po",
-    "import:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/$npm_package_config_locale.po -t src/application/core/translations/$npm_package_config_locale.json",
+    "translations:export": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/json/$npm_package_config_locale.json -t src/translations/po/$npm_package_config_locale.po",
+    "translations:import": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/po/$npm_package_config_locale.po -t src/translations/json/$npm_package_config_locale.json",
+    "translations:missing": "./bin/translations.js missing",
+    "translations:coverage": "./bin/translations.js coverage",
     "preinstall": "npx npm-force-resolutions",
     "prettier": "npx prettier --write \"./src/**/*.{ts,js,css,json}\"",
     "example": "ws --rewrite '/* -> /dist/$1' --https",
@@ -57,8 +59,6 @@
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
     "prepare": "husky install",
-    "translations:missing": "./bin/translations.js missing",
-    "translations:coverage": "./bin/translations.js coverage"
   },
   "repository": {
     "type": "git",

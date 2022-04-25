@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"MIME-Version: 1.0\n"
+"mime-version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2019-07-31T14:46:41.067Z\n"
-"PO-Revision-Date: 2019-07-31T14:46:41.067Z\n"
+"POT-Creation-Date: 2022-04-25T14:31:37.183Z\n"
+"PO-Revision-Date: 2022-04-25T14:31:37.183Z\n"
 "Language: en_GB\n"
 
 msgid "Timeout"
@@ -66,6 +66,9 @@ msgstr "Form is not valid"
 msgid "Pay"
 msgstr "Pay"
 
+msgid "Please wait"
+msgstr "Please wait"
+
 msgid "Processing"
 msgstr "Processing"
 
@@ -74,3 +77,113 @@ msgstr "Invalid field"
 
 msgid "Card number is invalid"
 msgstr "Card number is invalid"
+
+msgid "You are not logged to Apple account"
+msgstr "You are not logged to Apple account"
+
+msgid ""
+"A target element for the input field with id could not be found. Please "
+"check your configuration"
+msgstr ""
+"A target element for the input field with id could not be found. Please "
+"check your configuration"
+
+msgid "Jwt has not been specified"
+msgstr "Jwt has not been specified"
+
+msgid ""
+"A target iframe-factory for the input field with id could not be found. "
+"Please check your configuration"
+msgstr ""
+"A target iframe-factory for the input field with id could not be found. "
+"Please check your configuration"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "MM/YY"
+msgstr "MM/YY"
+
+msgid "**** **** **** ****"
+msgstr "**** **** **** ****"
+
+msgid "***"
+msgstr "***"
+
+msgid "****"
+msgstr "****"
+
+msgid "Pay by Bank"
+msgstr "Pay by Bank"
+
+msgid "Add new card"
+msgstr "Add new card"
+
+msgid "Hello"
+msgstr "Hello"
+
+msgid "Not you?"
+msgstr "Not you?"
+
+msgid "Expiry date"
+msgstr "Expiry date"
+
+msgid "Welcome back to"
+msgstr "Welcome back to"
+
+msgid "Pay with confidence with trusted brands"
+msgstr "Pay with confidence with trusted brands"
+
+msgid ""
+"For an easy and smart checkout, simply click to pay whenever you see the "
+"Click to Pay icon <click-to-pay-icon>, and your card is accepted."
+msgstr ""
+"For an easy and smart checkout, simply click to pay whenever you see the "
+"Click to Pay icon <click-to-pay-icon>, and your card is accepted."
+
+msgid ""
+"You can choose to be remembered on your device and browser for faster "
+"checkout."
+msgstr ""
+"You can choose to be remembered on your device and browser for faster "
+"checkout."
+
+msgid ""
+"Built on industry standards for online transactions and supported by global "
+"payment brands."
+msgstr ""
+"Built on industry standards for online transactions and supported by global "
+"payment brands."
+
+msgid "Something went wrong, try again or use another email."
+msgstr "Something went wrong, try again or use another email."
+
+msgid "Account assigned to this email is currently not accessible"
+msgstr "Account assigned to this email is currently not accessible"
+
+msgid "The email address you have entered is not registered for Click to Pay."
+msgstr "The email address you have entered is not registered for Click to Pay."
+
+msgid "The code you have entered is incorrect."
+msgstr "The code you have entered is incorrect."
+
+msgid "Enter your email address to access your cards"
+msgstr "Enter your email address to access your cards"
+
+msgid "Email address"
+msgstr "Email address"
+
+msgid "Continue"
+msgstr "Continue"
+
+msgid "Confirm it is you."
+msgstr "Confirm it is you."
+
+msgid "Enter the one-time code Visa sent to"
+msgstr "Enter the one-time code Visa sent to"
+
+msgid "Resend"
+msgstr "Resend"
+
+msgid "Verify"
+msgstr "Verify"
