@@ -1,6 +1,6 @@
 import { BehaviorSubject, combineLatest, NEVER, Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { Service } from 'typedi';
-import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 import { SrcAggregate } from '../../digital-terminal/SrcAggregate';
 import { ICompleteIdValidationResponse, IInitiateIdentityValidationResponse } from '../../digital-terminal/ISrc';
@@ -77,7 +77,9 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
 
   private getSrcNameForEmail(emailSource: Observable<string>, srcAggregate: SrcAggregate, captureErrors: boolean): Observable<SrcName> {
     return emailSource.pipe(
+      switchMap(email => srcAggregate.unbindAppInstance().pipe(mapTo(email))),
       switchMap(email =>
+
         srcAggregate.identityLookup({
           type: 'EMAIL',
           identityValue: email,
