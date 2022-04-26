@@ -3,7 +3,7 @@ Feature: Visa Click To Pay
   I want to use Visa Click To Pay payment method
   In order to check full digital terminal functionality
 
-
+  @smoke_e2e_test
   Scenario: Successful checkout - Registered VISA CTP user on recognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -49,7 +49,7 @@ Feature: Visa Click To Pay
 #      | callback_type |
 #      | error         |
 #      | submit        |
-
+  @smoke_e2e_test
   Scenario: Cancel checkout - Registered VISA CTP user on recognized device
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -72,6 +72,7 @@ Feature: Visa Click To Pay
       | cancel        |
       | submit        |
 
+  @smoke_e2e_test
   Scenario: Successful checkout - Unregistered VISA CTP user on recognized device
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
