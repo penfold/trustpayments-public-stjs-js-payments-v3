@@ -22,7 +22,7 @@ export const testFormFieldsValues: HPPFormValues = {
   [HPPFormFieldName.billingPrefixName]: faker.name.prefix(),
   [HPPFormFieldName.billingPremise]: faker.address.streetAddress(),
   [HPPFormFieldName.billingStreet]: faker.address.streetName(),
-  [HPPFormFieldName.billingTelephone]: faker.phone.phoneNumber(),
+  [HPPFormFieldName.billingTelephone]: '555-555-555',
   [HPPFormFieldName.billingTelephoneType]: 'M',
   [HPPFormFieldName.billingTown]: faker.address.cityName(),
   [HPPFormFieldName.srcCardId]: undefined,
@@ -54,6 +54,7 @@ export const mockJwtPayload: IStJwtPayload = {
   billingsuffixname: faker.name.suffix(),
   billingtown: faker.address.cityName(),
   billingemail: faker.internet.email(),
+  billingtelephone: '+48 500 100 100',
 };
 
 export const expectedCheckoutDataFromForm: IInitialCheckoutData = {
@@ -97,6 +98,10 @@ export const expectedCheckoutDataFromJWT: IInitialCheckoutData = {
     consumerIdentity: {
       type: 'EMAIL',
       identityValue: mockJwtPayload.billingemail,
+    },
+    mobileNumber:{
+      phoneNumber:'500100100',
+      countryCode:'48',
     },
     emailAddress: mockJwtPayload.billingemail,
   },
@@ -174,3 +179,4 @@ export const expectedCheckoutDataCardFromJWT: IInitialCheckoutData = {
     panExpirationYear: jwtExpirationYear,
   },
 };
+

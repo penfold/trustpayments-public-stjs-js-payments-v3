@@ -4,21 +4,27 @@ import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitial
 import { JwtProvider } from '../../../../shared/services/jwt-provider/JwtProvider';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { HPPFormValues } from '../interfaces/HPPFormValues';
+import { PhoneNumberParser } from '../../../../shared/services/phone-number-parser/PhoneNumberParser';
 import { HPPFormFieldName } from './HPPFormFieldName';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
 import { HPPFormValuesProvider } from './HPPFormValuesProvider';
 import {
+  expectedCheckoutDataCardFromJWT,
   expectedCheckoutDataFromForm,
-  expectedCheckoutDataFromJWT, expectedCheckoutDataMixed, expectedCheckoutDataCardFromJWT,
-  mockJwtPayload, mockJwtPayloadOnlyCard,
+  expectedCheckoutDataFromJWT,
+  expectedCheckoutDataMixed,
+  mockJwtPayload,
+  mockJwtPayloadOnlyCard,
   testFormFieldsValues,
-  testFormFieldsValuesIncomplete, testFormValuesNoCard,
+  testFormFieldsValuesIncomplete,
+  testFormValuesNoCard,
 } from './HPPCheckoutDataProvider.mocks';
 // TODO tests should be extended with more cases
 describe('HPPCheckoutDataProvider()', () => {
   const testFormId = 'ctp-form';
   let jwtProviderMock: JwtProvider;
   let hppFormValuesProviderMock: HPPFormValuesProvider;
+  let phoneNumberParserMock: PhoneNumberParser;
   let sut: HPPCheckoutDataProvider;
   let testForm: HTMLFormElement;
   let submitEvent;
@@ -35,11 +41,16 @@ describe('HPPCheckoutDataProvider()', () => {
     submitEvent.preventDefault = jest.fn();
     jwtProviderMock = mock(JwtProvider);
     hppFormValuesProviderMock = mock(HPPFormValuesProvider);
+    phoneNumberParserMock = mock(PhoneNumberParser);
     when(hppFormValuesProviderMock.getFormValues(anything())).thenReturn(testFormFieldsValues);
     when(jwtProviderMock.getJwtPayload()).thenReturn(of({} as IStJwtPayload));
     when(hppFormValuesProviderMock.isRegisterCardEnabled(anything())).thenReturn(true);
     when(hppFormValuesProviderMock.isCardListVisible(anything())).thenReturn(false);
-    sut = new HPPCheckoutDataProvider(instance(jwtProviderMock), instance(hppFormValuesProviderMock));
+    when(phoneNumberParserMock.decodePhoneNumber(mockJwtPayload.billingtelephone)).thenReturn({
+      phoneNumber: '500100100',
+      countryCode: '48',
+    });
+    sut = new HPPCheckoutDataProvider(instance(jwtProviderMock), instance(hppFormValuesProviderMock), instance(phoneNumberParserMock));
   });
 
   describe('init()', () => {
@@ -141,7 +152,7 @@ describe('HPPCheckoutDataProvider()', () => {
       // TODO Disabled temporarily
       it.skip('should not interrupt default submit event behavior', () => {
         const submitEvent2 = new Event('submit');
-        submitEvent2.preventDefault = jest.fn()
+        submitEvent2.preventDefault = jest.fn();
         sut.getCheckoutData(testFormId).subscribe();
         testForm.dispatchEvent(submitEvent2);
         expect(submitEvent2.preventDefault).not.toHaveBeenCalled();
