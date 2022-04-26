@@ -58,7 +58,7 @@
     "example:vue:start": "run-p start:bundle example:vue:dev",
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
-    "prepare": "husky install",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
