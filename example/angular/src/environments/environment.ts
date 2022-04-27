@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   libraryUrl: 'https://localhost:8443/st.js',
   configUrl: '/assets/config.json',
-  jwtDataUrl: '/assets/jwtdata.json'
+  jwtDataUrl: '/assets/jwtdata.json',
+  jwtTokenizedUrl: (card) => `/assets/${card}-tokenizedJwtData.json`,
 };
 
 /*
