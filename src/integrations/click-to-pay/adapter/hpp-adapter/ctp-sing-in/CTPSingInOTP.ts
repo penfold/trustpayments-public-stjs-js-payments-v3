@@ -3,7 +3,7 @@ import { ITranslator } from '../../../../../application/core/shared/translator/I
 import { IInitiateIdentityValidationResponse } from '../../../digital-terminal/ISrc';
 
 const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
-const visa = require( '../../../../../application/core/services/icon/images/visa.svg');
+const visa = require('../../../../../application/core/services/icon/images/visa.svg');
 const mastercard = require('../../../../../application/core/services/icon/images/mastercard.svg');
 const amex = require('../../../../../application/core/services/icon/images/amex.svg');
 const discover = require('../../../../../application/core/services/icon/images/discover.svg');
@@ -20,8 +20,7 @@ export class CTPSIgnInOTP {
   private cancelCallback: () => void;
   private otpInputsNames = new Array(6).fill('').map((value, index) => `${this.fieldName}${index}`);
 
-  constructor(private translator: ITranslator) {
-  }
+  constructor(private translator: ITranslator) {}
 
   setContainer(containerId: string) {
     this.container = document.getElementById(containerId);
@@ -46,7 +45,11 @@ export class CTPSIgnInOTP {
     this.cancelCallback = callback;
   }
 
-  show(validationResponse: IInitiateIdentityValidationResponse, resultSubject: Subject<string>, resendSubject: Subject<boolean>) {
+  show(
+    validationResponse: IInitiateIdentityValidationResponse,
+    resultSubject: Subject<string>,
+    resendSubject: Subject<boolean>
+  ) {
     const formElement = document.createElement('form');
     const wrapperElement = document.createElement('div');
     formElement.addEventListener('submit', event => {
@@ -74,7 +77,24 @@ export class CTPSIgnInOTP {
         <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
       </div>
       <div class="st-hpp-prompt__title">Confirm it is you.</div>
-      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>${this.translator.translate('phone')} ${validationChannels[1]}<br/>${this.translator.translate('Email')} ${validationChannels[0]}</div>
+      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>
+        ${
+          validationChannels[0]
+            ? this.translator.translate(this.checkValidationChannelType(validationChannels[0])) +
+              ' ' +
+              validationChannels[0] +
+              '<br/>'
+            : ''
+        }
+        ${
+          validationChannels[1]
+            ? this.translator.translate(this.checkValidationChannelType(validationChannels[1])) +
+              ' ' +
+              validationChannels[1] +
+              '<br/>'
+            : ''
+        }
+        </div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
       <span class="${this.errorFieldClass} st-hpp-prompt__otp-input-error"></span>
@@ -107,6 +127,14 @@ export class CTPSIgnInOTP {
     wrapperElement.appendChild(formElement);
     this.container.appendChild(wrapperElement);
     (formElement.querySelector('input:first-of-type') as HTMLInputElement)?.focus();
+  }
+
+  private checkValidationChannelType(channel: any): string {
+    if (typeof channel === 'string') {
+      return channel.indexOf('@') !== -1 ? 'Email' : 'phone';
+    } else if (channel === 'object') {
+      return 'phone';
+    }
   }
 
   private setInputListener(input: HTMLInputElement) {

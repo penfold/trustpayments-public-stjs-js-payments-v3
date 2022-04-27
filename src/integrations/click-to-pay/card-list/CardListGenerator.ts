@@ -19,6 +19,11 @@ import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallb
 import { NewCardFieldName } from './NewCardFieldName';
 import './CardListGenerator.scss';
 
+const visa = require('../../../application/core/services/icon/images/visa.svg');
+const mastercard = require('../../../application/core/services/icon/images/mastercard.svg');
+const amex = require('../../../application/core/services/icon/images/amex.svg');
+const discover = require('../../../application/core/services/icon/images/discover.svg');
+
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
 @Service()
@@ -166,6 +171,17 @@ export class CardListGenerator {
       </div>
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
         ${emailAddress} (<span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('not you?')}</span>)
+      </div>
+      <div class="st-ctp-enabled-by">
+        <span class="st-ctp-enabled-by-label">enabled by</span>
+        <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
+        <img src="${visa}" class="st-ctp-prompt__logo-img" alt="">
+        <img src="${mastercard}" class="st-ctp-prompt__logo-img" alt="">
+        <img src="${amex}" class="st-ctp-prompt__logo-img" alt="" style="filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)">
+        <img src="${discover}" class="st-ctp-prompt__logo-img" alt="">
+      </div>
+      <div class="st-ctp-select-card">
+        Select a card to proceed
       </div>
     `;
   }

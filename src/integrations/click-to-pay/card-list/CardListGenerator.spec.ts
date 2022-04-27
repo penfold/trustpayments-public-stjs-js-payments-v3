@@ -135,6 +135,17 @@ describe('CardListGenerator', () => {
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
         s*****@test.com (<span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">not you?</span>)
       </div>
+      <div class="st-ctp-enabled-by">
+        <span class="st-ctp-enabled-by-label">enabled by</span>
+        <img src="test-file-stub" class="st-ctp-prompt__logo-img" alt="">
+        <img src="test-file-stub" class="st-ctp-prompt__logo-img" alt="">
+        <img src="test-file-stub" class="st-ctp-prompt__logo-img" alt="">
+        <img src="test-file-stub" class="st-ctp-prompt__logo-img" alt="" style="filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)">
+        <img src="test-file-stub" class="st-ctp-prompt__logo-img" alt="">
+      </div>
+      <div class="st-ctp-select-card">
+        Select a card to proceed
+      </div>
     </div></div></body>`;
     document.body.innerHTML = '<div id="test-id"></div>';
 

@@ -12,6 +12,7 @@
   border: solid 1px gray;
   display: none;
   font-size: 12px;
+  font-weight: normal;
   line-height: 16px;
   padding: 10px 10px 20px 10px;
   position: absolute;
@@ -44,9 +45,9 @@
   align-items: center;
   display: flex;
   font-size: 18px;
-  font-wieght: 800;
+  font-weight: 800;
   justify-content: center;
-  line-height: 18px;
+  line-height: 32px;
   position: relative;
 }
 
@@ -234,6 +235,7 @@
   color: rgb(132, 132, 132);
   display: flex;
   justify-content: center;
+  line-height: 32px;
 }
 
 .st-ctp-user-details__image {
@@ -253,4 +255,24 @@
   font-size: 16px;
   font-weight: bold;
   transition: .3s;
+}
+
+.st-ctp-enabled-by {
+  align-items: center;
+  color: rgb(132, 132, 132);
+  display: flex;
+  font-size: 10px;
+  justify-content: center;
+  line-height: 32px;
+}
+
+.st-ctp-enabled-by-label {
+  margin-right: 8px;
+}
+
+.st-ctp-select-card {
+  display: flex;
+  font-size: 24px;
+  justify-content: center;
+  line-height: 32px;
 }
