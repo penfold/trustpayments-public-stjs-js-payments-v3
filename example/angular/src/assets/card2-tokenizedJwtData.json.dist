@@ -1,0 +1,17 @@
+{
+  "iat": 1592298893548,
+  "iss": "test",
+  "secret": "test",
+  "payload": {
+    "baseamount": "70000",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "GBP",
+    "locale": "en_GB",
+    "requesttypedescriptions": [
+      "THREEDQUERY",
+      "AUTH"
+    ],
+    "credentialsonfile": "2",
+    "parenttransactionreference": "57-9-2202991"
+  }
+}

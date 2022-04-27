@@ -1,10 +1,10 @@
 {
   "analytics": true,
-  "animatedCard": true,
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "buy",
-    "merchantId": "",
+    "buttonPlacement": "st-apple-pay",
+    "merchantId": "merchantId",
     "paymentRequest": {
       "countryCode": "US",
       "currencyCode": "USD",
@@ -13,24 +13,16 @@
         "supportsCredit",
         "supportsDebit"
       ],
-      "requestTypes": [
-        "RISKDEC",
-        "ACCOUNTCHECK",
-        "AUTH"
-      ],
       "supportedNetworks": [],
       "total": {
-        "label": "Secure Trading Merchant",
+        "label": "Trust Payments Merchant",
         "amount": "10.00"
       }
     },
     "placement": "st-apple-pay"
   },
+  "animatedCard": true,
   "buttonId": "merchant-submit-button",
-  "bypassCards": [
-    "PIBA"
-  ],
-  "cancelCallback": null,
   "componentIds": {
     "animatedCard": "",
     "cardNumber": "",
@@ -40,12 +32,6 @@
   },
   "components": {
     "defaultPaymentType": "",
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH"
-    ],
     "paymentTypes": [],
     "startOnLoad": false
   },
@@ -53,7 +39,6 @@
   "datacenterurl": "",
   "deferInit": false,
   "disableNotification": false,
-  "errorCallback": null,
   "errorReporting": false,
   "fieldsToSubmit": [
     "pan",
@@ -69,9 +54,9 @@
       "buttonLocale": "en"
     },
     "paymentRequest": {
-      "allowedPaymentMethods": {
+      "allowedPaymentMethods": [{
         "parameters": {
-          "allowedCardAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
           "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"]
         },
         "tokenizationSpecification": {
@@ -82,7 +67,7 @@
           "type": "PAYMENT_GATEWAY"
         },
         "type": "CARD"
-      },
+      }],
       "apiVersion": 2,
       "apiVersionMinor": 0,
       "merchantInfo": {
@@ -90,8 +75,8 @@
         "merchantName": "merchang"
       },
       "transactionInfo": {
-        "countryCode": "pl",
-        "currencyCode": "pln",
+        "countryCode": "US",
+        "currencyCode": "USD",
         "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
         "totalPriceStatus": "FINAL",
         "totalPrice": "10.00",
@@ -142,12 +127,10 @@
       "color-error": "#3358FF"
     }
   },
-  "submitCallback": null,
   "submitFields": [],
   "submitOnSuccess": false,
   "submitOnError": false,
   "submitOnCancel": false,
-  "successCallback": null,
   "translations": {
     "An error occurred": "Wystąpił błąd"
   },
@@ -157,16 +140,11 @@
       "color": "neutral"
     },
     "livestatus": 0,
-    "merchantId": "",
+    "merchantId": "merchantId",
     "paymentRequest": {
       "subtotal": "20.00"
     },
     "placement": "st-visa-checkout",
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "AUTH"
-    ],
     "settings": {
       "displayName": "My Test Site"
     }
