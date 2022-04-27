@@ -160,7 +160,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@babel/runtime": "7.17.9",
-    "@sentry/browser": "6.19.6",
+    "@sentry/browser": "6.19.7",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/3ds-sdk-js": "1.2.42",
     "@trustpayments/http-client": "2.0.135",
