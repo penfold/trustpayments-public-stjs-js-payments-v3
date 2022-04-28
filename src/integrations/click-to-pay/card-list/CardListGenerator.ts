@@ -233,10 +233,12 @@ export class CardListGenerator {
   }
 
   private clearForm(): void {
-    (document.getElementById('vctp-cvv') as HTMLInputElement).value = '';
-    (document.getElementById('vctp-pan') as HTMLInputElement).value = '';
-    (document.getElementById('vctp-expiryDateMonthId') as HTMLSelectElement).value = '';
-    (document.getElementById('vctp-expiryDateYearId') as HTMLSelectElement).value = '';
+    const newCardFormFieldNames = [NewCardFieldName.pan, NewCardFieldName.securityCode, NewCardFieldName.expiryYear, NewCardFieldName.expiryMonth];
+
+    newCardFormFieldNames
+      .map(name => document.querySelector(`[name="${name}"]`))
+      .filter(Boolean)
+      .forEach((inputElement: HTMLInputElement | HTMLSelectElement) => inputElement.value = '');
     this.panValidationStatus.next(true);
   }
 
