@@ -1,5 +1,6 @@
 import json
 from urllib.parse import quote
+
 from configuration import CONFIGURATION
 
 
@@ -14,6 +15,15 @@ def create_inline_config(config_dict, jwt):
         inline_config = ('inlineConfig=' + json.dumps(config_dict)).replace(': ', ':').replace(', ', ',')
     else:
         inline_config = 'inlineConfig=' + encode_url(json.dumps(config_dict))
+    return inline_config
+
+
+def create_tokenized_inline_config(jwt):
+    # config_dict['jwt'] = jwt
+    # if 'IE' in CONFIGURATION.BROWSER:
+    #     inline_config = ('inlineTokenizedJwt=' + json.dumps(config_dict)).replace(': ', ':').replace(', ', ',')
+    # else:
+    inline_config = 'inlineTokenizedJwt=' + encode_url(jwt)
     return inline_config
 
 

@@ -26,7 +26,7 @@ e2e-card-payments-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 26
+  parallel: 27
 
 e2e-card-payments-tests-release:
   extends:
@@ -36,7 +36,7 @@ e2e-card-payments-tests-release:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 26
+  parallel: 27
 
 # Cardinal Commerce E2E Tests Headless
 .e2e-cardinal-commerce-tests-review:
@@ -99,6 +99,27 @@ e2e-apms-tests-release:
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
   parallel: 20
+
+#Visa Click to Pay E2E Tests Headless
+e2e-vctp-tests-review:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review
+    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
+  parallel: 6
+
+e2e-vctp-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
+  parallel: 6
 
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:

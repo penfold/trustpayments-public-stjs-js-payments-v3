@@ -7,6 +7,7 @@ from pages.payment_methods_page_mock import PaymentMethodsPageMock
 from pages.reactjs_page import ReactjsPage
 from pages.three_ds_page import ThreeDsPage
 from pages.visa_checkout_page import VisaCheckoutPage
+from pages.tokenized_jwt_module_payment_page import TokenizedJwtModulePaymentPage
 from pages.visa_ctp_page import VisaClickToPayPage
 
 
@@ -19,6 +20,7 @@ class Pages(Enum):
     APM_MODULE_PAYMENT_PAGE = ApmModulePaymentPage
     REACTJS_PAGE = ReactjsPage
     THREE_DS_PAGE = ThreeDsPage
+    TOKENIZED_JWT_MODULE_PAYMENT_PAGE = TokenizedJwtModulePaymentPage
     VISA_CTP_PAGE = VisaClickToPayPage
 
 

@@ -170,6 +170,7 @@ class Actions:
         return css_value
 
     def clear_input(self, locator):
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.clear()
 

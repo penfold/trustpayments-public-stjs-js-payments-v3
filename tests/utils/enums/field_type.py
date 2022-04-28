@@ -21,3 +21,5 @@ class FieldType(Enum):
     EMAIL = auto()
     PHONE = auto()
     CARD_ICON = auto()
+    TOKENIZED_SECURITY_CODE = 'st-security-code-tokenized-iframe'
+    TOKENIZED_SUBMIT_BUTTON = 'tokenized-submit-button'

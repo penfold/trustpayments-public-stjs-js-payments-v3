@@ -52,7 +52,6 @@ export class SecurityCode extends Input {
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = this.getPlaceholder(this.securityCodeLength);
       this.inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
-
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
       if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
         styler.addStyles([

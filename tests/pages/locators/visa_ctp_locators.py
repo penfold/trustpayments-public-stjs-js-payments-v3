@@ -28,21 +28,31 @@ class VisaClickToPayLocators:
     email_input: By = (By.NAME, 'st-ctp-email')
     submit_email_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
     submit_otp_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
-    otp_input: By = (By.NAME, 'st-ctp-code')
     resend_otp_btn: By = (By.ID, 'st-ctp-opt-resend')
-    validation_message: By = (By.XPATH, '//div[@class=\'st-hpp-prompt__notification\']')
+    login_validation_message: By = (By.XPATH, '//span[contains(@class,\'field-error\')]')
+    login_invalid_input: By = (By.XPATH, '//label[contains(@class,\'field--invalid\')]')
+    otp_validation_message: By = (By.XPATH, '//span[contains(@class,\'otp-input-error\')]')
+    otp_invalid_input: By = (By.XPATH, '//div[contains(@class,\'otp-inputs--invalid\')]')
     cancel_btn: By = (By.ID, 'st-hpp-prompt__close-btn')
+
+    @classmethod
+    def get_otp_input_field(cls, value) -> By.XPATH:
+        return By.XPATH, f'//input[@name=\'st-ctp-code{value}\']'
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
     cards_section: By = (By.XPATH, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
-    card_number_modal_input: By = (By.ID, 'pan')
-    expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
-    expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
-    security_code_modal_input: By = (By.ID, 'cvv')
+    pan_input: By = (By.ID, 'vctp-pan')
+    expiry_date_list_month: By = (By.ID, 'vctp-expiryDateMonthId')
+    expiry_date_list_year: By = (By.ID, 'vctp-expiryDateYearId')
+    cvv_input: By = (By.ID, 'vctp-cvv')
     masked_card_number_list: By = (By.XPATH, '//span[@class=\'st-card__description\']')
-    card_validation_message: By = (By.ID, 'pan-validation-status')
+    card_validation_message: By = (By.ID, 'vctp-pan-validation-status')
     not_you_btn: By = (By.ID, 'st-ctp-user-details__not--you')
+    merchant_submit_label: By = (By.ID, 'merchant-submit-label')
+    info_button: By = (By.XPATH, '//*[@id="st-ctp-welcome__info-icon"]')
+    info_popup_elements: By = (By.XPATH, '//*[@id="st-tooltip"]/div')
+    info_popup_close_button: By = (By.XPATH, '//*[@id="st-tooltip__close-button"]')
 
     @classmethod
     def get_masked_card_number_locator_from_cards_list(cls, value) -> By.XPATH:
@@ -69,6 +79,14 @@ class VisaClickToPayLocators:
     pay_now_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
     remember_me_checkbox: By = (By.XPATH, '//label[@for=\'remember-me\']')
     cancel_checkout_btn: By = (By.XPATH, '//button[@aria-label=\'Cancel and return to merchant\']')
+    terms_of_service_checkbox: By = (By.XPATH, '//label[@for=\'termsOfService\']/div[1]')
+    first_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'firstName\')]')
+    last_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'lastName\')]')
+    street_name_placeholder: By = (By.XPATH, '//label[contains(@for, \'line1\')]')
+    street_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'streetNumber\')]')
+    phone_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'phone-number-field\')]')
+    email_address_placeholder: By = (
+    By.XPATH, '//div[contains(@class, \'formControl\')]/label[contains(@for, \'email\')]')
 
     # Alternative methods
     card_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-card-row\']//button[contains(@id,\'menubutton\')]')
@@ -78,7 +96,7 @@ class VisaClickToPayLocators:
     address_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-address-row\']//button[contains(@id,\'menubutton\')]')
     switch_address_btn: By = (By.XPATH, '//button[@aria-label=\'Switch Delivery Address\']')
     delete_address_btn: By = (By.XPATH, '//button[@aria-label=\'Delete Delivery Address\']')
-    add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
+    add_address_btn: By = (By.XPATH, '//button[@aria-label=\'Add Delivery Address\']')
     add_new_address_plus_btn: By = (By.XPATH, '//button[@aria-label=\'Add new\']')
     order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
     cvv_input_on_visa_popup: By = (By.ID, 'code')
@@ -92,11 +110,15 @@ class VisaClickToPayLocators:
     card_update_success_message: By = (By.XPATH,
                                        '//*[@id="app"]//div/p/span[2][contains(text(), \'success\')]')
     address_success_delete_message: By = (By.XPATH,
-                                          '//*[@id="app"//span[contains(text(), \'Your address was deleted '
-                                          'successfully\')]')
+                                          '//span[contains(text(), \'Your address was deleted successfully\')]')
     add_address_popup_btn: By = (By.XPATH, '//button[@aria-label=\'Add Address\']')
-    sign_out_btn: By = (By.XPATH, '//*[@id="app"]//section//section[1]/div//button[contains(@aria-label, \'account information\')]')
+    sign_out_btn: By = (
+        By.XPATH, '//*[@id="app"]//section//section[1]/div//button[contains(@aria-label, \'account information\')]')
     sign_out_btn_confirm: By = (By.XPATH, '//*[@id="app"]//section//section[1]//div//ul//button')
+    card_number_modal_input: By = (By.ID, 'pan')
+    expiry_date_list_month_modal: By = (By.ID, 'expiryDateMonthId')
+    expiry_date_list_year_modal: By = (By.ID, 'expiryDateYearId')
+    security_code_modal_input: By = (By.ID, 'cvv')
 
     @classmethod
     def get_available_address_from_list(cls, value) -> By.XPATH:
@@ -109,8 +131,6 @@ class VisaClickToPayLocators:
     edit_card_unregistered_btn: By = (
         By.XPATH, '//*[@id="app"]//section/main//form/section[1]'
                   '//button[contains(@name, \'btnReturn\')]')
-    edit_address_unregistered_btn: By = (
-        By.XPATH, '//*[@id="app"]//section/main//section'
-                  '//button[contains(@aria-label, \'Edit Delivery Address\')]')
+    edit_address_unregistered_btn: By = (By.XPATH, '//button[@aria-label=\'EDIT DELIVERY ADDRESS\']')
     close_warning_banner_btn: By = (By.XPATH, '//*[@id="app"]//section/main/div[1]/section'
                                               '//button[contains(@title, \'Close Banner\')]')

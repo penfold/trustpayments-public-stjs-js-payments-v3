@@ -1,12 +1,14 @@
 # type: ignore[no-redef]
 
-from assertpy import assert_that
-from behave import use_step_matcher, step
-from behave import when
+from assertpy import assert_that, soft_assertions
+from behave import use_step_matcher, step, then
 
+from configuration import CONFIGURATION
+from pages.locators.visa_ctp_locators import VisaClickToPayLocators
 from pages.page_factory import Pages
 from utils.enums.card import Card
-from utils.helpers.gmail_service import EMAIL_LOGIN
+from utils.enums.shared_dict_keys import SharedDictKey
+from utils.helpers.request_executor import add_to_shared_dict
 from utils.helpers.resources_reader import get_translation_from_json
 
 use_step_matcher('re')
@@ -56,11 +58,16 @@ def step_impl(context, param):
 def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     email = {
-        'valid': EMAIL_LOGIN,
+        'valid': CONFIGURATION.VCTP_EMAIL_1,
         'not registered': 'notregistered@testemail.com',
         'invalid format': 'test@123',
-        'empty': ''
+        'empty': '',
+        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
+        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
+        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
+        'vctp_4': CONFIGURATION.VCTP_EMAIL_4
     }
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
     vctp_page.fill_email_input(email[email_state])
     vctp_page.click_submit_email_btn()
 
@@ -68,14 +75,14 @@ def step_impl(context, email_state):
 @step('User fills VISA_CTP one time password')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    vctp_page.fill_otp_field_and_check()
+    vctp_page.get_code_and_fill_otp_field()
 
 
 @step('User fills (?P<otp>.+) VISA_CTP one time password')
 def step_impl(context, otp):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     if otp in 'valid':
-        vctp_page.fill_otp_field_and_check()
+        vctp_page.get_code_and_fill_otp_field()
     elif otp in 'incorrect':
         vctp_page.fill_otp_field('111111')
         vctp_page.click_submit_otp_btn()
@@ -125,10 +132,17 @@ def step_impl(context):
     vctp_page.click_add_new_card_btn()
 
 
-@step('User will see validation message "(?P<expected_message>.+)"')
+@step('User will see otp validation message "(?P<expected_message>.+)"')
 def step_impl(context, expected_message):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    actual_message = vctp_page.get_validation_message()
+    actual_message = vctp_page.get_otp_validation_message()
+    assert_that(expected_message).is_equal_to(actual_message)
+
+
+@step('User will see login validation message "(?P<expected_message>.+)"')
+def step_impl(context, expected_message):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    actual_message = vctp_page.get_login_validation_message()
     assert_that(expected_message).is_equal_to(actual_message)
 
 
@@ -163,42 +177,53 @@ def step_impl(context):
     assert_that(context.otp_after_first_login).is_equal_to(context.otp_after_resend)
 
 
-@step('User login to VISA_CTP account with valid credentials')
-def step_impl(context):
+@step('User login to (?P<email_state>.+) account with valid credentials')
+def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    vctp_page.fill_email_input(EMAIL_LOGIN)
+    email = {
+        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
+        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
+        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
+        'vctp_4': CONFIGURATION.VCTP_EMAIL_4,
+    }
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
+    vctp_page.fill_email_input(email[email_state])
     vctp_page.click_submit_email_btn()
-    vctp_page.fill_otp_field_and_check()
+    vctp_page.get_code_and_fill_otp_field()
 
 
 @step('User reviews VISA_CTP checkout page (?P<register>.+)')
 def step_impl(context, register):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     # for registered user
-    if register in 'and confirm with remember me':
+    if register == 'and confirm with remember me':
         vctp_page.click_remember_me_checkbox(True)
         vctp_page.confirm_payment()
         vctp_page.fill_cvv_field_on_visa_popup()
     # for registered user
-    elif register in 'and continues payment':
+    elif register == 'and continues payment':
         vctp_page.click_pay_now_btn()
         vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
-    elif register in 'and confirm payment':
+    elif register == 'and confirm payment':
+        vctp_page.click_terms_of_service_checkbox()
         vctp_page.confirm_payment()
         vctp_page.fill_cvv_field_on_visa_popup()
     # for unregistered user
-    if register in 'and confirm without remember me':
+    if register == 'and confirm with remember me option':
+        vctp_page.click_terms_of_service_checkbox()
         vctp_page.click_remember_me_checkbox(False)
         vctp_page.confirm_payment()
         vctp_page.fill_cvv_field_on_visa_popup()
-    elif register in 'and cancels payment':
+    elif register == 'and cancels payment':
         vctp_page.click_cancel_checkout_btn()
+    vctp_page.wait_for_visa_popup_to_disappear()
 
 
 @step('User see that first card on the list is (?P<is_selected>.+)')
 def step_impl(context, is_selected):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    context.pan = vctp_page.get_masked_card_number_from_card_list('1')
     if is_selected in 'auto-selected':
         assert_that(vctp_page.is_first_card_auto_selected()).is_true()
     elif is_selected in 'not selected':
@@ -206,6 +231,14 @@ def step_impl(context, is_selected):
 
 
 @step('User fills card details with defined card (?P<card>.+)')
+def step_impl(context, card):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
+    context.pan = str(card.number)
+    vctp_page.fill_card_details_on_card_list_view(card.number, card.expiration_date, card.cvv)
+
+
+@step('User fills card details in visa modal with defined card (?P<card>.+)')
 def step_impl(context, card):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
@@ -231,8 +264,9 @@ def step_impl(context):
 @step('User will not see previously added card in card list')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    masked_card_number = vctp_page.get_masked_card_number_from_card_list('1')
     expected_card_number = context.pan[-4:]
+    vctp_page.wait_until_removed_card_is_not_visible_on_card_list(expected_card_number)
+    masked_card_number = vctp_page.get_masked_card_number_from_card_list('1')
     assert_that(expected_card_number).is_not_equal_to(masked_card_number)
 
 
@@ -286,6 +320,7 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.click_add_card_btn()
+    vctp_page.wait_for_visa_popup_to_disappear()
 
 
 @step('User selects Edit card on VISA_CTP popup')
@@ -313,6 +348,7 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.click_switch_card_details()
+    vctp_page.wait_for_visa_popup_to_disappear()
 
 
 @step('User is not recognized by VISA_CTP')
@@ -336,7 +372,7 @@ def step_impl(context, expiration_date, security_code):
     vctp_page.verify_update_card_success_message()
 
 
-@when('User selects Switch address on VISA_CTP popup')
+@step('User selects Switch address on VISA_CTP popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_address_menu_btn()
@@ -369,7 +405,7 @@ def step_impl(context):
 
 
 # step for unregistered user
-@when('User edits address details on VISA_CTP popup')
+@step('User edits address details on VISA_CTP popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_edit_address_as_unregistered_user()
@@ -396,7 +432,61 @@ def step_impl(context):
     vctp_page.clear_payment_form()
 
 
-@when('User signs out from VISA_CTP on popup')
+@step('User see that submit button label indicates selected card')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    button_label = vctp_page.get_submit_button_label()
+    merchant_submit_label = vctp_page.get_merchant_submit_label()
+    assert_that(button_label).contains(context.pan)
+    assert_that(merchant_submit_label).is_equal_to('Your visa payment is enabled by Click to Pay')
+
+
+@step('User see default submit button label')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    button_label = vctp_page.get_submit_button_label()
+    merchant_submit_label = vctp_page.get_merchant_submit_label()
+    assert_that(button_label).is_equal_to('Pay securely')
+    assert_that(merchant_submit_label).is_equal_to('We accept VISA')
+
+
+@step('User fills phone number field on Visa popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.fill_phone_number_field()
+    vctp_page.confirm_payment()
+
+
+@step('User signs out from VISA_CTP on popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_sign_out()
+
+
+@then('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
+def step_impl(context, language):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    labels = {
+        'Visa first name label': VisaClickToPayLocators.first_name_placeholder,
+        'Visa last name label': VisaClickToPayLocators.last_name_placeholder,
+        'Visa street name label': VisaClickToPayLocators.street_name_placeholder,
+        'Visa street number label': VisaClickToPayLocators.street_number_placeholder,
+        'Visa e-mail address label': VisaClickToPayLocators.email_address_placeholder,
+        'Visa Pay now button': VisaClickToPayLocators.pay_now_btn,
+    }
+    with soft_assertions():
+        for row in context.table:
+            vctp_page.validate_visa_ctp_translation(labels[row['fields']], language, row['fields'])
+
+
+@then('User can open additional information hint')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_more_information_hint_button()
+
+
+@step('User can get acquainted with VISA_CTP details')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.verify_visa_info_popup_elements()
+    vctp_page.click_close_more_information_hint()

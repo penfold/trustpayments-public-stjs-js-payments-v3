@@ -448,7 +448,7 @@
             <abbr title="required" aria-label="required">*</abbr>
           </label>
           <div class="st-form-expiry-date-wrapper">
-            <select name="expirymonth" id="st-form-expiry-date-month" class="st-form__input" required >
+            <select name="expirymonth" id="st-form-expiry-date-month" class="st-form__input" required>
               <option selected="selected" value=""></option>
               <option value="01">01</option>
               <option value="02">02</option>
@@ -463,7 +463,7 @@
               <option value="11">11</option>
               <option value="12">12</option>
             </select>
-            <select name="expiryyear" id="st-form-expiry-date-year" class="st-form__input" required >
+            <select name="expiryyear" id="st-form-expiry-date-year" class="st-form__input" required>
               <option selected="selected" value=""></option>
               <option value="2022">2022</option>
               <option value="2023">2023</option>
@@ -497,7 +497,7 @@
           <input type="text" name="securitycode" id="st-form-security-code" class="st-form__input" required />
         </div>
         <div class="st-form__actions--wrapper">
-          <div class="st-form__visa--ctp">
+          <div class="st-form__visa--ctp hidden">
             <p>Click to pay <span id="st-ctp-separator">|</span> <span id="st-ctp-lookup-btn">Look up my cards</span>
             </p>
             <div id="st-ctp-registration">
@@ -664,6 +664,8 @@
           adapterInstance.showCardList().catch(error => {
             console.error(error);
           });
+        } else {
+          enableClickToPayForNotRecognizedUser();
         }
       }).catch(error => {
         console.error(error);
@@ -675,25 +677,25 @@
     }
 
     function inputHandler(adapterInstance) {
-      return function (event) {
+      return function(event) {
         if (event.target.value) {
           const cardType = adapterInstance.getSrcName(event.target.value);
-          cardType.then(function (srcName) {
+          cardType.then(function(srcName) {
             srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
           });
         } else {
           showCheckToRegisterSection();
         }
-      }
+      };
     }
 
     function hideCheckToRegisterSection() {
-      document.getElementById('st-ctp-registration').style.display = "none"
+      document.getElementById('st-ctp-registration').style.display = 'none';
       document.getElementById('register').checked = false;
     }
 
     function showCheckToRegisterSection() {
-      document.getElementById('st-ctp-registration').style.display = "block"
+      document.getElementById('st-ctp-registration').style.display = 'block';
     }
 
     function onUpdateView(updateView) {
@@ -710,13 +712,14 @@
       }
 
       if (updateView.displayCardType) {
-        merchantSubmitLabel.innerHTML = `Your ${updateView.displayCardType} payment is enabled by Click to Pay`
+        merchantSubmitLabel.innerHTML = `Your ${updateView.displayCardType} payment is enabled by Click to Pay`;
       } else {
         merchantSubmitLabel.innerHTML = 'We accept VISA';
       }
 
       if (updateView.displayCardForm === true) {
         cardDetailsElement.classList.remove('hidden');
+        enableClickToPayForNotRecognizedUser();
       } else {
         cardDetailsElement.classList.add('hidden');
       }
@@ -728,8 +731,8 @@
       }
     }
 
-    function onCheckout(checkoutResult){
-      console.log('CTP - cecheckout result: ', checkoutResult)
+    function onCheckout(checkoutResult) {
+      console.log('CTP - cecheckout result: ', checkoutResult);
     }
 
     function onCheckout(checkoutResult) {
@@ -758,6 +761,10 @@
           config[callbackKey] = null;
         }
       });
+    }
+
+    function enableClickToPayForNotRecognizedUser() {
+      document.querySelector('.st-form__visa--ctp').classList.remove('hidden');
     }
   });
 </script>

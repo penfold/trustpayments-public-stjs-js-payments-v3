@@ -12,17 +12,17 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "13.3.1",
-    "@angular/cdk": "13.3.2",
-    "@angular/common": "13.3.1",
-    "@angular/compiler": "13.3.1",
-    "@angular/core": "13.3.1",
+    "@angular/animations": "13.3.3",
+    "@angular/cdk": "13.3.3",
+    "@angular/common": "13.3.3",
+    "@angular/compiler": "13.3.3",
+    "@angular/core": "13.3.3",
     "@angular/flex-layout": "13.0.0-beta.36",
-    "@angular/forms": "13.3.1",
-    "@angular/material": "13.3.2",
-    "@angular/platform-browser": "13.3.1",
-    "@angular/platform-browser-dynamic": "13.3.1",
-    "@angular/router": "13.3.1",
+    "@angular/forms": "13.3.3",
+    "@angular/material": "13.3.3",
+    "@angular/platform-browser": "13.3.3",
+    "@angular/platform-browser-dynamic": "13.3.3",
+    "@angular/router": "13.3.3",
     "@trustpayments/jwt-generator": "2.0.135",
     "rxjs": "7.5.1",
     "tslib": "2.3.1",
@@ -30,9 +30,9 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "13.0.0",
-    "@angular-devkit/build-angular": "13.3.1",
-    "@angular/cli": "13.3.1",
-    "@angular/compiler-cli": "13.3.1",
+    "@angular-devkit/build-angular": "13.3.3",
+    "@angular/cli": "13.3.3",
+    "@angular/compiler-cli": "13.3.3",
     "@types/node": "16.11.19",
     "buffer": "6.0.3",
     "codelyzer": "6.0.2",
@@ -49,6 +49,6 @@
     "stream": false
   },
   "resolutions": {
-    "@angular/cdk": "13.3.2"
+    "@angular/cdk": "13.3.3"
   }
 }
