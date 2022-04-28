@@ -171,32 +171,25 @@ describe('CardListGenerator', () => {
   });
 
   describe('reset()', () => {
-    let panField:HTMLInputElement;
-    let cvvField:HTMLInputElement;
-    let expiryYearField:HTMLInputElement;
-    let expiryMonthField:HTMLInputElement;
+    let newCardFields: HTMLInputElement[];
 
     beforeEach(() => {
       document.body.innerHTML = '<form id="formId"><div id="test-id"></div></form>';
       cardListGenerator.displayCards('formId', 'test-id', cardListMock);
-
-        panField = document.querySelector(`[name="${NewCardFieldName.pan}"]`);
-        expiryYearField = document.querySelector(`[name="${NewCardFieldName.expiryYear}"]`);
-        expiryMonthField = document.querySelector(`[name="${NewCardFieldName.expiryMonth}"]`);
-        cvvField = document.querySelector(`[name="${NewCardFieldName.securityCode}"]`);
+      newCardFields = [
+        document.querySelector(`[name="${NewCardFieldName.pan}"]`),
+        document.querySelector(`[name="${NewCardFieldName.expiryYear}"]`),
+        document.querySelector(`[name="${NewCardFieldName.expiryMonth}"]`),
+        document.querySelector(`[name="${NewCardFieldName.securityCode}"]`),
+      ];
     });
 
     it('should clear new card form', () => {
-      panField.value = 'random value'
-      expiryYearField.value = '2040';
-      expiryMonthField.value = '12';
-      cvvField.value = '123';
-
+      newCardFields.forEach(field => field.value = 'random value');
+      console.dir(newCardFields.map(e => e.value));
       cardListGenerator.reset();
-      expect(panField.value).toEqual('');
-      expect(cvvField.value).toEqual('');
-      expect(expiryMonthField.value).toEqual('');
-      expect(expiryYearField.value).toEqual('');
+      console.dir(newCardFields.map(e => e.value));
+      expect(newCardFields.some((e: HTMLInputElement) => !!e.value)).toBe(false);
     });
   });
 });

@@ -9,9 +9,9 @@ declare global {
 function submitCallback(data) {
   const stringified = JSON.stringify(data, null, 2);
   const testVariable = 'This is what we have got after submit' + '\n' + stringified;
-  displayPopup('data-popup', 'Error code: ' + (!data || data?.errorcode != '0' ? 'Error' : 'OK'), 'blue');
-  displayPopup('data-popup-jwt', 'JWT: ' + data?.jwt, 'blue');
-  displayPopup('data-popup-threedresponse', 'THREEDRESPONSE: ' + data?.threedresponse, 'blue');
+  displayPopup('data-popup', 'Error code: ' + (!data || data.errorcode != '0' ? 'Error' : 'OK'), 'blue');
+  displayPopup('data-popup-jwt', 'JWT: ' + data.jwt, 'blue');
+  displayPopup('data-popup-threedresponse', 'THREEDRESPONSE: ' + data.threedresponse, 'blue');
 
   window.displayCallbackCounter('submit-callback-counter', 'submit', 'blue');
   console.error(testVariable);
