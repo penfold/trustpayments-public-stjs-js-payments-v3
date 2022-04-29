@@ -55,7 +55,7 @@ describe.skip('HPPUserIdentificationService', () => {
     sut = new HPPUserIdentificationService(
       instance(translatorMock),
       messageBus,
-      instance(hppUpdateViewCallback),
+      instance(hppUpdateViewCallback)
     );
     sut.setInitParams(testInitParams);
   });
@@ -113,13 +113,21 @@ describe.skip('HPPUserIdentificationService', () => {
 
     });
 
-    it('should call identity lookup method from SrcAggregate service', done => {
+    it('before initializing identity lookup it should call unbindAppInstance method from all SRCs using SrcAggregate service', done => {
       codeResultMock.next(true);
-      sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
+      sut.identifyUser(srcAggregateMock).subscribe(() => {
         expect(srcAggregateMock.identityLookup).toHaveBeenCalledWith({
           type: 'EMAIL',
           identityValue: 'test@example.com',
         });
+        done();
+      });
+    });
+
+    it('should call identity lookup method from SrcAggregate service', done => {
+      codeResultMock.next(true);
+      sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
+        expect(srcAggregateMock.unbindAppInstance()).toHaveBeenCalled();
         done();
       });
     });
