@@ -6,6 +6,7 @@
   variables:
     BUILD_TYPE: 'prod'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release"
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 build-sdk-rr-review:
   extends:
@@ -13,6 +14,8 @@ build-sdk-rr-review:
     - .rules-when-review
   variables:
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+    NODE_OPTIONS: '--max_old_space_size=4096'
+
 
 build-sdk-rr-release:
   extends:
@@ -20,6 +23,7 @@ build-sdk-rr-release:
     - .rules-when-release
   variables:
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH} --sentry_sourcemaps'
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 # local
 

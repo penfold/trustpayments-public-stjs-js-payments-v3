@@ -196,7 +196,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingSubmitClickCallback.call(window, window);
+        existingSubmitClickCallback.call(window, submitInput);
       };
     }
 
