@@ -2,14 +2,6 @@ import { Service } from 'typedi';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
-// @ts-ignore
-import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
-// @ts-ignore
-import trolleyIcon from '../../../application/core/services/icon/images/trolley.svg';
-// @ts-ignore
-import cardIcon from '../../../application/core/services/icon/images/card.svg';
-// @ts-ignore
-import personIcon from '../../../application/core/services/icon/images/person.svg';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
@@ -19,6 +11,7 @@ import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallb
 import { NewCardFieldName } from './NewCardFieldName';
 import './CardListGenerator.scss';
 
+const logo = require('../../../application/core/services/icon/images/click-to-pay.svg');
 const visa = require('../../../application/core/services/icon/images/visa.svg');
 const mastercard = require('../../../application/core/services/icon/images/mastercard.svg');
 const amex = require('../../../application/core/services/icon/images/amex.svg');
@@ -56,6 +49,9 @@ export class CardListGenerator {
       const cardRow = document.createElement('div');
       cardRow.classList.add('st-card');
       cardRow.innerHTML = cardContent;
+      if (index !== 0) {
+        cardRow.classList.add('st-card--hidden');
+      }
       if (!card.isActive) {
         cardRow.classList.add('st-card--inactive');
       } else {
@@ -63,6 +59,11 @@ export class CardListGenerator {
       }
       container.appendChild(cardRow);
     });
+
+    const viewAllCards = document.createElement('div');
+    viewAllCards.classList.add('st-view-all-cards');
+    viewAllCards.innerHTML = this.viewAllCards();
+    container.appendChild(viewAllCards);
 
     const addCardRow = document.createElement('div');
     addCardRow.classList.add('st-add-card');
@@ -78,7 +79,7 @@ export class CardListGenerator {
   displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     const wrapper = document.createElement('div');
-    const tooltip = document.createElement('div');
+
     wrapper.innerHTML = this.addUserInformationContent(
       userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress
     );
@@ -86,8 +87,6 @@ export class CardListGenerator {
     document
       .getElementById(this.notYouElementId)
       .addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
-    tooltip.innerHTML = this.createTooltip();
-    document.getElementById('st-ctp-welcome').appendChild(tooltip);
     this.addEventHandlersToUserInformation();
   }
 
@@ -114,11 +113,8 @@ export class CardListGenerator {
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
-        <span class="st-add-card__label">
-          ${this.translator.translate('Add new card')}
-        </span>
-        <span class="st-add-card__button">
-          <button id="st-add-card__button" class="st-add-card__button" type="button">+</button>
+        <span class="st-add-card__label" id="st-add-card__button">
+          ${this.translator.translate('+ Add new card')}
         </span>
       </div>
       <div class="st-add-card__details">
@@ -142,46 +138,39 @@ export class CardListGenerator {
     `;
   }
 
+  private viewAllCards(): string {
+    return `
+      <div class="st-add-card__label">
+        <span class="st-add-card__label" id="st-view-all-card__button">
+          ${this.translator.translate('View all cards')}
+        </span>
+      </div>
+    `;
+  }
+
   private addEventHandlers(formId: string): void {
     document
       .getElementById(formId)
       .querySelector('input[name=' + NewCardFieldName.pan + ']')
       .addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+    document.getElementById('st-view-all-card__button').addEventListener('click', () => this.handleViewAllCardButtonClick());
   }
 
   private addEventHandlersToUserInformation(): void {
-    document.getElementById('st-ctp-welcome__info-icon').addEventListener('click', () => {
-      this.showTooltip();
-    });
-    document.getElementById('st-tooltip__close-button').addEventListener('click', () => {
-      this.hideTooltip();
-    });
   }
 
   private addUserInformationContent(emailAddress: string): string {
     return `
-      <div id="st-ctp-welcome" class="st-ctp-welcome">
-        <span>Welcome back to</span>
-        <span class="st-ctp-welcome__logo">
-          <img src="${logo}" alt="">
-        </span>
-        <span>Click To Pay</span>
-        <span class="st-ctp-welcome__info-icon" id="st-ctp-welcome__info-icon">&#9432;</span>
-      </div>
-      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
-        ${emailAddress} (<span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('not you?')}</span>)
-      </div>
       <div class="st-ctp-enabled-by">
-        <span class="st-ctp-enabled-by-label">enabled by</span>
         <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
         <img src="${visa}" class="st-ctp-prompt__logo-img" alt="">
         <img src="${mastercard}" class="st-ctp-prompt__logo-img" alt="">
         <img src="${amex}" class="st-ctp-prompt__logo-img" alt="" style="filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)">
         <img src="${discover}" class="st-ctp-prompt__logo-img" alt="">
       </div>
-      <div class="st-ctp-select-card">
-        Select a card to proceed
+      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
+        ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details-not-you">${this.translator.translate('Not you?')}</span>
       </div>
     `;
   }
@@ -209,6 +198,7 @@ export class CardListGenerator {
         displayCardForm: false,
         displaySubmitButton: true,
       });
+
     }
 
     return `
@@ -267,25 +257,6 @@ export class CardListGenerator {
     });
   }
 
-  private createTooltip(): string {
-    return `
-    <div class="st-tooltip" id="st-tooltip">
-      <div style="justify-content: flex-end">
-        <span class="st-tooltip__close-button" id="st-tooltip__close-button">&times;</span>
-      </div>
-      <div style="justify-content: center">
-        <div>
-          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
-        </div>
-      </div>
-      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div></div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>You can choose to be remembered on your device and browser for faster checkout.</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>Built on industry standards for online transactions and supported by global payment brands.</div>
-    </div>
-    `;
-  }
-
   private fillUpExpiryMonth(): void {
     const select = document.getElementById('vctp-expiryDateMonthId');
     const option = document.createElement('option') as HTMLOptionElement;
@@ -323,6 +294,13 @@ export class CardListGenerator {
     this.clearSelection();
   }
 
+  private handleViewAllCardButtonClick(): void {
+    document.getElementById('st-view-all-card__button').remove();
+    document.querySelectorAll('div.st-card--hidden').forEach(e => {
+      (e as HTMLDivElement).classList.remove('st-card--hidden');
+    })
+  }
+
   private handleChangedPan(event: Event): void {
     if ((event.target as HTMLInputElement).value) {
       this.srcNameFinder
@@ -357,19 +335,11 @@ export class CardListGenerator {
     document.getElementById(id).innerHTML = '';
   }
 
-  private hideTooltip(): void {
-    document.getElementById('st-tooltip').classList.remove('st-tooltip--visible');
-  }
-
   private openForm(): void {
     document.getElementById('st-add-card__button').style.visibility = 'hidden';
     document.querySelectorAll('div.st-add-card__details').forEach(div => {
       (div as HTMLDivElement).style.display = 'block';
     });
-  }
-
-  private showTooltip(): void {
-    document.getElementById('st-tooltip').classList.add('st-tooltip--visible');
   }
 
   private showValidationStatus(id: string, message: string) {

@@ -76,24 +76,10 @@ export class CTPSIgnInOTP {
         </span>
         <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
       </div>
-      <div class="st-hpp-prompt__title">Confirm it is you.</div>
+      <div class="st-hpp-prompt__title">Confirm it's you</div>
       <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>
-        ${
-          validationChannels[0]
-            ? this.translator.translate(this.checkValidationChannelType(validationChannels[0])) +
-              ' ' +
-              validationChannels[0] +
-              '<br/>'
-            : ''
-        }
-        ${
-          validationChannels[1]
-            ? this.translator.translate(this.checkValidationChannelType(validationChannels[1])) +
-              ' ' +
-              validationChannels[1] +
-              '<br/>'
-            : ''
-        }
+        ${validationChannels.length > 0 ? validationChannels[0].trim() : ''}
+        ${validationChannels.length > 1? ', ' + validationChannels[1].trim() : ''}
         </div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
@@ -127,14 +113,6 @@ export class CTPSIgnInOTP {
     wrapperElement.appendChild(formElement);
     this.container.appendChild(wrapperElement);
     (formElement.querySelector('input:first-of-type') as HTMLInputElement)?.focus();
-  }
-
-  private checkValidationChannelType(channel: any): string {
-    if (typeof channel === 'string') {
-      return channel.indexOf('@') !== -1 ? 'Email' : 'phone';
-    } else if (channel === 'object') {
-      return 'phone';
-    }
   }
 
   private setInputListener(input: HTMLInputElement) {

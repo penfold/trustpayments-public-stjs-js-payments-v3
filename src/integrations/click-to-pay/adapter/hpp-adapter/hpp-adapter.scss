@@ -37,7 +37,7 @@ Segoe UI Emoji, Segoe UI Symbol;
   height: 100%;
   max-height: 500px;
   max-width: 500px;
-  padding: 20px;
+  padding: 0;
   position: relative;
   width: 100%;
   z-index: 99999;
@@ -184,6 +184,12 @@ input.st-ctp-prompt__otp-input {
   margin-bottom: 1em;
 }
 
+.st-ctp-prompt-second-line {
+  width: 100%;
+  display: flex;
+  margin: 5px 0;
+}
+
 .st-ctp-promp__close {
   font-size: 1em;
   cursor: pointer;
@@ -207,4 +213,51 @@ input.st-ctp-prompt__otp-input {
 .st-ctp-prompt__logo-img {
   width: 18px;
   margin-right: 4px;
+}
+
+.st-ctp-prompt-click-to-pay {
+  color: rgb(24, 183, 96);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: .3s;
+}
+
+.st-ctp-prompt-fast-checkout-with {
+  margin-right: 6px;
+}
+
+.st-tooltip {
+  background-color: #fff;
+  border-radius: 5px;
+  border: solid 1px gray;
+  display: none;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 16px;
+  padding: 10px 10px 20px 10px;
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  width: 250px;
+  z-index: 1000;
+
+  div {
+    display: flex;
+  }
+}
+
+.st-tooltip--visible {
+  display: block;
+}
+
+.st-tooltip__close-button {
+  color: #8C8B8A;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.st-tooltip__logo {
+  height: 16px;
+  vertical-align: middle;
 }
