@@ -1,4 +1,4 @@
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, throwError } from 'rxjs';
 import { Service } from 'typedi';
 import { catchError, map, mapTo } from 'rxjs/operators';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
@@ -53,14 +53,15 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
           status: this.getPaymentStatus(checkoutResponse.dcfActionCode),
         })),
         catchError(error =>
-          of({
+          throwError(() => ({
+            data: error,
             status: PaymentStatus.ERROR,
             error: {
-              code: error.error.reason,
-              message: error.error.message,
+              code: error.error?.reason,
+              message: error.error?.message,
             },
             paymentMethodName: this.getName(),
-          })
+          }))
         )
       );
   }

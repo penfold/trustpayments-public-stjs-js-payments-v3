@@ -56,6 +56,15 @@ describe('PaymentResultSubmitter', () => {
   });
 
   describe('prepareForm()', () => {
+    it('should return form with formId passed in argument or if it is missing from config', () => {
+      const otherForm = document.createElement('form');
+      const formId = 'other-form-id';
+      otherForm.id = formId;
+      document.body.appendChild(otherForm);
+      expect(paymentResultSubmitter.prepareForm({ foo: 'bar' })).toBe(form);
+      expect(paymentResultSubmitter.prepareForm({ foo: 'bar', formId })).toBe(otherForm);
+    });
+
     it('returns the form element', () => {
       expect(paymentResultSubmitter.prepareForm({ foo: 'bar' })).toBe(form);
     });
