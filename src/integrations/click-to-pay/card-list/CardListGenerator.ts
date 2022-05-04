@@ -118,21 +118,21 @@ export class CardListGenerator {
       </div>
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
-        <input id="vctp-pan" type="text" name="${NewCardFieldName.pan}">
+        <input id="vctp-pan" type="text" autocomplete="off" name="${NewCardFieldName.pan}">
         <div id="vctp-pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
           Expiry date <span class="st-add-card__details-asterix"></span>
-          <select id="vctp-expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
+          <select id="vctp-expiryDateMonthId" autocomplete="off" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="vctp-expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
+          <select id="vctp-expiryDateYearId" autocomplete="off" name="${NewCardFieldName.expiryYear}"></select>
         </span>
       </div>
       <div class="st-add-card__details">
         Security code <span class="st-add-card__details-asterix"></span><br>
-        <input id="vctp-cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
+        <input id="vctp-cvv" maxlength="3" autocomplete="off" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
   }
