@@ -440,7 +440,7 @@
             Card number:
             <abbr title="required" aria-label="required">*</abbr>
           </label>
-          <input type="text" name="pan" id="st-form-card-number" class="st-form__input" required />
+          <input type="text" name="pan" id="st-form-card-number" class="st-form__input" autocomplete="off" required />
         </div>
         <div class="st-form__field">
           <label for="st-form-expiry-date-month" class="st-form__label">
@@ -448,7 +448,7 @@
             <abbr title="required" aria-label="required">*</abbr>
           </label>
           <div class="st-form-expiry-date-wrapper">
-            <select name="expirymonth" id="st-form-expiry-date-month" class="st-form__input" required>
+            <select name="expirymonth" id="st-form-expiry-date-month" class="st-form__input" autocomplete="off" required>
               <option selected="selected" value=""></option>
               <option value="01">01</option>
               <option value="02">02</option>
@@ -463,7 +463,7 @@
               <option value="11">11</option>
               <option value="12">12</option>
             </select>
-            <select name="expiryyear" id="st-form-expiry-date-year" class="st-form__input" required>
+            <select name="expiryyear" id="st-form-expiry-date-year" class="st-form__input" autocomplete="off" required>
               <option selected="selected" value=""></option>
               <option value="2022">2022</option>
               <option value="2023">2023</option>
@@ -494,14 +494,14 @@
             Security code:
             <abbr title="required" aria-label="required">*</abbr>
           </label>
-          <input type="text" name="securitycode" id="st-form-security-code" class="st-form__input" required />
+          <input type="text" name="securitycode" id="st-form-security-code" class="st-form__input" autocomplete="off" required />
         </div>
         <div class="st-form__actions--wrapper">
           <div class="st-form__visa--ctp hidden">
             <p>Click to pay <span id="st-ctp-separator">|</span> <span id="st-ctp-lookup-btn">Look up my cards</span>
             </p>
             <div id="st-ctp-registration">
-              <input type="checkbox" id="register" name="register">
+              <input type="checkbox" id="register" name="register" autocomplete="off">
               <label for="register">Register your card with Click to Pay for a faster checkout experience.</label>
               <p><a href="#">Learn more about Click to Pay</a></p>
             </div>
