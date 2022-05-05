@@ -30,6 +30,8 @@ import './hpp-adapter.scss';
 @Service()
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
   private initParams: IHPPClickToPayAdapterInitParams;
+  private popup: Window;
+  private isSafariBrowser: boolean;
 
   constructor(
     private digitalTerminal: DigitalTerminal,
@@ -144,6 +146,13 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       },
     });
 
+    this.isSafariBrowser = /^((?!chrome|android|crios|fxios).)*safari/i.test(window.navigator.userAgent);
+
+    if (this.isSafariBrowser) {
+      this.popup = window.open('', 'DCF Window', 'height=600,width=400');
+      checkoutData.windowRef = this.popup;
+    }
+
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
         tap(response => this.initParams?.onCheckout?.call(null, response)),
@@ -170,6 +179,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
     if (response.unbindAppInstance) {
       this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
+    }
+
+    if (this.isSafariBrowser) {
+      this.popup.close();
     }
   }
 
