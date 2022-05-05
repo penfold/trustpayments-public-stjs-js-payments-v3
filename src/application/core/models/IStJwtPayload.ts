@@ -39,4 +39,5 @@ export interface IStJwtPayload {
   billingpostcode?: string;
   billingcounty?: string;
   billingemail?: string;
+  billingtelephone?:string;
 }

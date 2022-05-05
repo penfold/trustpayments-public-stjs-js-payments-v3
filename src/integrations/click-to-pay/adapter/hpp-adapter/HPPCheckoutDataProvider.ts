@@ -2,13 +2,14 @@ import { Service } from 'typedi';
 import { fromEvent, Observable, switchMap } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
-import { IConsumer } from '../../digital-terminal/ISrc';
+import { IConsumer, IPhoneNumber } from '../../digital-terminal/ISrc';
 import { ICardData } from '../../digital-terminal/interfaces/ICardData';
 import { NewCardFieldName } from '../../card-list/NewCardFieldName';
 import { environment } from '../../../../environments/environment';
 import { JwtProvider } from '../../../../shared/services/jwt-provider/JwtProvider';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { HPPFormValues } from '../interfaces/HPPFormValues';
+import { PhoneNumberParser } from '../../../../shared/services/phone-number-parser/PhoneNumberParser';
 import { HPPFormFieldName } from './HPPFormFieldName';
 import { HPPFormValuesProvider } from './HPPFormValuesProvider';
 
@@ -16,7 +17,7 @@ import { HPPFormValuesProvider } from './HPPFormValuesProvider';
 export class HPPCheckoutDataProvider {
   private formElement: HTMLFormElement;
 
-  constructor(private jwtProvider: JwtProvider, private hppFormValuesProvider: HPPFormValuesProvider) {
+  constructor(private jwtProvider: JwtProvider, private hppFormValuesProvider: HPPFormValuesProvider, private phoneNumberParser: PhoneNumberParser) {
   }
 
   getCheckoutData(formId: string): Observable<IInitialCheckoutData> {
@@ -54,6 +55,7 @@ export class HPPCheckoutDataProvider {
     const billingFullName = this.getFullName(jwtPayload, formValues);
     const billingFirstName = formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname;
     const billingLastName = formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname;
+    const phoneNumber = this.getPhoneNumber(formValues[HPPFormFieldName.billingTelephone] || jwtPayload.billingtelephone);
 
     if (billingFirstName) {
       consumerData.firstName = billingFirstName;
@@ -78,6 +80,10 @@ export class HPPCheckoutDataProvider {
       consumerData.fullName = billingFullName;
     }
 
+    if (phoneNumber) {
+      consumerData.mobileNumber = phoneNumber;
+    }
+
     return consumerData;
   }
 
@@ -88,8 +94,8 @@ export class HPPCheckoutDataProvider {
       panExpirationYear: formValues[HPPFormFieldName.cardExpiryYear] || jwtPayload.expirydate?.split('/')[1],
       cardSecurityCode: formValues[HPPFormFieldName.cardSecurityCode] || jwtPayload.securitycode,
       cardholderFullName: this.getFullName(jwtPayload, formValues),
-      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname,
-      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname,
+      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname || '',
+      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname || '',
       billingAddress: {
         name: '',
         city: formValues[HPPFormFieldName.billingTown] || jwtPayload.billingtown,
@@ -106,13 +112,13 @@ export class HPPCheckoutDataProvider {
 
   private getRecognizedUserNewCardData(jwtPayload: IStJwtPayload, formValues: HPPFormValues): ICardData {
     return {
-      primaryAccountNumber: this.normalizePan(formValues[NewCardFieldName.pan]), // ??????
+      primaryAccountNumber: this.normalizePan(formValues[NewCardFieldName.pan]),
       panExpirationMonth: formValues[NewCardFieldName.expiryMonth],
       panExpirationYear: formValues[NewCardFieldName.expiryYear],
       cardSecurityCode: formValues[NewCardFieldName.securityCode],
       cardholderFullName: this.getFullName(jwtPayload, formValues),
-      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname,
-      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname,
+      cardholderFirstName: formValues[HPPFormFieldName.billingFirstName] || jwtPayload.billingfirstname || '',
+      cardholderLastName: formValues[HPPFormFieldName.billingLastName] || jwtPayload.billinglastname || '',
       billingAddress: {
         name: '',
         city: formValues[HPPFormFieldName.billingTown] || jwtPayload.billingtown,
@@ -139,6 +145,15 @@ export class HPPCheckoutDataProvider {
 
   private normalizePan(originalPan: string): string {
     return originalPan?.replace(/\s/g, '');
+  }
+
+  private getPhoneNumber(phoneNumber: string): IPhoneNumber | null {
+    if (!phoneNumber) {
+      return null;
+    }
+    const decodedNumber = this.phoneNumberParser.decodePhoneNumber(phoneNumber);
+
+    return decodedNumber?.countryCode ? decodedNumber : null;
   }
 
   private normalizeCheckoutData(data: IInitialCheckoutData) {
@@ -181,7 +196,7 @@ export class HPPCheckoutDataProvider {
         if (this.shouldClickToPayBeUsed()) {
           return true;
         }
-        existingSubmitClickCallback.call(window, window);
+        existingSubmitClickCallback.call(window, submitInput);
       };
     }
 

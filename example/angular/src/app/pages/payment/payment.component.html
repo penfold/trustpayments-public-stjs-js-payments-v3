@@ -1,9 +1,13 @@
 <app-page-title></app-page-title>
 
-<app-payment-form *ngIf="config$ | async as config; else loading"
-  [config]="config"
-  [pageOptions]="pageOptions">
-</app-payment-form>
+<div *ngIf="config$ | async as config; else loading">
+  <app-tokenized-card-payment-form [config]="config"></app-tokenized-card-payment-form>
+  <app-payment-form
+    [config]="config"
+    [pageOptions]="pageOptions">
+  </app-payment-form>
+</div>
+
 
 <ng-template #loading>
   <div fxLayout="row" fxLayoutAlign="center center">
