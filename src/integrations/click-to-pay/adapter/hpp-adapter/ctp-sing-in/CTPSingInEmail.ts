@@ -1,7 +1,15 @@
 import { fromEvent, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { ITranslator } from '../../../../../application/core/shared/translator/ITranslator';
-const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
+
+// @ts-ignore
+import logo from '../../../../../application/core/services/icon/images/click-to-pay.svg';
+// @ts-ignore
+import trolleyIcon from '../../../../../application/core/services/icon/images/trolley.svg';
+// @ts-ignore
+import cardIcon from '../../../../../application/core/services/icon/images/card.svg';
+// @ts-ignore
+import personIcon from '../../../../../application/core/services/icon/images/person.svg';
 
 export class CTPSingInEmail {
   private errorFieldClass = 'st-hpp-prompt__field-error';
@@ -40,7 +48,11 @@ export class CTPSingInEmail {
       <div class="st-ctp-prompt__header">
         <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
       </div>
-    <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}:</span>
+      <div class="st-ctp-prompt-second-line" id="st-ctp-prompt-second-line">
+        <span class="st-ctp-prompt-fast-checkout-with">Fast checkout with </span>
+        <span class="st-ctp-prompt-click-to-pay" id="st-ctp-prompt-click-to-pay">Click To Pay</span>
+      </div>
+    <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}</span>
     <label class="${this.fieldClass}">
       <span class="st-hpp-prompt__field-label">${this.translator.translate('Email address')}:</span>
       <input type="email" inputmode="email" name="${fieldName}" required class="st-hpp-prompt__field-input"/>
@@ -54,11 +66,22 @@ export class CTPSingInEmail {
     wrapperElement.appendChild(formElement);
     this.container.appendChild(wrapperElement);
 
+    const tooltip = document.createElement('div');
+    tooltip.innerHTML = this.createTooltip();
+    document.getElementById('st-ctp-prompt-second-line').appendChild(tooltip);
+
     this.errorElement = formElement.querySelector(`.${this.errorFieldClass}`);
     this.fieldElement = formElement.querySelector(`.${this.fieldClass}`);
 
     formElement.querySelector(`[name="${fieldName}"]`).addEventListener('input', () => {
       this.clearError();
+    });
+
+    document.getElementById('st-ctp-prompt-click-to-pay').addEventListener('click', () => {
+      this.showTooltip();
+    });
+    document.getElementById('st-tooltip__close-button').addEventListener('click', () => {
+      this.hideTooltip();
     });
 
     return fromEvent(formElement, 'submit').pipe(
@@ -70,4 +93,32 @@ export class CTPSingInEmail {
       map(() => formElement.elements[fieldName]?.value)
     );
   }
+
+  private createTooltip(): string {
+    return `
+    <div class="st-tooltip" id="st-tooltip">
+      <div style="justify-content: flex-end">
+        <span class="st-tooltip__close-button" id="st-tooltip__close-button">&times;</span>
+      </div>
+      <div style="justify-content: center">
+        <div>
+          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
+        </div>
+      </div>
+      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div></div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>You can choose to be remembered on your device and browser for faster checkout.</div>
+      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>Built on industry standards for online transactions and supported by global payment brands.</div>
+    </div>
+    `;
+  }
+
+  private hideTooltip(): void {
+    document.getElementById('st-tooltip').classList.remove('st-tooltip--visible');
+  }
+
+  private showTooltip(): void {
+    document.getElementById('st-tooltip').classList.add('st-tooltip--visible');
+  }
+
 }

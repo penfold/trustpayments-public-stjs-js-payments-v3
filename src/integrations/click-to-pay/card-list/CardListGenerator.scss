@@ -6,47 +6,13 @@
   visibility: visible;
 }
 
-.st-tooltip {
-  background-color: #fff;
-  border-radius: 5px;
-  border: solid 1px gray;
-  display: none;
-  font-size: 12px;
-  line-height: 16px;
-  padding: 10px 10px 20px 10px;
-  position: absolute;
-  right: -30px;
-  top: 30px;
-  width: 250px;
-  z-index: 1000;
-
-  div {
-    display: flex;
-  }
-}
-
-.st-tooltip--visible {
-  display: block;
-}
-
-.st-tooltip__close-button {
-  color: #8C8B8A;
-  cursor: pointer;
-  font-size: 24px;
-}
-
-.st-tooltip__logo {
-  height: 16px;
-  vertical-align: middle;
-}
-
 .st-ctp-welcome {
   align-items: center;
   display: flex;
   font-size: 18px;
-  font-wieght: 800;
+  font-weight: 800;
   justify-content: center;
-  line-height: 18px;
+  line-height: 32px;
   position: relative;
 }
 
@@ -61,13 +27,13 @@
 }
 
 .st-ctp-welcome__info-icon {
-  color: rgb(118, 162, 191);
+  color: rgb(24, 183, 96);
   cursor: pointer;
   padding: 0 10px;
 }
 
 .st-cards {
-  .st-card, .st-add-card {
+  .st-card, .st-add-card, .st-view-all-cards {
     align-items: center;
     border: solid 1px #d6d6d6;
     cursor: pointer;
@@ -82,15 +48,27 @@
   }
 
   .st-add-card {
+    border: 0;
     display: block;
     height: auto;
     justify-content: space-between;
-    min-height: 40px;
+    min-height: 20px;
+  }
+
+  .st-view-all-cards {
+    border: 0;
+    display: flex;
+    height: auto;
+    min-height: 20px;
   }
 
   .st-card--inactive {
     cursor: auto;
     opacity: 0.5;
+  }
+
+  .st-card--hidden {
+    display: none;
   }
 
   .st-card__checkbox {
@@ -142,6 +120,7 @@
     font-size: 12px;
     line-height: 40px;
     padding: 0;
+    margin-left: 27px;
   }
 
   button.st-add-card__button {
@@ -230,9 +209,11 @@
 }
 
 .st-ctp-user-details__wrapper {
-  display: flex;
   align-items: center;
+  color: rgb(132, 132, 132);
+  display: flex;
   justify-content: center;
+  line-height: 32px;
 }
 
 .st-ctp-user-details__image {
@@ -246,13 +227,31 @@
   font-size: 22px;
 }
 
-.st-ctp-user-details__not--you {
-  font-size: 14px;
-  color: #e71b59;
-  transition: .3s;
+.st-ctp-user-details-not-you {
+  color: rgb(24, 183, 96);
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: .3s;
+  margin-left: 8px;
+}
 
-  &:hover {
-    color: rgba(231, 27, 89, 0.8);
-  }
+.st-ctp-enabled-by {
+  align-items: center;
+  color: rgb(132, 132, 132);
+  display: flex;
+  font-size: 10px;
+  justify-content: center;
+  line-height: 32px;
+}
+
+.st-ctp-enabled-by-label {
+  margin-right: 8px;
+}
+
+.st-ctp-select-card {
+  display: flex;
+  font-size: 24px;
+  justify-content: center;
+  line-height: 32px;
 }
