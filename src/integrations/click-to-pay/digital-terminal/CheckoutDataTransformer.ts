@@ -30,6 +30,7 @@ export class CheckoutDataTransformer {
       srciTransactionId,
       dpaTransactionOptions: initialData.dpaTransactionOptions,
       consumer: initialData.consumer,
+      windowRef: initialData.windowRef || null,
     };
 
     if (initialData.srcDigitalCardId) {
