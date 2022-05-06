@@ -1,6 +1,6 @@
 import { anyFunction, anyString, anything, instance, mock, objectContaining, spy, verify, when } from 'ts-mockito';
 import { of, Subject, throwError } from 'rxjs';
-import { mapTo, switchMap } from 'rxjs/operators';
+import { first, mapTo } from 'rxjs/operators';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
@@ -134,7 +134,7 @@ describe('HPPClickToPayAdapter', () => {
       });
 
       it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
-        sut.init(initParams).then((a) => {
+        sut.init(initParams).then(() => {
           updateViewMock.subscribe(() => {
             cardInputs.forEach(input => {
               expect(input.hasAttribute('readonly')).toBe(true);
@@ -226,18 +226,26 @@ describe('HPPClickToPayAdapter', () => {
         );
       });
 
-      describe.each([DcfActionCode.cancel, DcfActionCode.complete])('when checkout response contains dcfActionCode = %1', dcfCode => {
+      describe.each([DcfActionCode.cancel, DcfActionCode.complete])('when checkout response contains dcfActionCode = %s', dcfCode => {
         const mockCheckoutResponse: ICheckoutResponse = {
           checkoutResponse: '',
           dcfActionCode: dcfCode,
           unbindAppInstance: false,
           idToken: '',
         };
+        const checkoutResultSubject: Subject<any> = new Subject<any>();
+
         beforeEach(() => {
 
           when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
           when(digitalTerminalMock.checkout(anything())).thenReturn(of(mockCheckoutResponse));
           when(digitalTerminalMock.unbindAppInstance()).thenReturn(of(undefined));
+          when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
+            callback({
+              type: eventType,
+              data: initParams,
+            }).subscribe(checkoutResult => checkoutResultSubject.next(checkoutResult));
+          });
         });
 
         it('should  it should unbindAppInstance then try to recognize user', done => {
@@ -253,24 +261,24 @@ describe('HPPClickToPayAdapter', () => {
         });
 
         it('if user is recognized it should display card list again', done => {
-
           when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
-          when(digitalTerminalMock.getSrcProfiles()).thenReturn(formSubmitEventMock.pipe(switchMap(() => of(srcProfilesMock))));
+          when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(srcProfilesMock));
 
           sut.init(initParams).then(adapterInstance => {
-            formSubmitEventMock.asObservable().subscribe(() => {
-              verify(cardListGeneratorMock.displayCards(anything(), anything(), anything()));
+            checkoutResultSubject.pipe(first()).subscribe(() => {
+              verify(digitalTerminalMock.getSrcProfiles()).once();
+              verify(cardListGeneratorMock.displayCards(initParams.formId, initParams.cardListContainerId, srcProfilesMock.aggregatedCards)).once();
               done();
             });
             formSubmitEventMock.next();
           });
         });
 
-        it.skip('if user is not recognized it should not display card list', done => {
-          when(digitalTerminalMock.isRecognized()).thenReturn(formSubmitEventMock.pipe(switchMap(() => of(false))));
+        it('if user is not recognized it should not display card list', done => {
+          when(digitalTerminalMock.isRecognized()).thenReturn(of(false));
 
           sut.init(initParams).then(adapterInstance => {
-            formSubmitEventMock.asObservable().subscribe(() => {
+            checkoutResultSubject.pipe(first()).subscribe(() => {
               verify(cardListGeneratorMock.hideForm()).once();
               done();
             });

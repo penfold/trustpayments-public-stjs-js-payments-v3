@@ -1,5 +1,14 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, distinctUntilKeyChanged, firstValueFrom, NEVER, Observable, of, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilKeyChanged,
+  firstValueFrom,
+  from,
+  NEVER,
+  Observable,
+  of,
+  throwError,
+} from 'rxjs';
 import { catchError, filter, mapTo, switchMap, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
@@ -156,13 +165,13 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
         tap(response => this.initParams?.onCheckout?.call(null, response)),
-        tap(response => this.handleCheckoutResponse(response)),
+        switchMap(response => this.handleCheckoutResponse(response)),
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
   }
 
-  private handleCheckoutResponse(response: ICheckoutResponse) {
+  private handleCheckoutResponse(response: ICheckoutResponse): Observable<ICheckoutResponse> {
     if (response.dcfActionCode === DcfActionCode.changeCard) {
       this.showCardList().catch(error => {
         console.error(error);
@@ -174,18 +183,20 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     }
 
     if (response.dcfActionCode === DcfActionCode.cancel || response.dcfActionCode === DcfActionCode.complete) {
-      this.digitalTerminal.unbindAppInstance().subscribe(() =>
-        this.isRecognized().then(recognized => {
-          recognized ? this.showCardList() : this.cardListGenerator.hideForm();
-        })
+      return this.digitalTerminal.unbindAppInstance().pipe(
+        switchMap(() => from(this.isRecognized())),
+        switchMap(recognized => recognized ? from(this.showCardList()) : of(this.cardListGenerator.hideForm())),
+        mapTo(response)
       );
     } else if (response.unbindAppInstance) {
-      this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
+      return this.digitalTerminal.unbindAppInstance().pipe(tap(() => this.cardListGenerator.hideForm()));
     }
 
     if (this.isSafariBrowser) {
       this.popup.close();
     }
+
+    return of(response);
   }
 
   private disableHiddenFormFields(updateData: IUpdateView) {
