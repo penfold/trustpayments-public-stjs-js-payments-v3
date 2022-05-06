@@ -158,7 +158,7 @@ def step_impl(context):
     vctp_page.clear_card_details_inputs()
 
 
-@step('User cancel payment on login view')
+@step('User cancel payment on otp view')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_cancel_button()
@@ -496,3 +496,10 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.confirm_user_address()
+
+
+@step("User will back to login view")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_email_input_displayed()).is_true()
+

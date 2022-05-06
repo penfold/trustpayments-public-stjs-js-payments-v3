@@ -33,7 +33,7 @@ class VisaClickToPayLocators:
     login_invalid_input: By = (By.XPATH, '//label[contains(@class,\'field--invalid\')]')
     otp_validation_message: By = (By.XPATH, '//span[contains(@class,\'otp-input-error\')]')
     otp_invalid_input: By = (By.XPATH, '//div[contains(@class,\'otp-inputs--invalid\')]')
-    cancel_btn: By = (By.ID, 'st-hpp-prompt__close-btn')
+    cancel_btn: By = (By.ID, 'st-hpp-prompt__otp-close')
 
     @classmethod
     def get_otp_input_field(cls, value) -> By.XPATH:

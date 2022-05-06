@@ -147,6 +147,10 @@ class VisaClickToPayPage(BasePage):
     def click_resend_code_button(self):
         self._actions.click(VisaClickToPayLocators.resend_otp_btn)
 
+    def is_email_input_displayed(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.email_input)
+        return self._actions.is_element_displayed(VisaClickToPayLocators.email_input)
+
     # Card list view
     def click_add_new_card_btn(self):
         self._actions.click(VisaClickToPayLocators.add_card_button)

@@ -149,6 +149,9 @@ Feature: Visa Click To Pay for unregistered user
     And User fills billing address form on Visa checkout popup and saves address for delivery
     And User reviews VISA_CTP checkout page and confirm payment
     Then User will see that VISA_CTP checkout is completed
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
 
   Scenario: DCF translations - checking language preference
     Given JS library configured by inline config BASIC_CONFIG
@@ -167,5 +170,3 @@ Feature: Visa Click To Pay for unregistered user
       | Visa street number label  |
       | Visa e-mail address label |
       | Visa Pay now button       |
-
-
