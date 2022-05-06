@@ -22,7 +22,8 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
   constructor(
     private frameQueryingService: IFrameQueryingService,
     private requestProcessingInitializer: RequestProcessingInitializer
-  ) {}
+  ) {
+  }
 
   getName(): string {
     return ClickToPayPaymentMethodName;
