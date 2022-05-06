@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-04-25T14:31:37.183Z\n"
-"PO-Revision-Date: 2022-04-25T14:31:37.183Z\n"
+"POT-Creation-Date: 2022-05-05T14:12:33.560Z\n"
+"PO-Revision-Date: 2022-05-05T14:12:33.560Z\n"
 "Language: en_GB\n"
 
 msgid "Timeout"
@@ -116,20 +116,44 @@ msgstr "****"
 msgid "Pay by Bank"
 msgstr "Pay by Bank"
 
-msgid "Add new card"
-msgstr "Add new card"
-
-msgid "Hello"
-msgstr "Hello"
-
-msgid "Not you?"
-msgstr "Not you?"
+msgid "+ Add new card"
+msgstr "+ Add new card"
 
 msgid "Expiry date"
 msgstr "Expiry date"
 
-msgid "Welcome back to"
-msgstr "Welcome back to"
+msgid "View all cards"
+msgstr "View all cards"
+
+msgid "Not you?"
+msgstr "Not you?"
+
+msgid "Something went wrong, try again or use another email."
+msgstr "Something went wrong, try again or use another email."
+
+msgid "Account assigned to this email is currently not accessible"
+msgstr "Account assigned to this email is currently not accessible"
+
+msgid "The email address you have entered is not registered for Click to Pay."
+msgstr "The email address you have entered is not registered for Click to Pay."
+
+msgid "The code you have entered is incorrect."
+msgstr "The code you have entered is incorrect."
+
+msgid "Click To Pay"
+msgstr "Click To Pay"
+
+msgid "Fast checkout with"
+msgstr "Fast checkout with"
+
+msgid "Enter your email address to access your cards"
+msgstr "Enter your email address to access your cards"
+
+msgid "Email address"
+msgstr "Email address"
+
+msgid "Continue"
+msgstr "Continue"
 
 msgid "Pay with confidence with trusted brands"
 msgstr "Pay with confidence with trusted brands"
@@ -154,30 +178,6 @@ msgid ""
 msgstr ""
 "Built on industry standards for online transactions and supported by global "
 "payment brands."
-
-msgid "Something went wrong, try again or use another email."
-msgstr "Something went wrong, try again or use another email."
-
-msgid "Account assigned to this email is currently not accessible"
-msgstr "Account assigned to this email is currently not accessible"
-
-msgid "The email address you have entered is not registered for Click to Pay."
-msgstr "The email address you have entered is not registered for Click to Pay."
-
-msgid "The code you have entered is incorrect."
-msgstr "The code you have entered is incorrect."
-
-msgid "Enter your email address to access your cards"
-msgstr "Enter your email address to access your cards"
-
-msgid "Email address"
-msgstr "Email address"
-
-msgid "Continue"
-msgstr "Continue"
-
-msgid "Confirm it is you."
-msgstr "Confirm it is you."
 
 msgid "Enter the one-time code Visa sent to"
 msgstr "Enter the one-time code Visa sent to"

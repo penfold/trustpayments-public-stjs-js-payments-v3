@@ -118,13 +118,13 @@ export class CardListGenerator {
         </span>
       </div>
       <div class="st-add-card__details">
-        Card number <span class="st-add-card__details-asterix"></span>
+        ${this.translator.translate('Card number')} <span class="st-add-card__details-asterix"></span>
         <input id="vctp-pan" type="text" autocomplete="off" name="${NewCardFieldName.pan}">
         <div id="vctp-pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
-          Expiry date <span class="st-add-card__details-asterix"></span>
+          ${this.translator.translate('Expiry date')} <span class="st-add-card__details-asterix"></span>
           <select id="vctp-expiryDateMonthId" autocomplete="off" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
@@ -132,7 +132,7 @@ export class CardListGenerator {
         </span>
       </div>
       <div class="st-add-card__details">
-        Security code <span class="st-add-card__details-asterix"></span><br>
+        ${this.translator.translate('Security code')} <span class="st-add-card__details-asterix"></span><br>
         <input id="vctp-cvv" maxlength="3" autocomplete="off" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
