@@ -463,7 +463,7 @@ def step_impl(context):
     vctp_page.click_sign_out()
 
 
-@then('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
+@step('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
 def step_impl(context, language):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     labels = {
@@ -479,7 +479,7 @@ def step_impl(context, language):
             vctp_page.validate_visa_ctp_translation(labels[row['fields']], language, row['fields'])
 
 
-@then('User can open additional information hint')
+@step('User can open additional information hint')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_more_information_hint_button()
@@ -490,3 +490,9 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.verify_visa_info_popup_elements()
     vctp_page.click_close_more_information_hint()
+
+
+@step('User confirms email address')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.confirm_user_address()

@@ -51,14 +51,15 @@ class VisaClickToPayPage(BasePage):
             'street': 'Willow Grove',
             'town': 'Willow Grove',
             'county': 'Montgomery',
-            'country': 'USA',
             'post-code': '19001',
             'email': f'{get_string(5, 1)}@testemail.com',
-            'telephone': '9343242342',
+            'telephone': '4407702371570',
             'telephone-type': '1'
         }
         for field_locator, value in billing_fields.items():
             self._actions.send_keys(VisaClickToPayLocators.get_billing_details_field_locator(field_locator), value)
+        self._actions.select_element_from_list_by_value(VisaClickToPayLocators.get_billing_details_field_locator('country'),
+                                                        'GB')
 
     def fill_delivery_details_form(self):
         delivery_fields = {
@@ -267,6 +268,7 @@ class VisaClickToPayPage(BasePage):
         return masked_card_number
 
     def confirm_user_address(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._waits.wait_for_element_visibility(VisaClickToPayLocators.continue_btn)
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
         self._actions.click(VisaClickToPayLocators.continue_btn)

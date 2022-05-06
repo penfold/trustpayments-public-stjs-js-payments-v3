@@ -21,7 +21,6 @@ Feature: Visa Click To Pay for unregistered user
       | success       |
       | submit        |
 
-    #TODO
   Scenario: Successful checkout - Unregistered VISA CTP user with filled billing details fields
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -32,7 +31,7 @@ Feature: Visa Click To Pay for unregistered user
     And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
     And User chooses to register his card with Visa
     And User clicks Pay Securely button
-    And User fills phone number field on Visa popup
+    And User confirms email address
     And User reviews VISA_CTP checkout page and confirm payment
     Then User will see that VISA_CTP checkout is completed
     And User will see following callback type called only once
@@ -130,23 +129,27 @@ Feature: Visa Click To Pay for unregistered user
     And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
     Then User will see that registering card with VISA_CTP is available
 
-#  TODO - uncomment when issue with cancel will be resolved
-#  Scenario: Unregistered VISA CTP user cancels payment
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value |
-#      | requesttypedescriptions | AUTH  |
-#    And User opens example page VISA_CTP
-#    When User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
-#    And User chooses to register his card with Visa
-#    And User clicks Pay Securely button
-#    And User fills billing address form on Visa checkout popup and saves address for delivery
-#    And User reviews VISA_CTP checkout page and cancels payment
-#    Then User will see that VISA_CTP checkout is cancelled
-#    And User will see following callback type called only once
-#      | callback_type |
-#      | cancel        |
-#      | submit        |
+  Scenario: Unregistered VISA CTP user cancels payment
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+    And User chooses to register his card with Visa
+    And User clicks Pay Securely button
+    And User fills billing address form on Visa checkout popup and saves address for delivery
+    And User reviews VISA_CTP checkout page and cancels payment
+    Then User will see that VISA_CTP checkout is cancelled
+    And User will see following callback type called only once
+      | callback_type |
+      | cancel        |
+      | submit        |
+    When User clicks Pay Securely button
+    And User fills billing address form on Visa checkout popup and saves address for delivery
+    And User reviews VISA_CTP checkout page and confirm payment
+    Then User will see that VISA_CTP checkout is completed
+
   Scenario: DCF translations - checking language preference
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT_DE with additional attributes

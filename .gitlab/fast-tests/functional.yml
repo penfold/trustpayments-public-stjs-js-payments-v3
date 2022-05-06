@@ -109,7 +109,7 @@ e2e-vctp-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
-  parallel: 6
+  parallel: 5
 
 e2e-vctp-tests-release:
   extends:
@@ -119,7 +119,7 @@ e2e-vctp-tests-release:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
-  parallel: 6
+  parallel: 5
 
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:
