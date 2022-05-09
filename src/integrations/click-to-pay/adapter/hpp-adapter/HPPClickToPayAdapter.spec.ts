@@ -128,11 +128,12 @@ describe('HPPClickToPayAdapter', () => {
         when(hppUpdateViewCallbackMock.getUpdateViewState()).thenReturn(updateViewMock);
       });
 
-      it('when card form should be hidden card fields should be set as readonly to prevent defined HTML navigation from being triggered on them', done => {
+      it('when card form should be hidden card fields should be set as readonly and disabled to prevent defined HTML navigation from being triggered on them', done => {
         sut.init(initParams).then((a) => {
           updateViewMock.subscribe(() => {
             cardInputs.forEach(input => {
               expect(input.hasAttribute('readonly')).toBe(true);
+              expect(input.hasAttribute('disabled')).toBe(true);
             });
             done();
           });
@@ -146,11 +147,12 @@ describe('HPPClickToPayAdapter', () => {
         });
       });
 
-      it('when card form should not be hidden card fields should have "readonly" attribute removed', done => {
+      it('when card form should not be hidden card fields should have "readonly"  and "disabled" attributes removed', done => {
         sut.init(initParams).then(() => {
           updateViewMock.subscribe(() => {
             cardInputs.forEach(input => {
               expect(input.hasAttribute('readonly')).toBe(false);
+              expect(input.hasAttribute('disabled')).toBe(false);
             });
             done();
           });
