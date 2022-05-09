@@ -290,6 +290,8 @@ class VisaClickToPayPage(BasePage):
 
     def click_pay_now_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_remember_me_checkbox(self, iframe):
