@@ -313,15 +313,14 @@ export class ST {
       ...tokenizedCardPaymentConfig,
     };
 
-    console.log('TOKENIZED ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
-
     this.tokenizedCardPaymentAdapter.updateTokenizedJWT(jwtCard);
+    this.config = this.configService.updateFragment(TokenizedCardPaymentConfigName, tokenizedCardPaymentConfig);
 
     this.messageBus.publish<ISetPartialConfig<ITokenizedCardPaymentConfig>>(
       {
         type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
         data: {
-          name: TokenizedCardPaymentConfigName,
+          name: TokenizedCardPaymentMethodName,
           config: tokenizedCardPaymentConfig,
         },
       },
