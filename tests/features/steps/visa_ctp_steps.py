@@ -1,7 +1,7 @@
 # type: ignore[no-redef]
 
 from assertpy import assert_that, soft_assertions
-from behave import use_step_matcher, step, then
+from behave import use_step_matcher, step
 
 from configuration import CONFIGURATION
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
@@ -158,7 +158,7 @@ def step_impl(context):
     vctp_page.clear_card_details_inputs()
 
 
-@step('User cancel payment on login view')
+@step('User cancel payment on otp view')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_cancel_button()
@@ -259,6 +259,22 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
     vctp_page.is_card_validation_message_visible(expected_text)
+
+
+@step('User will see previously submitted billing data')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    billing_data = {
+        'billingfirstname': vctp_page.get_delivery_address_data_from_visa_dcf('1'),
+        'billinglastname': vctp_page.get_delivery_address_data_from_visa_dcf('1'),
+        'billingpremise': vctp_page.get_delivery_address_data_from_visa_dcf('2'),
+        'billingstreet': vctp_page.get_delivery_address_data_from_visa_dcf('3'),
+        'billingtown': vctp_page.get_delivery_address_data_from_visa_dcf('4'),
+        'billingtelephone': vctp_page.get_delivery_address_data_from_visa_dcf('5'),
+    }
+    with soft_assertions():
+        for row in context.table:
+            assert_that(billing_data[row['key']]).contains(row['value'])
 
 
 @step('User will not see previously added card in card list')
@@ -457,13 +473,25 @@ def step_impl(context):
     vctp_page.confirm_payment()
 
 
+@step('User clicks continue on Visa popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.confirm_user_address()
+
+
+@step('User clicks Continue as guest button')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_continue_as_guest_btn()
+
+
 @step('User signs out from VISA_CTP on popup')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_sign_out()
 
 
-@then('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
+@step('User will see labels displayed on VISA_CTP popup translated into "(?P<language>.+)"')
 def step_impl(context, language):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     labels = {
@@ -479,7 +507,7 @@ def step_impl(context, language):
             vctp_page.validate_visa_ctp_translation(labels[row['fields']], language, row['fields'])
 
 
-@then('User can open additional information hint')
+@step('User can open additional information hint')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_more_information_hint_button()
@@ -490,3 +518,21 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.verify_visa_info_popup_elements()
     vctp_page.click_close_more_information_hint()
+
+
+@step('User confirms email address')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.confirm_user_address()
+
+
+@step('User will back to login view')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_email_input_displayed()).is_true()
+
+
+@step('User waits for callback to disappear')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.wait_for_cancel_callback_to_disappear()
