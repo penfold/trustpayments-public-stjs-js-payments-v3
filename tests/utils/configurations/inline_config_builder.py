@@ -8,7 +8,7 @@ class InlineConfigBuilder:
         # current implementation works only for not nested objects
         payload_keys = ['accounttypedescription', 'baseamount', 'billingcountryiso2a', 'billingdob',
                         'billingprefixname', 'billingfirstname', 'billingmiddlename', 'billinglastname',
-                        'billingsuffixname', 'billingemail', 'billingtown', 'billingcounty', 'billingstreet',
+                        'billingsuffixname', 'billingemail','billingtelephone', 'billingtown', 'billingcounty', 'billingstreet',
                         'billingpremise', 'billingpostcode', 'customercountryiso2a', 'customerdob',
                         'customerprefixname', 'customerfirstname', 'customermiddlename', 'customerlastname',
                         'customersuffixname', 'customeremail', 'customertown', 'customercounty', 'customerstreet',
