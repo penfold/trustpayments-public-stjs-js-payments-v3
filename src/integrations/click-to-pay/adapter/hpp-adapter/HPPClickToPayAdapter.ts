@@ -199,11 +199,15 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       return;
     }
 
-    if (updateData.displayCardForm === true) {
-      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.removeAttribute('readonly'));
-    } else {
-      cardFieldNames.forEach(fieldName => (formElement.elements.namedItem(fieldName) as Element)?.setAttribute('readonly', 'readonly'));
-    }
-
+    cardFieldNames.forEach(fieldName => {
+      const fieldElement = formElement.elements.namedItem(fieldName) as Element;
+      if (updateData.displayCardForm === true) {
+        fieldElement?.removeAttribute('readonly');
+        fieldElement?.removeAttribute('disabled');
+      } else {
+        fieldElement?.setAttribute('readonly', 'readonly');
+        fieldElement?.setAttribute('disabled', 'disabled');
+      }
+    });
   }
 }
