@@ -344,7 +344,7 @@ class PaymentMethodsPage(BasePage):
             PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                 AuthData.THREE_DS_CODE.value)
-        if 'Firefox' in CONFIGURATION.BROWSER or 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+        if CONFIGURATION.REMOTE_BROWSER in ['Firefox', 'Chrome', 'Edge'] or 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
             self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
         else:
             self._actions.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
