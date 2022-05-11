@@ -41,7 +41,7 @@ Feature: payment flow with redirect
     And User opens example page
     And User waits for form inputs to be loaded
     And User waits for Pay button to be active
-    When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V2_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
