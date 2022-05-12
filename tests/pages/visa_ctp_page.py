@@ -137,8 +137,11 @@ class VisaClickToPayPage(BasePage):
         self._actions.clear_input(VisaClickToPayLocators.card_number_input)
         self._actions.clear_input(VisaClickToPayLocators.security_code_input)
 
-    def click_cancel_button(self):
-        self._actions.click(VisaClickToPayLocators.cancel_btn)
+    def click_cancel_otp_button(self):
+        self._actions.click(VisaClickToPayLocators.cancel_otp_btn)
+
+    def click_cancel_login_button(self):
+        self._actions.click(VisaClickToPayLocators.cancel_login_btn)
 
     def is_login_form_displayed(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.submit_email_btn)
@@ -148,12 +151,14 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.resend_otp_btn)
 
     def is_email_input_displayed(self):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.email_input)
         return self._actions.is_element_displayed(VisaClickToPayLocators.email_input)
 
     # Card list view
     def click_add_new_card_btn(self):
         self._actions.click(VisaClickToPayLocators.add_card_button)
+
+    def click_view_all_cards_btn(self):
+        self._actions.click(VisaClickToPayLocators.view_all_cards_button)
 
     def select_card_from_cards_list_by_index(self, card_number):
         self._actions.click(VisaClickToPayLocators.get_card_locator_from_cards_list(card_number))
@@ -301,6 +306,8 @@ class VisaClickToPayPage(BasePage):
 
     def click_pay_now_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_remember_me_checkbox(self, iframe):
@@ -472,6 +479,7 @@ class VisaClickToPayPage(BasePage):
         return element_translation
 
     def click_more_information_hint_button(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.info_button)
         self._actions.click(VisaClickToPayLocators.info_button)
 
     def click_close_more_information_hint(self):
@@ -481,7 +489,7 @@ class VisaClickToPayPage(BasePage):
         elements_list = self._actions.find_elements(VisaClickToPayLocators.info_popup_elements)
         assertion_message = f'Info popup consists of 6 elements but only {len(elements_list)} were visible'
         assert_that(elements_list).is_not_empty()
-        assert_that(len(elements_list), assertion_message).is_equal_to(6)
+        assert_that(len(elements_list), assertion_message).is_equal_to(4)
 
     def wait_for_cancel_callback_to_disappear(self):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.callback_cancel_popup)

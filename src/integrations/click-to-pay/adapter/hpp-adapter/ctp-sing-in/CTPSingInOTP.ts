@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { ITranslator } from '../../../../../application/core/shared/translator/ITranslator';
 import { IInitiateIdentityValidationResponse } from '../../../digital-terminal/ISrc';
 
-const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
+const logo = require('../../../../../application/core/services/icon/images/ctp-visa.svg');
 
 export class CTPSIgnInOTP {
   private readonly errorFieldClass = 'st-hpp-prompt__field-error';
@@ -16,8 +16,7 @@ export class CTPSIgnInOTP {
   private cancelCallback: () => void;
   private otpInputsNames = new Array(6).fill('').map((value, index) => `${this.fieldName}${index}`);
 
-  constructor(private translator: ITranslator) {
-  }
+  constructor(private translator: ITranslator) {}
 
   setContainer(containerId: string) {
     this.container = document.getElementById(containerId);
@@ -42,7 +41,11 @@ export class CTPSIgnInOTP {
     this.cancelCallback = callback;
   }
 
-  show(validationResponse: IInitiateIdentityValidationResponse, resultSubject: Subject<string>, resendSubject: Subject<boolean>) {
+  show(
+    validationResponse: IInitiateIdentityValidationResponse,
+    resultSubject: Subject<string>,
+    resendSubject: Subject<boolean>
+  ) {
     const formElement = document.createElement('form');
     const wrapperElement = document.createElement('div');
     formElement.addEventListener('submit', event => {
@@ -55,14 +58,18 @@ export class CTPSIgnInOTP {
       }
     });
 
+    const validationChannels = (validationResponse.maskedValidationChannel as string).split(',');
+
+    /* eslint-disable: quotes */
     formElement.innerHTML = `
       <div class="st-ctp-prompt__otp-wrapper">
       <div class="st-ctp-prompt__header">
-        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">Click To Pay</span>
-        <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
+        <img src="${logo}" class="st-ctp-prompt__logo--otp" alt="">
+        <span class="st-ctp-prompt__close st-ctp-prompt__close--otp" id="${this.closeButtonId}">&times;</span>
       </div>
-      <div class="st-hpp-prompt__title">Confirm it is you.</div>
-      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>${(validationResponse.maskedValidationChannel as string)?.replace(',', '<br/>')}</div>
+      <div class="st-hpp-prompt__title">${this.translator.translate('Confirm it\'s you')}</div>
+      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the code sent to <validation-channel> to checkout with Click to Pay.').replace('<validation-channel>',validationChannels.join(','))}
+        </div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
       <span class="${this.errorFieldClass} st-hpp-prompt__otp-input-error"></span>
@@ -72,6 +79,7 @@ export class CTPSIgnInOTP {
           Verify
         </button>
      </div>`;
+    /* eslint-enable: quotes */
 
     formElement.querySelector(`#${this.closeButtonId}`).addEventListener('click', () => {
       if (this.cancelCallback) {
@@ -117,6 +125,12 @@ export class CTPSIgnInOTP {
       }
 
       (input.nextElementSibling as HTMLElement)?.focus();
+    });
+
+    input.addEventListener('keydown', event => {
+      if (event.code === 'Backspace' && (event.target as HTMLInputElement).value === '') {
+        (input.previousElementSibling as HTMLElement)?.focus();
+      }
     });
 
     input.addEventListener('paste', event => {

@@ -23,6 +23,7 @@
   flex-direction: column;
 
   #merchant-submit-label {
+    font-size: 12px;
     margin-top: 10px;
   }
 }
@@ -96,5 +97,15 @@
 #st-ctp-login {
   max-width: 800px;
   margin: 0 auto;
-  padding: 10px 25px;
+  padding: 10px 0;
+}
+
+
+// this is workaround for fontawesome not loaded in example page
+.st-ctp-prompt__tooltip-trigger > i:after {
+  content: '';
+  background: url('./info-circle.svg');
+  display: block;
+  width: 16px;
+  height: 16px;
 }
