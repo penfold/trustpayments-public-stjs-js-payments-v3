@@ -115,6 +115,7 @@ def step_impl(context, card):
         'second': '2',
         'third': '3'
     }
+    vctp_page.click_view_all_cards_btn()
     context.pan = vctp_page.get_masked_card_number_from_card_list(card_on_the_list[card])
     vctp_page.select_card_from_cards_list_by_index(card_on_the_list[card])
 
@@ -158,10 +159,16 @@ def step_impl(context):
     vctp_page.clear_card_details_inputs()
 
 
-@step('User cancel payment on otp view')
+@step('User clicks cancel button on otp view')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    vctp_page.click_cancel_button()
+    vctp_page.click_cancel_otp_button()
+
+
+@step('User clicks cancel button on login view')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_cancel_login_button()
 
 
 @step('User clicks on Resend code button')
@@ -536,3 +543,9 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.wait_for_cancel_callback_to_disappear()
+
+
+@step('User will not see login view')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_email_input_displayed()).is_false()

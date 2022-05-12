@@ -2,14 +2,6 @@ import { Service } from 'typedi';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
-// @ts-ignore
-import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
-// @ts-ignore
-import trolleyIcon from '../../../application/core/services/icon/images/trolley.svg';
-// @ts-ignore
-import cardIcon from '../../../application/core/services/icon/images/card.svg';
-// @ts-ignore
-import personIcon from '../../../application/core/services/icon/images/person.svg';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
@@ -18,6 +10,8 @@ import { ITranslator } from '../../../application/core/shared/translator/ITransl
 import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
 import { NewCardFieldName } from './NewCardFieldName';
 import './CardListGenerator.scss';
+
+const logo = require('../../../application/core/services/icon/images/ctp-visa.svg');
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
@@ -30,7 +24,7 @@ export class CardListGenerator {
   private cardList: ICorrelatedMaskedCard[];
 
   private readonly iconMap: Map<string, string> = new Map([
-    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
+    ['visa', require('../../../application/core/services/icon/images/ctp-visa.svg')],
   ]);
 
   constructor(
@@ -51,6 +45,9 @@ export class CardListGenerator {
       const cardRow = document.createElement('div');
       cardRow.classList.add('st-card');
       cardRow.innerHTML = cardContent;
+      if (index !== 0) {
+        cardRow.classList.add('st-card--hidden');
+      }
       if (!card.isActive) {
         cardRow.classList.add('st-card--inactive');
       } else {
@@ -58,6 +55,11 @@ export class CardListGenerator {
       }
       container.appendChild(cardRow);
     });
+
+    const viewAllCards = document.createElement('div');
+    viewAllCards.classList.add('st-view-all-cards');
+    viewAllCards.innerHTML = this.viewAllCards();
+    container.appendChild(viewAllCards);
 
     const addCardRow = document.createElement('div');
     addCardRow.classList.add('st-add-card');
@@ -73,7 +75,7 @@ export class CardListGenerator {
   displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     const wrapper = document.createElement('div');
-    const tooltip = document.createElement('div');
+
     wrapper.innerHTML = this.addUserInformationContent(
       userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress
     );
@@ -81,8 +83,6 @@ export class CardListGenerator {
     document
       .getElementById(this.notYouElementId)
       .addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
-    tooltip.innerHTML = this.createTooltip();
-    document.getElementById('st-ctp-welcome').appendChild(tooltip);
     this.addEventHandlersToUserInformation();
   }
 
@@ -109,11 +109,11 @@ export class CardListGenerator {
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
-        <span class="st-add-card__label">
-          ${this.translator.translate('Add new card')}
+        <span class="st-add-card__label st-add-card__button" id="st-add-card__button">
+          +&emsp;${this.translator.translate('Add a card')}
         </span>
-        <span class="st-add-card__button">
-          <button id="st-add-card__button" class="st-add-card__button" type="button">+</button>
+        <span class="st-add-card__label st-add-card__title" id="st-add-card__title">
+          ${this.translator.translate('Add new card')}
         </span>
       </div>
       <div class="st-add-card__details">
@@ -137,44 +137,35 @@ export class CardListGenerator {
     `;
   }
 
+  private viewAllCards(): string {
+    return `
+      <div class="st-add-card__label">
+        <span class="st-add-card__label" id="st-view-all-card__button">
+          ${this.translator.translate('View all cards')}
+        </span>
+      </div>
+    `;
+  }
+
   private addEventHandlers(formId: string): void {
     document
       .getElementById(formId)
       .querySelector('input[name=' + NewCardFieldName.pan + ']')
       .addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+    document.getElementById('st-view-all-card__button').addEventListener('click', () => this.handleViewAllCardButtonClick());
   }
 
   private addEventHandlersToUserInformation(): void {
-    document.getElementById('st-ctp-welcome__info-icon').addEventListener('click', () => {
-      this.showTooltip();
-    });
-    document.getElementById('st-tooltip__close-button').addEventListener('click', () => {
-      this.hideTooltip();
-    });
   }
 
   private addUserInformationContent(emailAddress: string): string {
     return `
-      <div id="st-ctp-welcome" class="st-ctp-welcome">
-        <span>Welcome back to</span>
-        <span class="st-ctp-welcome__logo">
-          <img src="${logo}" alt="">
-        </span>
-        <span>Click To Pay</span>
-        <span class="st-ctp-welcome__info-icon" id="st-ctp-welcome__info-icon">&#9432;</span>
+      <div class="st-ctp-enabled-by">
+        <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
       </div>
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
-        <?xml version="1.0" encoding="UTF-8"?>
-        <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="129.38" cy="60" r="60"/>
-          <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
-        </svg>
-        <p class="st-ctp-user-details__information">${this.translator.translate(
-      'Hello'
-    )} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate(
-      'Not you?'
-    )}</span></p>
+        ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details-not-you">${this.translator.translate('Not you?')}</span>
       </div>
     `;
   }
@@ -202,6 +193,7 @@ export class CardListGenerator {
         displayCardForm: false,
         displaySubmitButton: true,
       });
+
     }
 
     return `
@@ -224,10 +216,7 @@ export class CardListGenerator {
         ..${card.panLastFour}
       </span>
       <span class="st-card__logo">
-        <img src="${logo}" alt="">
-      </span>
-      <span class="st-card__type">
-        <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
+          <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
       </span>
     `;
   }
@@ -255,32 +244,6 @@ export class CardListGenerator {
         displaySubmitButton: true,
       });
     }
-  }
-
-  private closeForm(): void {
-    document.getElementById('st-add-card__button').style.visibility = 'visible';
-    document.querySelectorAll('div.st-add-card__details').forEach(div => {
-      (div as HTMLDivElement).style.display = 'none';
-    });
-  }
-
-  private createTooltip(): string {
-    return `
-    <div class="st-tooltip" id="st-tooltip">
-      <div style="justify-content: flex-end">
-        <span class="st-tooltip__close-button" id="st-tooltip__close-button">&times;</span>
-      </div>
-      <div style="justify-content: center">
-        <div>
-          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
-        </div>
-      </div>
-      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div></div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>You can choose to be remembered on your device and browser for faster checkout.</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>Built on industry standards for online transactions and supported by global payment brands.</div>
-    </div>
-    `;
   }
 
   private fillUpExpiryMonth(): void {
@@ -320,6 +283,13 @@ export class CardListGenerator {
     this.clearSelection();
   }
 
+  private handleViewAllCardButtonClick(): void {
+    document.getElementById('st-view-all-card__button').remove();
+    document.querySelectorAll('div.st-card--hidden').forEach(e => {
+      (e as HTMLDivElement).classList.remove('st-card--hidden');
+    });
+  }
+
   private handleChangedPan(event: Event): void {
     if ((event.target as HTMLInputElement).value) {
       this.srcNameFinder
@@ -354,19 +324,22 @@ export class CardListGenerator {
     document.getElementById(id).innerHTML = '';
   }
 
-  private hideTooltip(): void {
-    document.getElementById('st-tooltip').classList.remove('st-tooltip--visible');
-  }
-
   private openForm(): void {
-    document.getElementById('st-add-card__button').style.visibility = 'hidden';
+    document.querySelector('.st-add-card').classList.add('st-add-card--open');
+    document.getElementById('st-add-card__button').style.display = 'none';
+    document.getElementById('st-add-card__title').style.display = 'block';
     document.querySelectorAll('div.st-add-card__details').forEach(div => {
       (div as HTMLDivElement).style.display = 'block';
     });
   }
 
-  private showTooltip(): void {
-    document.getElementById('st-tooltip').classList.add('st-tooltip--visible');
+  private closeForm(): void {
+    document.querySelector('.st-add-card').classList.remove('st-add-card--open');
+    document.getElementById('st-add-card__button').style.display = 'block';
+    document.getElementById('st-add-card__title').style.display = 'none';
+    document.querySelectorAll('div.st-add-card__details').forEach(div => {
+      (div as HTMLDivElement).style.display = 'none';
+    });
   }
 
   private showValidationStatus(id: string, message: string) {

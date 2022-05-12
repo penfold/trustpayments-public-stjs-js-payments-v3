@@ -33,7 +33,8 @@ class VisaClickToPayLocators:
     login_invalid_input: By = (By.XPATH, '//label[contains(@class,\'field--invalid\')]')
     otp_validation_message: By = (By.XPATH, '//span[contains(@class,\'otp-input-error\')]')
     otp_invalid_input: By = (By.XPATH, '//div[contains(@class,\'otp-inputs--invalid\')]')
-    cancel_btn: By = (By.ID, 'st-hpp-prompt__otp-close')
+    cancel_otp_btn: By = (By.ID, 'st-hpp-prompt__otp-close')
+    cancel_login_btn: By = (By.ID, 'st-hpp-prompt__close')
 
     @classmethod
     def get_otp_input_field(cls, value) -> By.XPATH:
@@ -41,6 +42,7 @@ class VisaClickToPayLocators:
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
+    view_all_cards_button: By = (By.ID, 'st-view-all-card__button')
     cards_section: By = (By.XPATH, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
     pan_input: By = (By.ID, 'vctp-pan')
     expiry_date_list_month: By = (By.ID, 'vctp-expiryDateMonthId')
@@ -50,7 +52,7 @@ class VisaClickToPayLocators:
     card_validation_message: By = (By.ID, 'vctp-pan-validation-status')
     not_you_btn: By = (By.ID, 'st-ctp-user-details__not--you')
     merchant_submit_label: By = (By.ID, 'merchant-submit-label')
-    info_button: By = (By.XPATH, '//*[@id="st-ctp-welcome__info-icon"]')
+    info_button: By = (By.ID, 'st-ctp-prompt-click-to-pay')
     info_popup_elements: By = (By.XPATH, '//*[@id="st-tooltip"]/div')
     info_popup_close_button: By = (By.XPATH, '//*[@id="st-tooltip__close-button"]')
 
