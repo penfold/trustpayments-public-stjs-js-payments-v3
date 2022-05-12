@@ -799,44 +799,44 @@ SamsungGalaxyS21-11.0-visual-tests-styling-nightly:
 
 #
 
-.iPhone13-15.0-visual-tests:
+.iPhone12-visual-tests:
   variables:
-    DEVICE: iPhone 13
+    DEVICE: iPhone 12
     OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
 
-.iPhone13-15.0-visual-tests-release:
+.iPhone12-visual-tests-release:
   extends:
     - .component-tests-browserstack
-    - .iPhone13-15.0-visual-tests
+    - .iPhone12-visual-tests
     - .rules-extended-tests-release
 
-iPhone13-15.0-visual-tests-nightly:
+iPhone12-visual-tests-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone13-15.0-visual-tests
+    - .iPhone12-visual-tests
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.iPhone13-15.0-visual-tests-styling:
+.iPhone12-visual-tests-styling:
   variables:
-    DEVICE: iPhone 13
+    DEVICE: iPhone 12
     OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
 
-.iPhone13-15.0-visual-tests-styling-release:
+.iPhone12-visual-tests-styling-release:
   extends:
     - .component-tests-browserstack
-    - .iPhone13-15.0-visual-tests-styling
+    - .iPhone12-visual-tests-styling
     - .rules-extended-tests-release
 
-iPhone13-15.0-visual-tests-styling-nightly:
+iPhone12-visual-tests-styling-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone13-15.0-visual-tests-styling
+    - .iPhone12-visual-tests-styling
     - .rules-extended-tests-review-manual-allow-failure
