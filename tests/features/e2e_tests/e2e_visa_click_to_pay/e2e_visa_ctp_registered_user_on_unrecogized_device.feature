@@ -3,7 +3,7 @@ Feature: Visa Click To Pay
   I want to use Visa Click To Pay payment method
   In order to check full payment functionality
 
-
+  @vctp
   Scenario: Successful checkout - Registered VISA_CTP user on unrecognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes

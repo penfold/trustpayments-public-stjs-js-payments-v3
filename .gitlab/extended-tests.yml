@@ -129,24 +129,24 @@ iPhone11-13-component-tests-smoke-nightly:
 
 #
 
-.iPhone11-14.0-component-tests-smoke:
+.iPhone11-14.0-component-tests-vctp:
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+    POETRY_TAGS: '@vctp'
 
 .iPhone11-14.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
-    - .iPhone11-14.0-component-tests-smoke
+    - .iPhone11-14.0-component-tests-vctp
     - .rules-extended-tests-release
 
 iPhone11-14.0-component-tests-smoke-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone11-14.0-component-tests-smoke
+    - .iPhone11-14.0-component-tests-vctp
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -578,24 +578,24 @@ SamsungGalaxyS21-11.0-e2e-tests-smoke-nightly:
 
 #
 
-.GooglePixel6-12.0-e2e-tests-smoke:
+.GooglePixel6-12.0-e2e-tests-vctp:
   variables:
-    DEVICE: Google Pixel 6
-    OS_VERSION: '12.0'
+    DEVICE: iPhone 11
+    OS_VERSION: 14
+    BROWSER: Safari
     REAL_MOBILE: 'true'
-    BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    POETRY_TAGS: '@vctp'
 
 GooglePixel6-12.0-e2e-tests-smoke-release:
   extends:
     - .visual-regression-tests-release
-    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .GooglePixel6-12.0-e2e-tests-vctp
     - .rules-extended-tests-release
 
 GooglePixel6-12.0-e2e-tests-smoke-nightly:
   extends:
     - .visual-regression-tests-review
-    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .GooglePixel6-12.0-e2e-tests-vctp
     - .rules-extended-tests-review-manual-allow-failure
 
 ################################### Visual E2E Tests Browserstack ###################################

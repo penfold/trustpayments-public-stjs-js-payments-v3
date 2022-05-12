@@ -1,4 +1,6 @@
 # type: ignore[no-redef]
+import time
+
 from behave import use_step_matcher, step, then
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
@@ -55,6 +57,7 @@ def step_impl(context, example_page):
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()
     elif example_page is not None and 'VISA_CTP' in example_page:
+        time.sleep(500)
         payment_page.check_if_value_is_present_in_logs('ClickToPay', 'PAYMENT INIT COMPLETED')
 
 
