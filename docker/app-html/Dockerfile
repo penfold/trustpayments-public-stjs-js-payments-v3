@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/trustpayments-public/public-docker-registry/nginx:7.7.4 as app-html
+FROM registry.gitlab.com/trustpayments-public/public-docker-registry/nginx:7.7.8 as app-html
 
 ARG SDK_DIST_PATH
 ARG APP_DIST_PATH
