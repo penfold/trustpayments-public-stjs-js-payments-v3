@@ -115,7 +115,7 @@ stages:
   - build
   - post-build
   # Tests
-  # - fast-tests
+  - fast-tests
   - extended-tests
   - validate-merge-request-description
   # Scheduled tests supervisor
