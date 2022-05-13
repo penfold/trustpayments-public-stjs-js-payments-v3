@@ -51,14 +51,15 @@ class VisaClickToPayPage(BasePage):
             'street': 'Willow Grove',
             'town': 'Willow Grove',
             'county': 'Montgomery',
-            'country': 'USA',
             'post-code': '19001',
             'email': f'{get_string(5, 1)}@testemail.com',
-            'telephone': '9343242342',
+            'telephone': '4407702371570',
             'telephone-type': '1'
         }
         for field_locator, value in billing_fields.items():
             self._actions.send_keys(VisaClickToPayLocators.get_billing_details_field_locator(field_locator), value)
+        self._actions.select_element_from_list_by_value(VisaClickToPayLocators.get_billing_details_field_locator('country'),
+                                                        'GB')
 
     def fill_delivery_details_form(self):
         delivery_fields = {
@@ -136,8 +137,11 @@ class VisaClickToPayPage(BasePage):
         self._actions.clear_input(VisaClickToPayLocators.card_number_input)
         self._actions.clear_input(VisaClickToPayLocators.security_code_input)
 
-    def click_cancel_button(self):
-        self._actions.click(VisaClickToPayLocators.cancel_btn)
+    def click_cancel_otp_button(self):
+        self._actions.click(VisaClickToPayLocators.cancel_otp_btn)
+
+    def click_cancel_login_button(self):
+        self._actions.click(VisaClickToPayLocators.cancel_login_btn)
 
     def is_login_form_displayed(self):
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.submit_email_btn)
@@ -146,9 +150,15 @@ class VisaClickToPayPage(BasePage):
     def click_resend_code_button(self):
         self._actions.click(VisaClickToPayLocators.resend_otp_btn)
 
+    def is_email_input_displayed(self):
+        return self._actions.is_element_displayed(VisaClickToPayLocators.email_input)
+
     # Card list view
     def click_add_new_card_btn(self):
         self._actions.click(VisaClickToPayLocators.add_card_button)
+
+    def click_view_all_cards_btn(self):
+        self._actions.click(VisaClickToPayLocators.view_all_cards_button)
 
     def select_card_from_cards_list_by_index(self, card_number):
         self._actions.click(VisaClickToPayLocators.get_card_locator_from_cards_list(card_number))
@@ -267,9 +277,15 @@ class VisaClickToPayPage(BasePage):
         return masked_card_number
 
     def confirm_user_address(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._waits.wait_for_element_visibility(VisaClickToPayLocators.continue_btn)
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
         self._actions.click(VisaClickToPayLocators.continue_btn)
+
+    def click_continue_as_guest_btn(self):
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_as_guest_btn)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.continue_as_guest_btn)
+        self._actions.click(VisaClickToPayLocators.continue_as_guest_btn)
 
     def click_terms_of_service_checkbox(self):
         if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.terms_of_service_checkbox,
@@ -290,6 +306,8 @@ class VisaClickToPayPage(BasePage):
 
     def click_pay_now_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.pay_now_btn)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_remember_me_checkbox(self, iframe):
@@ -451,11 +469,17 @@ class VisaClickToPayPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_translation == expected_translation, assertion_message
 
+    def get_delivery_address_data_from_visa_dcf(self, value):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_delivery_address_from_visa_dcf('1'))
+        element_billing_data = self._actions.get_text(VisaClickToPayLocators.get_delivery_address_from_visa_dcf(value))
+        return element_billing_data
+
     def get_visa_ctp_label_translation(self, locator):
         element_translation = self._actions.get_text(locator)
         return element_translation
 
     def click_more_information_hint_button(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.info_button)
         self._actions.click(VisaClickToPayLocators.info_button)
 
     def click_close_more_information_hint(self):
@@ -465,4 +489,7 @@ class VisaClickToPayPage(BasePage):
         elements_list = self._actions.find_elements(VisaClickToPayLocators.info_popup_elements)
         assertion_message = f'Info popup consists of 6 elements but only {len(elements_list)} were visible'
         assert_that(elements_list).is_not_empty()
-        assert_that(len(elements_list), assertion_message).is_equal_to(6)
+        assert_that(len(elements_list), assertion_message).is_equal_to(4)
+
+    def wait_for_cancel_callback_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.callback_cancel_popup)

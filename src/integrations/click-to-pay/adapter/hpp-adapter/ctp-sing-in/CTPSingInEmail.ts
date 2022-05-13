@@ -4,12 +4,6 @@ import { ITranslator } from '../../../../../application/core/shared/translator/I
 
 // @ts-ignore
 import logo from '../../../../../application/core/services/icon/images/click-to-pay.svg';
-// @ts-ignore
-import trolleyIcon from '../../../../../application/core/services/icon/images/trolley.svg';
-// @ts-ignore
-import cardIcon from '../../../../../application/core/services/icon/images/card.svg';
-// @ts-ignore
-import personIcon from '../../../../../application/core/services/icon/images/person.svg';
 
 export class CTPSingInEmail {
   private errorFieldClass = 'st-hpp-prompt__field-error';
@@ -18,10 +12,12 @@ export class CTPSingInEmail {
   private fieldElement: HTMLElement;
   private fieldErrorClass = 'st-hpp-prompt__field--invalid';
   private container: HTMLElement;
+  private closeButtonId = 'st-hpp-prompt__close';
 
   constructor(private translator: ITranslator) {
   }
-  setContainer(containerId: string){
+
+  setContainer(containerId: string) {
     this.container = document.getElementById(containerId);
   }
 
@@ -36,9 +32,10 @@ export class CTPSingInEmail {
     this.fieldElement.classList.remove(this.fieldErrorClass);
   }
 
-  close(){
+  close() {
     this.container.innerHTML = '';
   }
+
   show(): Observable<string> {
     const fieldName = 'st-ctp-email';
     const formElement = document.createElement('form');
@@ -46,12 +43,11 @@ export class CTPSingInEmail {
 
     formElement.innerHTML = `<div class="st-hpp-prompt__field-wrapper">
       <div class="st-ctp-prompt__header">
-        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">${this.translator.translate('Click To Pay')}</span>
+        <span class="st-ctp-prompt__logo"><img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
+        <span>Click To Pay</span>
+        <span class="st-ctp-prompt__tooltip-trigger" id="st-ctp-prompt-click-to-pay"><i class="fal fa-info-circle"></i></span>
       </div>
-      <div class="st-ctp-prompt-second-line" id="st-ctp-prompt-second-line">
-        <span class="st-ctp-prompt-fast-checkout-with">${this.translator.translate('Fast checkout with')} </span>
-        <span class="st-ctp-prompt-click-to-pay" id="st-ctp-prompt-click-to-pay">Click To Pay</span>
-      </div>
+    <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
     <span class="st-hpp-prompt__description">${this.translator.translate('Enter your email address to access your cards')}</span>
     <label class="${this.fieldClass}">
       <span class="st-hpp-prompt__field-label">${this.translator.translate('Email address')}:</span>
@@ -68,7 +64,7 @@ export class CTPSingInEmail {
 
     const tooltip = document.createElement('div');
     tooltip.innerHTML = this.createTooltip();
-    document.getElementById('st-ctp-prompt-second-line').appendChild(tooltip);
+    document.querySelector('.st-ctp-prompt__header').appendChild(tooltip);
 
     this.errorElement = formElement.querySelector(`.${this.errorFieldClass}`);
     this.fieldElement = formElement.querySelector(`.${this.fieldClass}`);
@@ -83,6 +79,8 @@ export class CTPSingInEmail {
     document.getElementById('st-tooltip__close-button').addEventListener('click', () => {
       this.hideTooltip();
     });
+
+    document.getElementById(this.closeButtonId).addEventListener('click', () => this.close());
 
     return fromEvent(formElement, 'submit').pipe(
       tap(event => {
@@ -102,13 +100,15 @@ export class CTPSingInEmail {
       </div>
       <div style="justify-content: center">
         <div>
-          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span>Click to Pay
+          <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span><span>Click to Pay</span>
         </div>
       </div>
-      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">${this.translator.translate('Pay with confidence with trusted brands')}</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${trolleyIcon}"></span><div style="display: block">${this.translator.translate('For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <click-to-pay-icon>, and your card is accepted.').replace('<click-to-pay-icon>',`<img class="st-tooltip__logo" src="${logo}" alt="">`)}</click-to-pay-icon></div></div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${cardIcon}"></span>${this.translator.translate('You can choose to be remembered on your device and browser for faster checkout.')}</div>
-      <div><span class="st-ctp-welcome__logo"><img alt="" src="${personIcon}"></span>${this.translator.translate('Built on industry standards for online transactions and supported by global payment brands.')}</div>
+      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
+      <div class="st-tooltip__content">
+        <div>For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div>
+        <div>You can choose to be remembered on your device and browser for faster checkout.</div>
+        <div>Built on industry standards for online transactions and supported by global payment brands.</div>
+      </div>
     </div>
     `;
   }

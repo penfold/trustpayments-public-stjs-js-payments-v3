@@ -52,5 +52,6 @@
   "Enter the one-time code Visa sent to": "Enter the one-time code Visa sent to",
   "Resend": "Resend",
   "Verify": "Verify",
-  "Selected card is not currently supported for Click to Pay": "Selected card is not currently supported for Click to Pay"
+  "Selected card is not currently supported for Click to Pay": "Selected card is not currently supported for Click to Pay",
+  "Hello": "Hello"
 }

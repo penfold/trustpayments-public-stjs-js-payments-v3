@@ -33,7 +33,8 @@ class VisaClickToPayLocators:
     login_invalid_input: By = (By.XPATH, '//label[contains(@class,\'field--invalid\')]')
     otp_validation_message: By = (By.XPATH, '//span[contains(@class,\'otp-input-error\')]')
     otp_invalid_input: By = (By.XPATH, '//div[contains(@class,\'otp-inputs--invalid\')]')
-    cancel_btn: By = (By.ID, 'st-hpp-prompt__close-btn')
+    cancel_otp_btn: By = (By.ID, 'st-hpp-prompt__otp-close')
+    cancel_login_btn: By = (By.ID, 'st-hpp-prompt__close')
 
     @classmethod
     def get_otp_input_field(cls, value) -> By.XPATH:
@@ -41,6 +42,7 @@ class VisaClickToPayLocators:
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
+    view_all_cards_button: By = (By.ID, 'st-view-all-card__button')
     cards_section: By = (By.XPATH, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
     pan_input: By = (By.ID, 'vctp-pan')
     expiry_date_list_month: By = (By.ID, 'vctp-expiryDateMonthId')
@@ -50,7 +52,7 @@ class VisaClickToPayLocators:
     card_validation_message: By = (By.ID, 'vctp-pan-validation-status')
     not_you_btn: By = (By.ID, 'st-ctp-user-details__not--you')
     merchant_submit_label: By = (By.ID, 'merchant-submit-label')
-    info_button: By = (By.XPATH, '//*[@id="st-ctp-welcome__info-icon"]')
+    info_button: By = (By.ID, 'st-ctp-prompt-click-to-pay')
     info_popup_elements: By = (By.XPATH, '//*[@id="st-tooltip"]/div')
     info_popup_close_button: By = (By.XPATH, '//*[@id="st-tooltip__close-button"]')
 
@@ -73,6 +75,7 @@ class VisaClickToPayLocators:
     # Visa Checkout view
     vctp_iframe: By = (By.ID, 'vcop-dcf')
     continue_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
+    continue_as_guest_btn: By = (By.XPATH, '//form[@name=\'otp-code-entry\']//button[@type=\'button\']')
     masked_card_number_on_visa_popup: By = (By.XPATH, '//section[@class=\'card-info-container\']//span[2]')
     masked_address_on_visa_popup: By = (By.XPATH, '//div[@class=\'v-list\']//li[1]')
     add_new_card_btn: By = (By.ID, 'btnAddCard')
@@ -87,6 +90,10 @@ class VisaClickToPayLocators:
     phone_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'phone-number-field\')]')
     email_address_placeholder: By = (
     By.XPATH, '//div[contains(@class, \'formControl\')]/label[contains(@for, \'email\')]')
+
+    @classmethod
+    def get_delivery_address_from_visa_dcf(cls, value) -> By.XPATH:
+        return By.XPATH, f'//div[@aria-label=\'Delivery Address\']//p[{value}]'
 
     # Alternative methods
     card_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-card-row\']//button[contains(@id,\'menubutton\')]')

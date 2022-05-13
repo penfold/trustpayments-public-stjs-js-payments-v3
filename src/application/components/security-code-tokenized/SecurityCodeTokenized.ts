@@ -110,9 +110,9 @@ export class SecurityCodeTokenized extends Input {
         placeholder: config[TokenizedCardPaymentConfigName]?.placeholder,
       });
 
-      const stylerStyle = { ...config?.styles?.defaultStyles, ...inputStyle };
+      const arrayOfStyles: IStyle[] = this.objectToArrayOfObjects({ ...config?.styles?.defaultStyles, ...inputStyle });
+      const styler: Styler = new Styler(this.getAllowedStyles(), arrayOfStyles);
 
-      const styler: Styler = new Styler(this.getAllowedStyles(),[stylerStyle]);
       if(styler.hasSpecificStyle('isLinedUp', inputStyle)) {
         styler.addStyles([
           {
@@ -204,5 +204,9 @@ export class SecurityCodeTokenized extends Input {
     }
     this.enableSecurityCode();
   }
+
+  private objectToArrayOfObjects(object: Record<string, string>): Array<Record<string, string>> {
+   return  Object.entries(object).reduce((objectList, arrayOfStrings) => ([...objectList, { [arrayOfStrings[0]]: arrayOfStrings[1] }]), []);
+}
 
 }

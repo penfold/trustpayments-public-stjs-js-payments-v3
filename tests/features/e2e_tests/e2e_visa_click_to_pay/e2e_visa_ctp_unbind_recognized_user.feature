@@ -29,5 +29,3 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User clicks Not you button
     Then User is not recognized by VISA_CTP
-
-

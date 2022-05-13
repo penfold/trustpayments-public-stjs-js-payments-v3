@@ -2,11 +2,7 @@ import { Subject } from 'rxjs';
 import { ITranslator } from '../../../../../application/core/shared/translator/ITranslator';
 import { IInitiateIdentityValidationResponse } from '../../../digital-terminal/ISrc';
 
-const logo = require('../../../../../application/core/services/icon/images/click-to-pay.svg');
-const visa = require('../../../../../application/core/services/icon/images/visa.svg');
-const mastercard = require('../../../../../application/core/services/icon/images/mastercard.svg');
-const amex = require('../../../../../application/core/services/icon/images/amex.svg');
-const discover = require('../../../../../application/core/services/icon/images/discover.svg');
+const logo = require('../../../../../application/core/services/icon/images/ctp-visa.svg');
 
 export class CTPSIgnInOTP {
   private readonly errorFieldClass = 'st-hpp-prompt__field-error';
@@ -64,22 +60,15 @@ export class CTPSIgnInOTP {
 
     const validationChannels = (validationResponse.maskedValidationChannel as string).split(',');
 
+    /* eslint-disable: quotes */
     formElement.innerHTML = `
       <div class="st-ctp-prompt__otp-wrapper">
       <div class="st-ctp-prompt__header">
-        <span class="st-ctp-prompt__logo">
-          <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
-          <img src="${visa}" class="st-ctp-prompt__logo-img" alt="">
-          <img src="${mastercard}" class="st-ctp-prompt__logo-img" alt="">
-          <img src="${amex}" class="st-ctp-prompt__logo-img" alt="" style='filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)'>
-          <img src="${discover}" class="st-ctp-prompt__logo-img" alt="">
-        </span>
-        <span class="st-ctp-prompt__close" id="${this.closeButtonId}">&times;</span>
+        <img src="${logo}" class="st-ctp-prompt__logo--otp" alt="">
+        <span class="st-ctp-prompt__close st-ctp-prompt__close--otp" id="${this.closeButtonId}">&times;</span>
       </div>
-      <div class="st-hpp-prompt__title">Confirm it's you</div>
-      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the one-time code Visa sent to')}<br/>
-        ${validationChannels.length > 0 ? validationChannels[0].trim() : ''}
-        ${validationChannels.length > 1? ', ' + validationChannels[1].trim() : ''}
+      <div class="st-hpp-prompt__title">${this.translator.translate('Confirm it\'s you')}</div>
+      <div class="st-hpp-prompt__descrption">${this.translator.translate('Enter the code sent to <validation-channel> to checkout with Click to Pay.').replace('<validation-channel>',validationChannels.join(','))}
         </div>
       <div class="${this.fieldClass}">
         ${this.otpInputsNames.map(value => `<input type="text" inputmode="numeric" required size="1" pattern="[0-9]{1}" name="${value}" class="st-ctp-prompt__otp-input" autocomplete="off" >`).join('')}
@@ -90,6 +79,7 @@ export class CTPSIgnInOTP {
           ${this.translator.translate('Verify')}
         </button>
      </div>`;
+    /* eslint-enable: quotes */
 
     formElement.querySelector(`#${this.closeButtonId}`).addEventListener('click', () => {
       if (this.cancelCallback) {

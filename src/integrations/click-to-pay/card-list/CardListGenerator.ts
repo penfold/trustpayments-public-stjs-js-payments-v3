@@ -11,11 +11,7 @@ import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallb
 import { NewCardFieldName } from './NewCardFieldName';
 import './CardListGenerator.scss';
 
-const logo = require('../../../application/core/services/icon/images/click-to-pay.svg');
-const visa = require('../../../application/core/services/icon/images/visa.svg');
-const mastercard = require('../../../application/core/services/icon/images/mastercard.svg');
-const amex = require('../../../application/core/services/icon/images/amex.svg');
-const discover = require('../../../application/core/services/icon/images/discover.svg');
+const logo = require('../../../application/core/services/icon/images/ctp-visa.svg');
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
@@ -28,7 +24,7 @@ export class CardListGenerator {
   private cardList: ICorrelatedMaskedCard[];
 
   private readonly iconMap: Map<string, string> = new Map([
-    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
+    ['visa', require('../../../application/core/services/icon/images/ctp-visa.svg')],
   ]);
 
   constructor(
@@ -113,8 +109,11 @@ export class CardListGenerator {
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
-        <span class="st-add-card__label" id="st-add-card__button">
-          ${this.translator.translate('+ Add new card')}
+        <span class="st-add-card__label st-add-card__button" id="st-add-card__button">
+          +&emsp;${this.translator.translate('Add a card')}
+        </span>
+        <span class="st-add-card__label st-add-card__title" id="st-add-card__title">
+          ${this.translator.translate('Add new card')}
         </span>
       </div>
       <div class="st-add-card__details">
@@ -164,10 +163,6 @@ export class CardListGenerator {
     return `
       <div class="st-ctp-enabled-by">
         <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
-        <img src="${visa}" class="st-ctp-prompt__logo-img" alt="">
-        <img src="${mastercard}" class="st-ctp-prompt__logo-img" alt="">
-        <img src="${amex}" class="st-ctp-prompt__logo-img" alt="" style="filter: invert(23%) sepia(61%) saturate(4974%) hue-rotate(195deg) brightness(97%) contrast(102%)">
-        <img src="${discover}" class="st-ctp-prompt__logo-img" alt="">
       </div>
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
         ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details-not-you">${this.translator.translate('Not you?')}</span>
@@ -221,10 +216,7 @@ export class CardListGenerator {
         ..${card.panLastFour}
       </span>
       <span class="st-card__logo">
-        <img src="${logo}" alt="">
-      </span>
-      <span class="st-card__type">
-        <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
+          <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
       </span>
     `;
   }
@@ -252,13 +244,6 @@ export class CardListGenerator {
         displaySubmitButton: true,
       });
     }
-  }
-
-  private closeForm(): void {
-    document.getElementById('st-add-card__button').style.visibility = 'visible';
-    document.querySelectorAll('div.st-add-card__details').forEach(div => {
-      (div as HTMLDivElement).style.display = 'none';
-    });
   }
 
   private fillUpExpiryMonth(): void {
@@ -302,7 +287,7 @@ export class CardListGenerator {
     document.getElementById('st-view-all-card__button').remove();
     document.querySelectorAll('div.st-card--hidden').forEach(e => {
       (e as HTMLDivElement).classList.remove('st-card--hidden');
-    })
+    });
   }
 
   private handleChangedPan(event: Event): void {
@@ -340,9 +325,20 @@ export class CardListGenerator {
   }
 
   private openForm(): void {
-    document.getElementById('st-add-card__button').style.visibility = 'hidden';
+    document.querySelector('.st-add-card').classList.add('st-add-card--open');
+    document.getElementById('st-add-card__button').style.display = 'none';
+    document.getElementById('st-add-card__title').style.display = 'block';
     document.querySelectorAll('div.st-add-card__details').forEach(div => {
       (div as HTMLDivElement).style.display = 'block';
+    });
+  }
+
+  private closeForm(): void {
+    document.querySelector('.st-add-card').classList.remove('st-add-card--open');
+    document.getElementById('st-add-card__button').style.display = 'block';
+    document.getElementById('st-add-card__title').style.display = 'none';
+    document.querySelectorAll('div.st-add-card__details').forEach(div => {
+      (div as HTMLDivElement).style.display = 'none';
     });
   }
 
