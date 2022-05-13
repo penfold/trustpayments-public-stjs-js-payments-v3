@@ -53,5 +53,11 @@
   "Resend": "Resend",
   "Verify": "Verify",
   "Selected card is not currently supported for Click to Pay": "Selected card is not currently supported for Click to Pay",
-  "Hello": "Hello"
+  "Hello": "Hello",
+  "Add a card": "Add a card",
+  "Add new card": "Add new card",
+  "For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon": "For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon",
+  "and your card is accepted.": "and your card is accepted.",
+  "Confirm it\\s you": "Confirm it\\s you",
+  "Enter the code sent to <validation-channel> to checkout with Click to Pay.": "Enter the code sent to <validation-channel> to checkout with Click to Pay."
 }

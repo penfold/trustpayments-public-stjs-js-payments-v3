@@ -13,8 +13,6 @@ import './CardListGenerator.scss';
 
 const logo = require('../../../application/core/services/icon/images/ctp-visa.svg');
 
-const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
-
 @Service()
 export class CardListGenerator {
   private acceptedCards: SrcName[] = [SrcName.VISA];
@@ -171,6 +169,8 @@ export class CardListGenerator {
   }
 
   private addValidation(): void {
+    const PAN_VALIDATION_STATUS_FAILED = this.translator.translate('Selected card is not currently supported for Click to Pay');
+
     if (this.panValidationStatusSubscription) {
       this.panValidationStatusSubscription.unsubscribe();
     }

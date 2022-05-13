@@ -103,11 +103,11 @@ export class CTPSingInEmail {
           <span class="st-ctp-welcome__logo"><img src="${logo}" alt=""></span><span>Click to Pay</span>
         </div>
       </div>
-      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">Pay with confidence with trusted brands</div>
+      <div style="font-size: 12px; font-weight: bold; justify-content: center; margin-bottom: 12px">${this.translator.translate('Pay with confidence with trusted brands')}</div>
       <div class="st-tooltip__content">
-        <div>For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon <img class="st-tooltip__logo" src="${logo}" alt="">, and your card is accepted.</div>
-        <div>You can choose to be remembered on your device and browser for faster checkout.</div>
-        <div>Built on industry standards for online transactions and supported by global payment brands.</div>
+        <div>${this.translator.translate('For an easy and smart checkout, simply click to pay whenever you see the Click to Pay icon')} <img class="st-tooltip__logo" src="${logo}" alt="">, ${this.translator.translate('and your card is accepted.')}</div>
+        <div>${this.translator.translate('You can choose to be remembered on your device and browser for faster checkout.')}</div>
+        <div>${this.translator.translate('Built on industry standards for online transactions and supported by global payment brands.')}</div>
       </div>
     </div>
     `;
