@@ -13,11 +13,12 @@ Feature: E2E A2A Payments
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                 |
-#      | requesttypedescriptions | AUTH                  |
-#      | baseamount              | 70                    |
-#      | billingcountryiso2a     | <billingcountryiso2a> |
-#      | currencyiso3a           | GBP                   |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 70                                                    |
+#      | billingcountryiso2a     | <billingcountryiso2a>                                 |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    When User chooses ATA from APM list
@@ -95,12 +96,13 @@ Feature: E2E A2A Payments
 #      | currencyiso3a           | GBP                                                   |
 #      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | AUTH            |
-#      | baseamount              | 707             |
-#      | billinglastname         | LastNameUpdated |
-#      | billingcountryiso2a     | PL              |
-#      | currencyiso3a           | EUR             |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 707                                                   |
+#      | billinglastname         | LastNameUpdated                                       |
+#      | billingcountryiso2a     | PL                                                    |
+#      | currencyiso3a           | EUR                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User waits for Pay button to be active
 #    And User calls updateJWT function by filling amount field
 #    When User chooses ATA from APM list
@@ -119,12 +121,13 @@ Feature: E2E A2A Payments
 #      | currencyiso3a           | GBP                                                   |
 #      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | AUTH             |
-#      | baseamount              | 707              |
-#      | billingfirstname        | FirstNameUpdated |
-#      | billingcountryiso2a     | DE               |
-#      | currencyiso3a           | PLN              |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | AUTH                                                  |
+#      | baseamount              | 707                                                   |
+#      | billingfirstname        | FirstNameUpdated                                      |
+#      | billingcountryiso2a     | DE                                                    |
+#      | currencyiso3a           | PLN                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User waits for Pay button to be active
 #    When User calls updateJWT function by filling amount field
 #    And User focuses on APM payment methods section
@@ -142,13 +145,13 @@ Feature: E2E A2A Payments
 #      | billingcountryiso2a     | GB                                                    |
 #      | currencyiso3a           | GBP                                                   |
 #      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
-#
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-#      | key                     | value       |
-#      | requesttypedescriptions | THREEDQUERY |
-#      | baseamount              | 707         |
-#      | billingcountryiso2a     | GB          |
-#      | currencyiso3a           | GBP         |
+#      | key                     | value                                                 |
+#      | requesttypedescriptions | THREEDQUERY                                           |
+#      | baseamount              | 707                                                   |
+#      | billingcountryiso2a     | GB                                                    |
+#      | currencyiso3a           | GBP                                                   |
+#      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
 #    And User waits for Pay button to be active
 #    When User calls updateJWT function by filling amount field
 #    And User focuses on APM payment methods section
