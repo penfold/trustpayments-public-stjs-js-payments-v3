@@ -28,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "7.17.10",
     "@babel/runtime": "7.17.9",
-    "@react-native-community/eslint-config": "3.0.1",
+    "@react-native-community/eslint-config": "3.0.2",
     "@types/jest": "27.5.1",
     "@types/react-native": "0.66.11",
     "@types/react-test-renderer": "17.0.1",
