@@ -60,18 +60,35 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   }
 
   private getErrorMessage(errorResponse): string {
+    console.dir(errorResponse);
     const hasErrorDetails = errorResponse?.error?.details?.some(error => error.message);
     const defaultUnknownErrorMessage = this.translator.translate('Something went wrong, try again or use another email.');
-
-    if (hasErrorDetails) {
-      return errorResponse.error.details.map(e => e.message).join('\n');
-    }
 
     switch (errorResponse.error?.reason) {
       case 'ACCT_INACCESSIBLE':
         return this.translator.translate('Account assigned to this email is currently not accessible');
+      case 'CODE_EXPIRED':
+        return this.translator.translate('OTP code has expired. Click "resend" to generate new code.');
+      case 'CODE_INVALID':
+        return this.translator.translate('The code you have entered is incorrect');
+      case 'OTP_SEND_FAILED':
+        return this.translator.translate('OTP code could not be sent.');
+      case 'RETRIES_EXCEEDED':
+        return this.translator.translate('The number of retries for generating the OTP exceeded the limit.');
+      case 'ID_INVALID':
+        return this.translator.translate('Invalid email. Use correct email and try again');
+      case 'CONSUMER_ID_MISSING':
+        return this.translator.translate('Consumer identity is missing in the request.');
+      case 'VALIDATION_DATA_MISSING':
+        return this.translator.translate('Validation data missing.');
+      case 'ID_FORMAT_UNSUPPORTED':
+        return this.translator.translate('Email is not in valid format.');
+      case 'UNRECOGNIZED_CONSUMER_ID':
+        return this.translator.translate('Consumer email could not be recognized.');
+      case 'FRAUD':
+        return this.translator.translate('The user account was locked or disabled.');
       default:
-        return defaultUnknownErrorMessage;
+        return hasErrorDetails ? errorResponse.error.details.map(e => e.message).join('\n') : defaultUnknownErrorMessage;
     }
   }
 
@@ -125,8 +142,8 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
       );
   }
 
-  private handleInvalidOTPCode(error) {
-    this.otpPrompt.showError(this.getInvalidOTPCodeMessage());
+  private handleInvalidOTPCode(errorResponse) {
+    this.otpPrompt.showError(this.getErrorMessage(errorResponse));
     return NEVER;
   }
 
