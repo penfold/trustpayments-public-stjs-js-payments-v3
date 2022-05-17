@@ -1,0 +1,12 @@
+{
+  "tokenizedCard": {
+    "placeholder": "SECURITY CODE OVERRIDE",
+    "style": {
+      "background-color-input": "AliceBlue",
+      "font-size-input": "33px",
+      "color-asterisk": "blue",
+      "isLinedUp": "true",
+      "outline-input": "5px dotted green"
+    }
+  }
+}
