@@ -178,8 +178,4 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   private getUnrecognizedEmailErrorMessage(): string {
     return this.translator.translate('The email address you have entered is not registered for Click to Pay.');
   }
-
-  private getInvalidOTPCodeMessage(): string {
-    return this.translator.translate('The code you have entered is incorrect.');
-  }
 }
