@@ -11,6 +11,7 @@ class ConfigCardPaymentsAndDigitalWallets(Enum):
     START_ON_LOAD_CONFIG = 'e2eConfigStartOnLoadTrue.json'
     PLACEHOLDERS_CONFIG = 'ConfigPlaceholders.json'
     STYLES_CONFIG = 'ConfigStyles.json'
+    TOKENIZED_PAYMENTS_STYLES_CONFIG = 'TokenizedPaymentsStylesConfig.json'
     CUSTOM_TRANSLATION_CONFIG = 'ConfigCustomTranslation.json'
 
     THREE_DS_SDK_INLINE_CONFIG = 'e2eConfig3dsLibraryInline.json'
