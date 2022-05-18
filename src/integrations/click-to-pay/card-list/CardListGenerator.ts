@@ -325,6 +325,10 @@ export class CardListGenerator {
   }
 
   private openForm(): void {
+    if(!document.getElementById('st-add-card__button')){
+      return
+    }
+
     document.querySelector('.st-add-card').classList.add('st-add-card--open');
     document.getElementById('st-add-card__button').style.display = 'none';
     document.getElementById('st-add-card__title').style.display = 'block';

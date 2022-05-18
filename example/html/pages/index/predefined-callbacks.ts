@@ -35,15 +35,15 @@ function cancelCallback() {
   window.displayCallbackCounter('cancel-callback-counter', 'cancel', '#ffc23a');
 }
 
-function redirectionCallback(){
-    const form=document.getElementById('st-form') as HTMLFormElement;
-    form.action='https://example.org';
-    form.submit();
+function redirectionCallback() {
+  const form = document.getElementById('st-form') as HTMLFormElement;
+  form.action = 'https://example.org';
+  form.submit();
 }
 
 function errorCodeCheckAndRedirectCallback(data) {
   const form = document.getElementById('st-form') as HTMLFormElement;
-  if (data.errorcode=='0'){
+  if (data.errorcode == '0') {
     form.action = 'https://example.org';
     form.submit();
   }

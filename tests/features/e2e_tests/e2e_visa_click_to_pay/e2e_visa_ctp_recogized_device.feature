@@ -16,6 +16,8 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
     Then User will see that VISA_CTP checkout is completed
+    And User waits for notification frame to disappear
+    And Wait for popups to disappear
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
@@ -84,6 +86,8 @@ Feature: Visa Click To Pay
     And User fills billing address form on Visa checkout popup and saves address for delivery
     And User reviews VISA_CTP checkout page and confirm with remember me option
     Then User will see that VISA_CTP checkout is completed
+    And User waits for notification frame to disappear
+    And Wait for popups to disappear
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
