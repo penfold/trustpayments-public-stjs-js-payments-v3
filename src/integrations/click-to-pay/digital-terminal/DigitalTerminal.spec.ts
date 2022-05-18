@@ -123,7 +123,7 @@ describe('DigitalTerminal', () => {
       digitalTerminal.init({ srciDpaId: '', dpaTransactionOptions: {} }).subscribe();
     });
 
-    it('returns successful result if identification result contains idToken', done => {
+    it('returns successful result if identification result contains idToken field', done => {
       when(userIdentificationServiceMock.identifyUser(anything(), identificationData)).thenReturn(of({ idToken: 'idtoken' }));
 
       digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
@@ -132,8 +132,8 @@ describe('DigitalTerminal', () => {
       });
     });
 
-    it('returns non-successful result if identification result doesnt contain idToken', done => {
-      when(userIdentificationServiceMock.identifyUser(anything(), identificationData)).thenReturn(of({ idToken: undefined }));
+    it('returns non-successful result if identification result doesnt contain idToken field', done => {
+      when(userIdentificationServiceMock.identifyUser(anything(), identificationData)).thenReturn(of({} as any));
 
       digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
         expect(result.isSuccessful).toBe(false);

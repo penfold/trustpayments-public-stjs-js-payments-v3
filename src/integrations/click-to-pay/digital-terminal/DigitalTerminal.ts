@@ -69,7 +69,9 @@ export class DigitalTerminal {
         this.idTokens.push(result.idToken);
       }),
       map(result => ({
-        isSuccessful: Boolean(result.idToken),
+        // TODO According to documentation should be Boolean(result.idToken), but sometimes idToken is returned empty from VISA
+        // but getSrcProfiles returns correct result event with no tokens
+        isSuccessful: Object.prototype.hasOwnProperty.call(result, 'idToken'),
         failureReason: IdentificationFailureReason.OTHER,
       }))
     );
