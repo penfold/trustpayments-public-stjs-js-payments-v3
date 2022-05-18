@@ -60,7 +60,6 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   }
 
   private getErrorMessage(errorResponse): string {
-    console.dir(errorResponse);
     const hasErrorDetails = errorResponse?.error?.details?.some(error => error.message);
     const defaultUnknownErrorMessage = this.translator.translate('Something went wrong, try again or use another email.');
 
