@@ -74,6 +74,8 @@ Feature: Visa Click To Pay for unregistered user
       | callback_type |
       | success       |
       | submit        |
+    And User waits for notification frame to disappear
+    And Wait for popups to disappear
     When User opens example page VISA_CTP
     And User see that first card on the list is auto-selected
 

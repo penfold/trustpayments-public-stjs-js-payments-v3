@@ -1,5 +1,14 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, distinctUntilKeyChanged, firstValueFrom, NEVER, Observable, of, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilKeyChanged,
+  firstValueFrom,
+  from,
+  NEVER,
+  Observable,
+  of,
+  throwError,
+} from 'rxjs';
 import { catchError, filter, mapTo, switchMap, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
@@ -156,34 +165,48 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
         tap(response => this.initParams?.onCheckout?.call(null, response)),
-        tap(response => this.handleCheckoutResponse(response)),
+        switchMap(response => this.handleCheckoutResponse(response)),
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
   }
 
-  private handleCheckoutResponse(response: ICheckoutResponse) {
-    if (response.dcfActionCode === DcfActionCode.changeCard) {
-      this.showCardList().catch(error => {
-        console.error(error);
-      });
-    }
-
-    if (response.dcfActionCode === DcfActionCode.addCard) {
-      this.cardListGenerator.openNewCardForm();
-    }
-
-    if (response.dcfActionCode === DcfActionCode.cancel) {
-      this.cardListGenerator.reset();
-    }
-
-    if (response.unbindAppInstance) {
-      this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
-    }
-
+  private handleCheckoutResponse(response: ICheckoutResponse): Observable<ICheckoutResponse> {
     if (this.isSafariBrowser) {
       this.popup.close();
     }
+
+    if (response.unbindAppInstance) {
+      this.cardListGenerator.reset();
+      return this.digitalTerminal.unbindAppInstance().pipe(tap(() => this.cardListGenerator.hideForm()), mapTo(response));
+    }
+
+    if (response.dcfActionCode === DcfActionCode.changeCard || response.dcfActionCode === DcfActionCode.addCard) {
+      const result = response.idToken?.length ? from(this.showCardList()).pipe(mapTo(response)) : of(response);
+
+      return result.pipe(tap(() => {
+          if (response.dcfActionCode === DcfActionCode.addCard) {
+            this.cardListGenerator.openNewCardForm();
+          }
+          if (response.dcfActionCode === DcfActionCode.changeCard) {
+            this.cardListGenerator.reset();
+          }
+        })
+      );
+    }
+
+    if (response.dcfActionCode === DcfActionCode.cancel || response.dcfActionCode === DcfActionCode.complete) {
+      return this.digitalTerminal.unbindAppInstance().pipe(
+        switchMap(() => from(this.isRecognized())),
+        switchMap(recognized => recognized ? from(this.showCardList()) : of(this.cardListGenerator.hideForm())),
+        mapTo(response)
+      );
+    }
+    else if (response.unbindAppInstance) {
+      return this.digitalTerminal.unbindAppInstance().pipe(tap(() => this.cardListGenerator.hideForm()),mapTo(response));
+    }
+
+    return of(response);
   }
 
   private disableHiddenFormFields(updateData: IUpdateView) {
