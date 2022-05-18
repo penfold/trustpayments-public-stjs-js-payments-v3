@@ -112,13 +112,18 @@ def step_impl(context):
 
 @step('User will see that "(?P<field>.+)" field is highlighted')
 def step_impl(context, field):
+    tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_highlighted(FieldType[field].name)
+    if field == FieldType.TOKENIZED_SECURITY_CODE.name:
+        tokenized_page.validate_security_code_is_highlighted()
+    else:
+        payment_page.validate_if_field_is_highlighted(FieldType[field].name)
 
 
 @then('User will see that "(?P<field>.+)" field has correct style')
 def step_impl(context, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
     if field == FieldType.CARD_NUMBER.name:
         payment_page.validate_css_style(FieldType.CARD_NUMBER.name, 'background-color', '100, 149, 237')
     elif field == FieldType.EXPIRATION_DATE.name:
@@ -127,6 +132,8 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.SECURITY_CODE.name, 'background-color', '255, 243, 51')
     if field == FieldType.NOTIFICATION_FRAME.name:
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '248,208,219')
+    if field == FieldType.TOKENIZED_SECURITY_CODE.name:
+        tokenized_page.validate_security_code_css_style('background-color', '255, 243, 51')
 
 
 @step('User will see that (?P<field>.+) input (?:field is|fields are) "(?P<form_status>.+)"')

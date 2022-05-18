@@ -197,11 +197,7 @@ class PaymentMethodsPage(BasePage):
         elif field_type == FieldType.EMAIL.name:
             attribute_value = self._actions.get_element_attribute(FieldType.EMAIL.value,
                                                                   PaymentMethodsLocators.merchant_email, attribute)
-        elif field_type == FieldType.TOKENIZED_SECURITY_CODE.name:
-            attribute_value = self._actions.switch_to_iframe_and_get_element_attribute(
-                TokenizedPaymentsLocators.security_code_iframe,
-                TokenizedPaymentsLocators.security_code_input,
-                attribute)
+
         return attribute_value
 
     def get_field_css_style(self, field_type, property_name):

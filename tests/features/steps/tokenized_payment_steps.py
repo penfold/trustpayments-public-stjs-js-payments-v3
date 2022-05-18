@@ -29,3 +29,9 @@ def step_impl(context):
 def step_impl(context):
     tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
     tokenized_page.clear_security_code_input()
+
+
+@step('User will see "(?P<placeholder>.+)" placeholder in tokenized payment security code field')
+def step_impl(context, placeholder):
+    tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
+    tokenized_page.validate_security_code_placeholder(placeholder)

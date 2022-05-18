@@ -2,11 +2,11 @@
   "dependencies": {
 
     "babel-plugin-styled-components": "2.0.2",
-    "gatsby": "4.14.0",
+    "gatsby": "4.14.1",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-copy-files": "1.1.0",
     "gatsby-plugin-manifest": "4.14.0",
-    "gatsby-plugin-offline": "5.14.0",
+    "gatsby-plugin-offline": "5.14.1",
     "gatsby-plugin-react-helmet": "5.14.0",
     "gatsby-plugin-sharp": "4.14.1",
     "gatsby-plugin-styled-components": "5.14.0",
