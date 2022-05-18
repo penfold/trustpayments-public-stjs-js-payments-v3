@@ -8,7 +8,7 @@ import { SrcAggregate } from './SrcAggregate';
 import { IInitData } from './interfaces/IInitData';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
-import { ICheckoutResponse } from './ISrc';
+import { DcfActionCode, ICheckoutResponse } from './ISrc';
 import { CheckoutDataTransformer } from './CheckoutDataTransformer';
 import { IdentificationFailureReason } from './IdentificationFailureReason';
 import { IIdentificationResult } from './interfaces/IIdentificationResult';
@@ -26,7 +26,7 @@ export class DigitalTerminal {
   constructor(
     private srcAggregate: SrcAggregate,
     private checkoutDataTransformer: CheckoutDataTransformer,
-    private localeProvider: LocaleProvider,
+    private localeProvider: LocaleProvider
   ) {
   }
 
@@ -77,7 +77,12 @@ export class DigitalTerminal {
 
   checkout(data: IInitialCheckoutData): Observable<ICheckoutResponse> {
     return this.checkoutDataTransformer.transform(data, this.srciTransactionId, this.srcProfiles).pipe(
-      switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData))
+      switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData)),
+      tap((response: ICheckoutResponse) => {
+        if (this.shouldUseTokenFromResponse(response)) {
+          this.idTokens.push(response.idToken);
+        }
+      })
     );
   }
 
@@ -88,5 +93,10 @@ export class DigitalTerminal {
       aggregatedCards: [],
     };
     return this.srcAggregate.unbindAppInstance();
+  }
+
+  private shouldUseTokenFromResponse(response: ICheckoutResponse): boolean {
+    const hasRequiredStates = response.dcfActionCode === DcfActionCode.addCard || response.dcfActionCode === DcfActionCode.changeCard;
+    return (hasRequiredStates && response.unbindAppInstance === false && !!response.idToken?.length);
   }
 }

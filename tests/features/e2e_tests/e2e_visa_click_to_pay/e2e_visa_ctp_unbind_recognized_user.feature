@@ -26,6 +26,8 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
     Then User will see that VISA_CTP checkout is completed
+    And User waits for notification frame to disappear
+    And Wait for popups to disappear
     And User opens example page VISA_CTP
     When User clicks Not you button
     Then User is not recognized by VISA_CTP

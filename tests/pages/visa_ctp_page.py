@@ -184,6 +184,7 @@ class VisaClickToPayPage(BasePage):
         self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
 
     def get_masked_card_number_from_card_list(self, number):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.cards_section)
         masked_card_number = self._actions.get_text_with_wait(
             VisaClickToPayLocators.get_masked_card_number_locator_from_cards_list(number))[-4:]
         return masked_card_number

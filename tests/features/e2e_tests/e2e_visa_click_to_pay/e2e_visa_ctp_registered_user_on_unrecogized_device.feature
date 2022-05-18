@@ -204,7 +204,7 @@ Feature: Visa Click To Pay
     Then User will see VISA_CTP card validation message
 
 
-   Scenario: Checking more information tooltip
+  Scenario: Checking more information tooltip
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value |

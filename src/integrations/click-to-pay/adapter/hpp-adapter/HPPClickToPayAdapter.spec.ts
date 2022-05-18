@@ -1,6 +1,6 @@
 import { anyFunction, anyString, anything, instance, mock, objectContaining, spy, verify, when } from 'ts-mockito';
 import { of, Subject, throwError } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { first, mapTo } from 'rxjs/operators';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
@@ -35,6 +35,10 @@ describe('HPPClickToPayAdapter', () => {
     onUpdateView: jest.fn(),
     onCheckout: jest.fn(),
   };
+  const srcProfilesMock: IAggregatedProfiles = {
+    aggregatedCards: [],
+    srcProfiles: null,
+  };
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
   let digitalTerminalMock: DigitalTerminal;
@@ -55,12 +59,13 @@ describe('HPPClickToPayAdapter', () => {
     cardListGeneratorMock = mock(CardListGenerator);
     hppCheckoutDataProviderMock = mock(HPPCheckoutDataProvider);
     hppUpdateViewCallbackMock = mock(HPPUpdateViewCallback);
+    when(digitalTerminalMock.unbindAppInstance()).thenReturn(of(undefined));
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
-    when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
+    when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(srcProfilesMock));
     when(digitalTerminalMock.checkout(anything())).thenReturn(of({
           idToken: 'idtoken',
           unbindAppInstance: false,
-          dcfActionCode: DcfActionCode.complete,
+          dcfActionCode: DcfActionCode.addCard,
           checkoutResponse: 'response',
         }
       )
@@ -115,10 +120,10 @@ describe('HPPClickToPayAdapter', () => {
         testForm = document.createElement('form');
         testForm.id = initParams.formId;
         testForm.innerHTML = `
-        <input type='text' name='${HPPFormFieldName.pan}'>
-        <input type='text' name='${HPPFormFieldName.cardExpiryMonth}'>
-        <input type='text' name='${HPPFormFieldName.cardExpiryYear}'>
-        <input type='text' name='${HPPFormFieldName.cardSecurityCode}'>
+        <input type="text" name="${HPPFormFieldName.pan}">
+        <input type="text" name="${HPPFormFieldName.cardExpiryMonth}">
+        <input type="text" name="${HPPFormFieldName.cardExpiryYear}">
+        <input type="text" name="${HPPFormFieldName.cardSecurityCode}">
         `;
         cardInputs = [HPPFormFieldName.pan, HPPFormFieldName.cardExpiryMonth, HPPFormFieldName.cardExpiryYear, HPPFormFieldName.cardSecurityCode]
           .map(name =>
@@ -223,24 +228,65 @@ describe('HPPClickToPayAdapter', () => {
         );
       });
 
-      it(`when checkout response contains dcfActionCode = ${DcfActionCode.cancel} it should clear card list form and card selection`, done => {
+      describe.each([DcfActionCode.cancel, DcfActionCode.complete])('when checkout response contains dcfActionCode = %s', dcfCode => {
         const mockCheckoutResponse: ICheckoutResponse = {
           checkoutResponse: '',
-          dcfActionCode: DcfActionCode.cancel,
+          dcfActionCode: dcfCode,
           unbindAppInstance: false,
           idToken: '',
         };
-        when(digitalTerminalMock.checkout(anything())).thenReturn(of(mockCheckoutResponse));
+        const checkoutResultSubject: Subject<any> = new Subject<any>();
 
-        sut.init(initParams).then(adapterInstance => {
+        beforeEach(() => {
+
+          when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
+          when(digitalTerminalMock.checkout(anything())).thenReturn(of(mockCheckoutResponse));
+          when(digitalTerminalMock.unbindAppInstance()).thenReturn(of(undefined));
+          when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
+            callback({
+              type: eventType,
+              data: initParams,
+            }).subscribe(checkoutResult => checkoutResultSubject.next(checkoutResult));
+          });
+        });
+
+        it('should  it should unbindAppInstance then try to recognize user', done => {
+          sut.init(initParams).then(adapterInstance => {
             formSubmitEventMock.asObservable().subscribe(() => {
-              verify(cardListGeneratorMock.reset()).once();
-
+              verify(digitalTerminalMock.unbindAppInstance()).once();
+              verify(digitalTerminalMock.isRecognized()).once();
               done();
             });
             formSubmitEventMock.next();
-          }
-        );
+          });
+
+        });
+
+        it('if user is recognized it should display card list again', done => {
+          when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
+          when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(srcProfilesMock));
+
+          sut.init(initParams).then(adapterInstance => {
+            checkoutResultSubject.pipe(first()).subscribe(() => {
+              verify(digitalTerminalMock.getSrcProfiles()).once();
+              verify(cardListGeneratorMock.displayCards(initParams.formId, initParams.cardListContainerId, srcProfilesMock.aggregatedCards)).once();
+              done();
+            });
+            formSubmitEventMock.next();
+          });
+        });
+
+        it('if user is not recognized it should not display card list', done => {
+          when(digitalTerminalMock.isRecognized()).thenReturn(of(false));
+
+          sut.init(initParams).then(adapterInstance => {
+            checkoutResultSubject.pipe(first()).subscribe(() => {
+              verify(cardListGeneratorMock.hideForm()).once();
+              done();
+            });
+            formSubmitEventMock.next();
+          });
+        });
       });
 
       it('when checkout response contains unbindAppInstance = true it should unbind instance using Digital Terminal and hide card list, regardless of returned ddcfActionCode', done => {

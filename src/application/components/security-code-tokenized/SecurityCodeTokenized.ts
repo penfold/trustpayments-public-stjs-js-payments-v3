@@ -206,7 +206,7 @@ export class SecurityCodeTokenized extends Input {
   }
 
   private objectToArrayOfObjects(object: Record<string, string>): Array<Record<string, string>> {
-   return  Object.entries(object).reduce((objectList, arrayOfStrings) => ([...objectList, { [arrayOfStrings[0]]: arrayOfStrings[1] }]), []);
-}
+    return Object.entries(object).map(entry=>Object.fromEntries([entry]));
+  }
 
 }
