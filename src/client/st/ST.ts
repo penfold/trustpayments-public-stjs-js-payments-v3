@@ -302,8 +302,11 @@ export class ST {
 
     tokenizedCardPaymentConfig = {
       ...DefaultConfig[TokenizedCardPaymentConfigName],
+      ...this.config[TokenizedCardPaymentConfigName],
       ...tokenizedCardPaymentConfig,
     }
+
+    this.configService.updateProp(TokenizedCardPaymentConfigName, tokenizedCardPaymentConfig);
 
     this.tokenizedCardPaymentAdapter.updateTokenizedJWT(jwtCard);
     this.config = this.configService.updateFragment(TokenizedCardPaymentConfigName, tokenizedCardPaymentConfig);
