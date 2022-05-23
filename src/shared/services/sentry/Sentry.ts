@@ -1,11 +1,25 @@
 import { Service } from 'typedi';
-import { User, init, setTag, setExtra, captureException, setUser, BrowserOptions, addBreadcrumb } from '@sentry/browser';
+import { User, init, setTag, setExtra, captureException, setUser, BrowserOptions, BrowserClient, addBreadcrumb, configureScope, makeMain } from '@sentry/browser';
 import { Breadcrumb } from '@sentry/types';
+import { Scope , Hub } from '@sentry/hub';
 
 @Service()
 export class Sentry {
   init(options?: BrowserOptions): void {
     init(options);
+  }
+
+  makeMain(hub): Hub {
+    return makeMain(hub);
+  }
+
+  newHub(options?: BrowserOptions): Hub {
+    const client: BrowserClient = new BrowserClient(options)
+    return new Hub(client)
+  }
+
+  configureScope(callback: (scope: Scope) => void): void {
+    configureScope(callback);
   }
 
   setTag(key: string, value: string): void {

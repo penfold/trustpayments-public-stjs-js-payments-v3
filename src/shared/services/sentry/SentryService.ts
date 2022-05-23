@@ -1,7 +1,8 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
-import { Breadcrumb, BreadcrumbHint, BrowserOptions } from '@sentry/browser';
+import { Breadcrumb, BreadcrumbHint, BrowserOptions, Hub } from '@sentry/browser';
+import { Scope } from '@sentry/hub';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
@@ -16,6 +17,7 @@ import { SentryBreadcrumbsCategories } from './SentryBreadcrumbsCategories';
 @Service()
 export class SentryService {
   private configSubscription: Subscription;
+  private sentryHub: Hub;
 
   constructor(
     private configProvider: ConfigProvider,
@@ -40,20 +42,17 @@ export class SentryService {
 
     this.configSubscription = this.configProvider.getConfig$(true)
       .subscribe(config => {
-        this.sentry.setExtra('config', config);
-        this.sentry.setExtra('jwt', this.payloadSanitizer.maskSensitiveJwtFields(config.jwt));
+        this.sentryHub.setExtra('config', config);
+        this.sentryHub.setExtra('jwt', this.payloadSanitizer.maskSensitiveJwtFields(config.jwt));
       });
 
     this.jwtProvider.getJwtPayload().subscribe(jwtPayload => {
-        this.sentry.setUser({ 'id': jwtPayload?.sitereference });
+      this.sentryHub.setUser({ 'id': jwtPayload?.sitereference });
       }
     );
   }
 
   private initSentry(dsn: string, whitelistUrls: string[]): void {
-    this.sentry.setTag('hostName', this.sentryContext.getHostName());
-    this.sentry.setTag('frameName', this.sentryContext.getFrameName());
-
     const options: BrowserOptions = {
       dsn,
       ...SENTRY_INIT_BROWSER_OPTIONS,
@@ -66,11 +65,22 @@ export class SentryService {
       options.allowUrls = whitelistUrls;
     }
 
-    this.sentry.init(options);
+    this.sentryHub = this.sentry.newHub(options);
+
+    this.sentryHub.configureScope((scope:Scope)=>{
+      scope.setTag('hostName', this.sentryContext.getHostName());
+      scope.setTag('frameName', this.sentryContext.getFrameName());
+    })
+
+    this.sentry.makeMain(this.sentryHub);
   }
 
   sendCustomMessage(err: Error): void {
-    this.sentry.captureException(err);
+
+    this.sentryHub.run(currentHub => {
+      currentHub.captureException(err);
+    });
+
   }
 
   captureAndReportResourceLoadingTimeout(errorMessage: string, scriptLoadTimeout = environment.SCRIPT_LOAD_TIMEOUT): OperatorFunction<any, any> {
@@ -96,6 +106,7 @@ export class SentryService {
   }
 
   private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {
+
     return firstValueFrom(this.configProvider.getConfig$(false)).then(config => {
       if (!config.errorReporting) {
         return null;
