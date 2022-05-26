@@ -71,8 +71,6 @@ export class SentryService {
       scope.setTag('hostName', this.sentryContext.getHostName());
       scope.setTag('frameName', this.sentryContext.getFrameName());
     })
-
-    this.sentry.makeMain(this.sentryHub);
   }
 
   sendCustomMessage(err: Error): void {
