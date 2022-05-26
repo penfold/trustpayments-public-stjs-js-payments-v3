@@ -61,7 +61,7 @@ Feature: Payment form styles check
       | parenttransactionreference | 56-9-2255170     |
     When User opens example page WITH_TOKENIZED_CARD
     Then User will see specific placeholders in input fields: Number, Expiration, CVV
-    And User will see "cvv" placeholder in tokenized payment security code field
+    And User will see "***" placeholder in tokenized payment security code field
 
   Scenario: Verify default placeholders in input fields
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
