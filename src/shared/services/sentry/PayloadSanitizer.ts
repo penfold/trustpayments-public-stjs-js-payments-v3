@@ -19,11 +19,11 @@ export class PayloadSanitizer {
       if (maskedJwt.payload[key] !== undefined && maskedFields.includes(key)) {
         maskedJwt.payload[key] = '***';
       }
-      if (maskedJwt.payload['requesttypedescriptions']) {
-        const authIndex = maskedJwt.payload['requesttypedescriptions'].indexOf('AUTH');
-        if (authIndex !== -1) {
-          maskedJwt.payload['requesttypedescriptions'][authIndex] = 'A*UTH';
-        }
+
+      if (maskedJwt.payload['requesttypedescriptions']){
+        maskedJwt.payload['requesttypedescriptions'] = JSON.parse(
+          JSON.stringify(maskedJwt.payload['requesttypedescriptions']).replace('AUTH', 'A*UTH')
+        );
       }
     });
 
