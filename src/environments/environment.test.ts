@@ -55,5 +55,5 @@ export const environment = {
     LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
   },
   SCRIPT_LOAD_TIMEOUT: 30000,
-  FRAUD_CONTROL_TIMEOUT: 5000,
+  FRAUD_CONTROL_TIMEOUT: 10000,
 };
