@@ -163,7 +163,7 @@
     "@babel/runtime": "7.17.9",
     "@sentry/browser": "6.19.7",
     "@sheerun/mutationobserver-shim": "0.3.3",
-    "@trustpayments/3ds-sdk-js": "1.2.42",
+    "@trustpayments/3ds-sdk-js": "1.2.73",
     "@trustpayments/http-client": "2.0.135",
     "@trustpayments/js-payments-card": "2.2.88",
     "@trustpayments/jwt-generator": "2.0.135",
