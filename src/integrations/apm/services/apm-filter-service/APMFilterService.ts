@@ -12,7 +12,7 @@ import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
+import { MisconfigurationError } from '../../../../shared/services/sentry/errors/MisconfigurationError';
 
 @Service()
 export class APMFilterService {

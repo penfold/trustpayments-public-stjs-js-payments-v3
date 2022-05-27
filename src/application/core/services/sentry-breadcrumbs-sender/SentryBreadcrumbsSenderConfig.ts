@@ -1,5 +1,5 @@
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
 import { SentryBreadcrumbsSenderConfig } from './SentryBreadcrumbsSenderInterface';
 
 export const MESSAGES_LIST_FOR_SENTRY_BREADCRUMBS_SENDER: Record<string, SentryBreadcrumbsSenderConfig> = {

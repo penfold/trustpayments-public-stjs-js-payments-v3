@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
-import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
-import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
-import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
+import { IDecodedJwt } from '../../../../application/core/models/IDecodedJwt';
+import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
+import { JwtDecoder } from '../../jwt-decoder/JwtDecoder';
 
 @Service()
 export class PayloadSanitizer {

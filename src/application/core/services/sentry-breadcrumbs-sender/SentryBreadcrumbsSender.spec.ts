@@ -3,8 +3,8 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
-import { PayloadSanitizer } from '../../../../shared/services/sentry/PayloadSanitizer';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
+import { PayloadSanitizer } from '../../../../shared/services/sentry/PayloadSanitizer/PayloadSanitizer';
 import { SentryBreadcrumbsSender } from './SentryBreadcrumbsSender';
 
 describe('register()', () => {

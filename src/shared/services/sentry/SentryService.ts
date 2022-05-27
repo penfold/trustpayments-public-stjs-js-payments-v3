@@ -1,17 +1,20 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
-import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
+import { firstValueFrom, map, Observable, of, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
 import { Breadcrumb, BreadcrumbHint, BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
-import { SentryContext } from './SentryContext';
-import { EventScrubber } from './EventScrubber';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { SentryContext } from './SentryContext/SentryContext';
+import { SentryEventScrubber } from './SentryEventScrubber/SentryEventScrubber';
 import { Sentry } from './Sentry';
-import { RequestTimeoutError } from './RequestTimeoutError';
-import { PayloadSanitizer } from './PayloadSanitizer';
+import { RequestTimeoutError } from './errors/RequestTimeoutError';
+import { PayloadSanitizer } from './PayloadSanitizer/PayloadSanitizer';
 import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
-import { SentryBreadcrumbsCategories } from './SentryBreadcrumbsCategories';
+import { SentryBreadcrumbsCategories } from './constants/SentryBreadcrumbsCategories';
+import { SentryEventExtender } from './SentryEventExtender/SentryEventExtender';
+import { SentryEventFilteringService } from './SentryEventFiltering/SentryEventFilteringService';
 
 @Service()
 export class SentryService {
@@ -21,18 +24,20 @@ export class SentryService {
     private configProvider: ConfigProvider,
     private sentry: Sentry,
     private sentryContext: SentryContext,
-    private eventScrubber: EventScrubber,
+    private eventScrubber: SentryEventScrubber,
     private jwtProvider: JwtProvider,
     private payloadSanitizer: PayloadSanitizer,
+    private sentryEventExtender: SentryEventExtender,
+    private sentryEventFilter: SentryEventFilteringService
   ) {
   }
 
   init(dsn: string | null, whitelistUrls: string[] = []): void {
-    if (!dsn) {
+    if(!dsn) {
       return;
     }
 
-    if (this.configSubscription) {
+    if(this.configSubscription) {
       this.configSubscription.unsubscribe();
     }
 
@@ -62,7 +67,7 @@ export class SentryService {
       beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
 
-    if (whitelistUrls.length) {
+    if(whitelistUrls.length) {
       options.allowUrls = whitelistUrls;
     }
 
@@ -96,14 +101,22 @@ export class SentryService {
   }
 
   private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {
-    return firstValueFrom(this.configProvider.getConfig$(false)).then(config => {
-      if (!config.errorReporting) {
-        return null;
-      }
+    const config: IConfig = this.configProvider.getConfig();
+    const error: Error = hint?.originalException as Error;
 
-      event.environment = config.livestatus ? 'prod' : 'dev';
+    if(!config?.errorReporting || !event) {
+      return firstValueFrom(null);
+    }
 
-      return this.eventScrubber.scrub(event, hint);
-    });
+    event.environment = config?.livestatus ? 'prod' : 'dev';
+
+    return firstValueFrom(of({ event, error }).pipe(
+      this.sentryEventFilter.filterEvent(),
+      this.sentryEventExtender.extendEvent(),
+      this.eventScrubber.scrubEvent(),
+      map((value: { event: Event, error: Error }) => {
+        return value.event;
+      })
+    ))
   }
 }

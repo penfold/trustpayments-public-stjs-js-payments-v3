@@ -5,7 +5,7 @@ import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
+import { MisconfigurationError } from '../../../../shared/services/sentry/errors/MisconfigurationError';
 import { APMValidator } from './APMValidator';
 
 describe('APMValidator', () => {

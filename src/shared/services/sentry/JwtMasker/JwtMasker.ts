@@ -5,7 +5,7 @@ import { Service } from 'typedi';
 @Service()
 export class JwtMasker {
 
-  mask<T extends QueryParams | string>(queryParams: T): T {
+  mask<T extends QueryParams>(queryParams: T): T {
     if (typeof queryParams === 'string') {
       return queryParams.replace(/(^|\?|&)jwt=.*?(&|$)/, '$1jwt=*****$2') as T;
     }
