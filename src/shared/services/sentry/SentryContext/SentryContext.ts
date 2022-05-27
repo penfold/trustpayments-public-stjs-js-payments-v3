@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { FrameIdentifier } from '../message-bus/FrameIdentifier';
+import { FrameIdentifier } from '../../message-bus/FrameIdentifier';
 
 @Service()
 export class SentryContext {
@@ -14,6 +14,6 @@ export class SentryContext {
   }
 
   getReleaseVersion(): string {
-    return require('../../../../package.json').version;
+    return require('../../../../../package.json').version;
   }
 }

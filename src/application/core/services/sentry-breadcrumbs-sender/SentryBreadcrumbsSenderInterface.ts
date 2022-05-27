@@ -1,4 +1,4 @@
-import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
 
 export interface SentryBreadcrumbsSenderConfig {
   message: (name?:string) => string,

@@ -6,7 +6,7 @@ import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { APMJwtSchemasMap } from '../../models/APMJwtSchemasMap';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
+import { MisconfigurationError } from '../../../../shared/services/sentry/errors/MisconfigurationError';
 
 @Service()
 export class APMValidator {

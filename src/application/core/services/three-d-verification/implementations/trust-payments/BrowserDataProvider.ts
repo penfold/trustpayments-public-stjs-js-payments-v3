@@ -7,12 +7,12 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { environment } from '../../../../../../environments/environment';
-import { RequestTimeoutError } from '../../../../../../shared/services/sentry/RequestTimeoutError';
+import { RequestTimeoutError } from '../../../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { SentryService } from '../../../../../../shared/services/sentry/SentryService';
-import { TimeoutDetailsType } from '../../../../../../shared/services/sentry/RequestTimeout';
+import { TimeoutDetailsType } from '../../../../../../shared/services/sentry/constants/RequestTimeout';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../../shared/services/message-bus/operators/ofType';
-import { SentryBreadcrumbsCategories } from '../../../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { SentryBreadcrumbsCategories } from '../../../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
 import { IBrowserData } from './data/IBrowserData';
 
 @Service()

@@ -10,8 +10,8 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { ofTypeList } from '../../../../shared/services/message-bus/operators/ofTypeList';
 import { untilDestroy } from '../../../../shared/services/message-bus/operators/untilDestroy';
-import { PayloadSanitizer } from '../../../../shared/services/sentry/PayloadSanitizer';
-import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { PayloadSanitizer } from '../../../../shared/services/sentry/PayloadSanitizer/PayloadSanitizer';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
 import { MESSAGES_LIST_FOR_SENTRY_BREADCRUMBS_SENDER } from './SentryBreadcrumbsSenderConfig';
 import { SentryBreadcrumbsMessageBusData, SentryBreadcrumbsSenderConfig } from './SentryBreadcrumbsSenderInterface';
 

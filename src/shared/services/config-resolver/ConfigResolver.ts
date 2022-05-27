@@ -18,7 +18,7 @@ import { environment } from '../../../environments/environment';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
-import { MisconfigurationError } from '../sentry/MisconfigurationError';
+import { MisconfigurationError } from '../sentry/errors/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';

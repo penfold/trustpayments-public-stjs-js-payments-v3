@@ -10,7 +10,7 @@ import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
 import { RequestEncoderService } from '../st-codec/RequestEncoderService';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { GatewayError } from '../st-codec/GatewayError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';

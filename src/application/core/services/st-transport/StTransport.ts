@@ -9,12 +9,12 @@ import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
+import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants/RequestTimeout';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IResponseData } from '../../models/IResponseData';
-import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
 
 interface IFetchOptions {
   headers: {

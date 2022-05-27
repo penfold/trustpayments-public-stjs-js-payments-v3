@@ -1,5 +1,5 @@
 import { instance, mock, when } from 'ts-mockito';
-import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
+import { JwtDecoder } from '../../jwt-decoder/JwtDecoder';
 import { PayloadSanitizer } from './PayloadSanitizer';
 
 describe('Payload Sanitizer', () => {
