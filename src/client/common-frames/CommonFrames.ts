@@ -64,10 +64,15 @@ export class CommonFrames {
       this.submitOnError = config.submitOnError;
       this.submitOnSuccess = config.submitOnSuccess;
       this.styles = this.getControlFrameStyles(config.styles);
+
+      if(!this.form){
+        return
+      }
+
+      this.appendControlFrame();
+      this.merchantInputsListener();
+      this.transactionCompleteListener();
     });
-    this.appendControlFrame();
-    this.merchantInputsListener();
-    this.transactionCompleteListener();
   }
 
   private transactionCompleteListener(): void {
@@ -173,7 +178,7 @@ export class CommonFrames {
   }
 
   private appendControlFrame(): void {
-    this.form.appendChild(
+    this.form?.appendChild(
       this.iframeFactory.create(
         CONTROL_FRAME_COMPONENT_NAME,
         CONTROL_FRAME_IFRAME,
