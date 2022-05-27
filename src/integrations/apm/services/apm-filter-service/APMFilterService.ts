@@ -58,7 +58,6 @@ export class APMFilterService {
 
   private isItemConfigValid(item: IAPMItemConfig): boolean {
     const validationError = this.apmValidator.validateItemConfig(item);
-    console.log(item, validationError)
 
     if (validationError) {
       this.sentryService.sendCustomMessage(new MisconfigurationError(`Misconfiguration: Configuration for ${item.name} APM is invalid: ${validationError.message}`));

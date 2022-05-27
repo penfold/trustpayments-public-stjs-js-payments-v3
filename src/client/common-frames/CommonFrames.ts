@@ -185,7 +185,6 @@ export class CommonFrames {
         this.styles.controlFrame,
         {
           gatewayUrl: this.dataCenterUrl,
-          jwt: this.jwt,
           origin: this.origin,
         },
         -1

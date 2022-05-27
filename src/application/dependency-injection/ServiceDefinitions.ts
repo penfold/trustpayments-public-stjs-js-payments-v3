@@ -11,6 +11,7 @@ import { APMPaymentMethod } from '../../integrations/apm/application/APMPaymentM
 import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
 import '../../shared/dependency-injection/ServiceDefinitions';
+import { ClickToPayPaymentMethod } from '../../integrations/click-to-pay/application/ClickToPayPaymentMethod';
 import { TokenizedCardPaymentMethod } from '../../integrations/tokenized-card/application/TokenizedCardPaymentMethod';
 
 Container.set({ id: ConfigProvider, type: StoreConfigProvider });
@@ -22,4 +23,6 @@ Container.import([
   TokenizedCardPaymentMethod,
   GooglePaymentMethod,
   ApplePayPaymentMethod,
-  APMPaymentMethod]);
+  APMPaymentMethod,
+  ClickToPayPaymentMethod,
+]);

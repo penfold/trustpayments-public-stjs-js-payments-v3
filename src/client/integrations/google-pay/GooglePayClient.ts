@@ -23,7 +23,7 @@ import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
 @Service()
-export class GooglePay {
+export class GooglePayClient {
   private googlePaySdk: IGooglePaySessionPaymentsClient;
   private config: IConfig;
   private destroy$: Observable<IMessageBusEvent>;
@@ -34,7 +34,7 @@ export class GooglePay {
     private jwtDecoder: JwtDecoder,
     private messageBus: IMessageBus,
     private googlePaySdkProvider: IGooglePaySdkProvider,
-    private sentryService: SentryService
+    private sentryService: SentryService,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }

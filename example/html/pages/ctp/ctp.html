@@ -1,0 +1,772 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trust Payments Visa CTP Form</title>
+  <meta name="description" content="Trust Payments example page with form">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="icon" href="./img/favicon.webp" sizes="32x32">
+  <link rel="icon" href="./img/favicon.webp" sizes="192x192">
+  <link rel="apple-touch-icon" href="./img/favicon.webp">
+</head>
+<body>
+<main>
+  <div id="st-popup" class="st-popup"></div>
+  <header class="st-header">
+    <figure class="st-header__logo">
+      <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
+    </figure>
+    <h1 class="st-header__title">Visa CTP Form</h1>
+  </header>
+  <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="on">
+    <div class="st-form__fieldset-wrapper">
+      <fieldset class="st-form__fieldset">
+        <legend>Billing details:</legend>
+        <div class="st-form__section st-form__section--horizontal">
+          <div class="st-form__field">
+            <label for="st-form-title" class="st-form__label">
+              Title
+            </label>
+            <input type="text" name="title" id="st-form-title" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-first-name" class="st-form__label">
+              First name
+            </label>
+            <input type="text" name="billingfirstname" id="st-form-first-name" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-last-name" class="st-form__label">
+              Last name
+            </label>
+            <input type="text" name="billinglastname" id="st-form-last-name" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-house-name" class="st-form__label">
+              House name/no.
+            </label>
+            <input type="text" name="billingpremise" id="st-form-house-name" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-street" class="st-form__label">
+              Street
+            </label>
+            <input type="text" name="billingstreet" id="st-form-street" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-town" class="st-form__label">
+              Town
+            </label>
+            <input type="text" name="billingtown" id="st-form-town" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-county" class="st-form__label">
+              County
+            </label>
+            <input type="text" name="billingcounty" id="st-form-county" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-country" class="st-form__label">
+              Country
+            </label>
+            <select type="text" name="billingcountryiso2a" id="st-form-country" class="st-form__input">
+              <option selected="selected" value=""></option>
+              <option value="AF">Afghanistan</option>
+              <option value="AL">Albania</option>
+              <option value="DZ">Algeria</option>
+              <option value="AS">American Samoa</option>
+              <option value="AD">Andorra</option>
+              <option value="AO">Angola</option>
+              <option value="AI">Anguilla</option>
+              <option value="AQ">Antarctica</option>
+              <option value="AG">Antigua And Barbuda</option>
+              <option value="AR">Argentina</option>
+              <option value="AM">Armenia</option>
+              <option value="AW">Aruba</option>
+              <option value="AU">Australia</option>
+              <option value="AT">Austria</option>
+              <option value="AZ">Azerbaijan</option>
+              <option value="BS">Bahamas</option>
+              <option value="BH">Bahrain</option>
+              <option value="BD">Bangladesh</option>
+              <option value="BB">Barbados</option>
+              <option value="BY">Belarus</option>
+              <option value="BE">Belgium</option>
+              <option value="BZ">Belize</option>
+              <option value="BJ">Benin</option>
+              <option value="BM">Bermuda</option>
+              <option value="BT">Bhutan</option>
+              <option value="BO">Bolivia</option>
+              <option value="BQ">Bonaire, Saint Eustatius and Saba</option>
+              <option value="BA">Bosnia And Herzegowina</option>
+              <option value="BW">Botswana</option>
+              <option value="BV">Bouvet Island</option>
+              <option value="BR">Brazil</option>
+              <option value="IO">British Indian Ocean Territory</option>
+              <option value="BN">Brunei Darussalam</option>
+              <option value="BG">Bulgaria</option>
+              <option value="BF">Burkina Faso</option>
+              <option value="BI">Burundi</option>
+              <option value="KH">Cambodia</option>
+              <option value="CM">Cameroon</option>
+              <option value="CA">Canada</option>
+              <option value="CV">Cape Verde</option>
+              <option value="KY">Cayman Islands</option>
+              <option value="CF">Central African Republic</option>
+              <option value="TD">Chad</option>
+              <option value="CL">Chile</option>
+              <option value="CN">China</option>
+              <option value="CX">Christmas Island</option>
+              <option value="CC">Cocos (Keeling) Islands</option>
+              <option value="CO">Colombia</option>
+              <option value="KM">Comoros</option>
+              <option value="CG">Congo</option>
+              <option value="CD">Congo, Democratic Republic of</option>
+              <option value="CK">Cook Islands</option>
+              <option value="CR">Costa Rica</option>
+              <option value="CI">Cote D'ivoire</option>
+              <option value="HR">Croatia (Local Name: Hrvatska)</option>
+              <option value="CU">Cuba</option>
+              <option value="CW">Curaçao</option>
+              <option value="CY">Cyprus</option>
+              <option value="CZ">Czech Republic</option>
+              <option value="DK">Denmark</option>
+              <option value="DJ">Djibouti</option>
+              <option value="DM">Dominica</option>
+              <option value="DO">Dominican Republic</option>
+              <option value="EC">Ecuador</option>
+              <option value="EG">Egypt</option>
+              <option value="SV">El Salvador</option>
+              <option value="GQ">Equatorial Guinea</option>
+              <option value="ER">Eritrea</option>
+              <option value="EE">Estonia</option>
+              <option value="ET">Ethiopia</option>
+              <option value="FK">Falkland Islands (Malvinas)</option>
+              <option value="FO">Faroe Islands</option>
+              <option value="FJ">Fiji</option>
+              <option value="FI">Finland</option>
+              <option value="FR">France</option>
+              <option value="GF">French Guiana</option>
+              <option value="PF">French Polynesia</option>
+              <option value="TF">French Southern Territories</option>
+              <option value="GA">Gabon</option>
+              <option value="GM">Gambia</option>
+              <option value="GE">Georgia</option>
+              <option value="DE">Germany</option>
+              <option value="GH">Ghana</option>
+              <option value="GI">Gibraltar</option>
+              <option value="GR">Greece</option>
+              <option value="GL">Greenland</option>
+              <option value="GD">Grenada</option>
+              <option value="GP">Guadeloupe</option>
+              <option value="GU">Guam</option>
+              <option value="GT">Guatemala</option>
+              <option value="GG">Guernsey</option>
+              <option value="GN">Guinea</option>
+              <option value="GW">Guinea-Bissau</option>
+              <option value="GY">Guyana</option>
+              <option value="HT">Haiti</option>
+              <option value="HM">Heard And Mc Donald Islands</option>
+              <option value="HN">Honduras</option>
+              <option value="HK">Hong Kong</option>
+              <option value="HU">Hungary</option>
+              <option value="IS">Iceland</option>
+              <option value="IN">India</option>
+              <option value="ID">Indonesia</option>
+              <option value="IR">Iran (Islamic Republic Of)</option>
+              <option value="IQ">Iraq</option>
+              <option value="IE">Ireland</option>
+              <option value="IM">Isle of Man</option>
+              <option value="IL">Israel</option>
+              <option value="IT">Italy</option>
+              <option value="JM">Jamaica</option>
+              <option value="JP">Japan</option>
+              <option value="JE">Jersey</option>
+              <option value="JO">Jordan</option>
+              <option value="KZ">Kazakhstan</option>
+              <option value="KE">Kenya</option>
+              <option value="KI">Kiribati</option>
+              <option value="KP">Korea, Democratic People's Republic Of</option>
+              <option value="KR">Korea, Republic Of</option>
+              <option value="KW">Kuwait</option>
+              <option value="KG">Kyrgyzstan</option>
+              <option value="LA">Lao People's Democratic Republic</option>
+              <option value="LV">Latvia</option>
+              <option value="LB">Lebanon</option>
+              <option value="LS">Lesotho</option>
+              <option value="LR">Liberia</option>
+              <option value="LY">Libyan Arab Jamahiriya</option>
+              <option value="LI">Liechtenstein</option>
+              <option value="LT">Lithuania</option>
+              <option value="LU">Luxembourg</option>
+              <option value="MO">Macau</option>
+              <option value="MK">Macedonia, The Former Yugoslav Republic Of</option>
+              <option value="MG">Madagascar</option>
+              <option value="MW">Malawi</option>
+              <option value="MY">Malaysia</option>
+              <option value="MV">Maldives</option>
+              <option value="ML">Mali</option>
+              <option value="MT">Malta</option>
+              <option value="MH">Marshall Islands</option>
+              <option value="MQ">Martinique</option>
+              <option value="MR">Mauritania</option>
+              <option value="MU">Mauritius</option>
+              <option value="YT">Mayotte</option>
+              <option value="MX">Mexico</option>
+              <option value="FM">Micronesia, Federated States Of</option>
+              <option value="MD">Moldova, Republic Of</option>
+              <option value="MC">Monaco</option>
+              <option value="MN">Mongolia</option>
+              <option value="ME">Montenegro</option>
+              <option value="MS">Montserrat</option>
+              <option value="MA">Morocco</option>
+              <option value="MZ">Mozambique</option>
+              <option value="MM">Myanmar</option>
+              <option value="NA">Namibia</option>
+              <option value="NR">Nauru</option>
+              <option value="NP">Nepal</option>
+              <option value="NL">Netherlands</option>
+              <option value="AN">Netherlands Antilles</option>
+              <option value="NC">New Caledonia</option>
+              <option value="NZ">New Zealand</option>
+              <option value="NI">Nicaragua</option>
+              <option value="NE">Niger</option>
+              <option value="NG">Nigeria</option>
+              <option value="NU">Niue</option>
+              <option value="NF">Norfolk Island</option>
+              <option value="MP">Northern Mariana Islands</option>
+              <option value="NO">Norway</option>
+              <option value="OM">Oman</option>
+              <option value="PK">Pakistan</option>
+              <option value="PW">Palau</option>
+              <option value="PS">Palestinian Territory, Occupied</option>
+              <option value="PA">Panama</option>
+              <option value="PG">Papua New Guinea</option>
+              <option value="PY">Paraguay</option>
+              <option value="PE">Peru</option>
+              <option value="PH">Philippines</option>
+              <option value="PN">Pitcairn</option>
+              <option value="PL">Poland</option>
+              <option value="PT">Portugal</option>
+              <option value="PR">Puerto Rico</option>
+              <option value="QA">Qatar</option>
+              <option value="RE">Reunion</option>
+              <option value="RO">Romania</option>
+              <option value="RU">Russian Federation</option>
+              <option value="RW">Rwanda</option>
+              <option value="BL">Saint Barthélemy</option>
+              <option value="KN">Saint Kitts And Nevis</option>
+              <option value="LC">Saint Lucia</option>
+              <option value="MF">Saint Martin</option>
+              <option value="VC">Saint Vincent And The Grenadines</option>
+              <option value="WS">Samoa</option>
+              <option value="SM">San Marino</option>
+              <option value="ST">Sao Tome And Principe</option>
+              <option value="SA">Saudi Arabia</option>
+              <option value="SN">Senegal</option>
+              <option value="RS">Serbia</option>
+              <option value="CS">Serbia and Montenegro</option>
+              <option value="SC">Seychelles</option>
+              <option value="SL">Sierra Leone</option>
+              <option value="SG">Singapore</option>
+              <option value="SX">Sint Maarten (Dutch part)</option>
+              <option value="SK">Slovakia (Slovak Republic)</option>
+              <option value="SI">Slovenia</option>
+              <option value="SB">Solomon Islands</option>
+              <option value="SO">Somalia</option>
+              <option value="ZA">South Africa</option>
+              <option value="GS">South Georgia And The South Sandwich Islands</option>
+              <option value="SS">South Sudan</option>
+              <option value="ES">Spain</option>
+              <option value="LK">Sri Lanka</option>
+              <option value="SH">St. Helena</option>
+              <option value="PM">St. Pierre And Miquelon</option>
+              <option value="SD">Sudan</option>
+              <option value="SR">Suriname</option>
+              <option value="SJ">Svalbard And Jan Mayen Islands</option>
+              <option value="SZ">Swaziland</option>
+              <option value="SE">Sweden</option>
+              <option value="CH">Switzerland</option>
+              <option value="SY">Syrian Arab Republic</option>
+              <option value="TW">Taiwan</option>
+              <option value="TJ">Tajikistan</option>
+              <option value="TZ">Tanzania, United Republic Of</option>
+              <option value="TH">Thailand</option>
+              <option value="TL">Timor-Leste, Democratic Republic of</option>
+              <option value="TG">Togo</option>
+              <option value="TK">Tokelau</option>
+              <option value="TO">Tonga</option>
+              <option value="TT">Trinidad And Tobago</option>
+              <option value="TN">Tunisia</option>
+              <option value="TR">Turkey</option>
+              <option value="TM">Turkmenistan</option>
+              <option value="TC">Turks And Caicos Islands</option>
+              <option value="TV">Tuvalu</option>
+              <option value="UG">Uganda</option>
+              <option value="UA">Ukraine</option>
+              <option value="AE">United Arab Emirates</option>
+              <option value="GB">United Kingdom</option>
+              <option value="US">United States</option>
+              <option value="UM">United States Minor Outlying Islands</option>
+              <option value="UY">Uruguay</option>
+              <option value="UZ">Uzbekistan</option>
+              <option value="VU">Vanuatu</option>
+              <option value="VA">Vatican City State (Holy See)</option>
+              <option value="VE">Venezuela</option>
+              <option value="VN">Viet Nam</option>
+              <option value="VG">Virgin Islands (British)</option>
+              <option value="VI">Virgin Islands (U.S.)</option>
+              <option value="WF">Wallis And Futuna Islands</option>
+              <option value="EH">Western Sahara</option>
+              <option value="YE">Yemen</option>
+              <option value="ZM">Zambia</option>
+              <option value="ZW">Zimbabwe</option>
+              <option value="AX">Åland Islands</option>
+            </select>
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-post-code" class="st-form__label">
+              Post code
+            </label>
+            <input type="text" name="billingpostcode" id="st-form-post-code" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-email" class="st-form__label">
+              Email
+            </label>
+            <input type="text" name="billingemail" id="st-form-email" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-telephone" class="st-form__label">
+              Telephone
+            </label>
+            <input type="text" name="billingtelephone" id="st-form-telephone" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-telephone-type" class="st-form__label">
+              Telephone type
+            </label>
+            <input type="text" name="billingtelephonetype" id="st-form-telephone-type" class="st-form__input" />
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="st-form__fieldset">
+        <legend>Delivery details:</legend>
+        <div class="st-form__section st-form__section--horizontal">
+          <div class="st-form__field">
+            <label for="st-form-title-d" class="st-form__label">
+              Title
+            </label>
+            <input type="text" name="dtitle" id="st-form-title-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-first-name-d" class="st-form__label">
+              First name
+            </label>
+            <input type="text" name="dfirstName" id="st-form-first-name-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-last-name-d" class="st-form__label">
+              Last name
+            </label>
+            <input type="text" name="dlastName" id="st-form-last-name-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-house-name-d" class="st-form__label">
+              House name/no.
+            </label>
+            <input type="text" name="dhouseName" id="st-form-house-name-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-street-d" class="st-form__label">
+              Street
+            </label>
+            <input type="text" name="dstreet" id="st-form-street-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-town-d" class="st-form__label">
+              Town
+            </label>
+            <input type="text" name="dtown" id="st-form-town-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-county-d" class="st-form__label">
+              County
+            </label>
+            <input type="text" name="dcounty" id="st-form-county-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-country-d" class="st-form__label">
+              Country
+            </label>
+            <input type="text" name="dcountry" id="st-form-country-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-post-code-d" class="st-form__label">
+              Post code
+            </label>
+            <input type="text" name="dpostCode" id="st-form-post-code-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-email-d" class="st-form__label">
+              Email
+            </label>
+            <input type="text" name="demail" id="st-form-email-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-telephone-d" class="st-form__label">
+              Telephone
+            </label>
+            <input type="text" name="dtelephone" id="st-form-telephone-d" class="st-form__input" />
+          </div>
+          <div class="st-form__field">
+            <label for="st-form-telephone-type-d" class="st-form__label">
+              Telephone type
+            </label>
+            <input type="text" name="dtelephoneType" id="st-form-telephone-type-d" class="st-form__input" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <fieldset class="st-form__fieldset">
+      <legend>Payment details:</legend>
+      <div id="st-ctp-login"></div>
+      <div id="st-ctp-cards"></div>
+      <div class="st-form__section st-form__section" id="st-card-details-section">
+        <div class="st-form__field">
+          <label for="st-form-card-number" class="st-form__label">
+            Card number:
+            <abbr title="required" aria-label="required">*</abbr>
+          </label>
+          <input type="text" name="pan" id="st-form-card-number" class="st-form__input" autocomplete="off" required />
+        </div>
+        <div class="st-form__field">
+          <label for="st-form-expiry-date-month" class="st-form__label">
+            Expiry date:
+            <abbr title="required" aria-label="required">*</abbr>
+          </label>
+          <div class="st-form-expiry-date-wrapper">
+            <select name="expirymonth" id="st-form-expiry-date-month" class="st-form__input" autocomplete="off" required>
+              <option selected="selected" value=""></option>
+              <option value="01">01</option>
+              <option value="02">02</option>
+              <option value="03">03</option>
+              <option value="04">04</option>
+              <option value="05">05</option>
+              <option value="06">06</option>
+              <option value="07">07</option>
+              <option value="08">08</option>
+              <option value="09">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+            <select name="expiryyear" id="st-form-expiry-date-year" class="st-form__input" autocomplete="off" required>
+              <option selected="selected" value=""></option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+              <option value="2031">2031</option>
+              <option value="2032">2032</option>
+              <option value="2033">2033</option>
+              <option value="2034">2034</option>
+              <option value="2035">2035</option>
+              <option value="2036">2036</option>
+              <option value="2037">2037</option>
+              <option value="2038">2038</option>
+              <option value="2039">2039</option>
+              <option value="2040">2040</option>
+              <option value="2041">2041</option>
+              <option value="2042">2042</option>
+            </select>
+          </div>
+        </div>
+        <div class="st-form__field">
+          <label for="st-form-security-code" class="st-form__label">
+            Security code:
+            <abbr title="required" aria-label="required">*</abbr>
+          </label>
+          <input type="text" name="securitycode" id="st-form-security-code" class="st-form__input" autocomplete="off" required />
+        </div>
+        <div class="st-form__actions--wrapper">
+          <div class="st-form__visa--ctp hidden">
+            <p>Click to pay <span id="st-ctp-separator">|</span> <span id="st-ctp-lookup-btn">Look up my cards</span>
+            </p>
+            <div id="st-ctp-registration">
+              <input type="checkbox" id="register" name="register" autocomplete="off">
+              <label for="register">Register your card with Click to Pay for a faster checkout experience.</label>
+              <p><a href="#">Learn more about Click to Pay</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="st-form__section st-form__section" id="st-ctp-submit-section">
+        <div class="st-form__actions--wrapper">
+          <div class="st-form__group st-form__group--submit">
+            <button type="submit" class="st-form__button" id="merchant-submit-button">
+              Pay securely
+            </button>
+            <label id="merchant-submit-label">We accept VISA</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="st-form__fieldset">
+      <legend>Logs:</legend>
+      <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
+    </fieldset>
+  </form>
+</main>
+<script src="./predefinedCallbacks.js"></script>
+<script src="./counter.js"></script>
+<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+<script type="text/javascript">
+  var ST = SecureTrading;
+  window.addEventListener('load', function() {
+    var params = new URLSearchParams(window.location.search.substring(1));
+    var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
+    var jwt = params.get('jwt') || '';
+
+    Promise.all([getConfig()])
+      .then(function(configValues) {
+        var config = configValues[0];
+        setCallbacks(config);
+        var st = init(config);
+      });
+
+    function getConfig() {
+      if (inlineConfig) {
+        return Promise.resolve(inlineConfig);
+      }
+
+      return window
+        .fetch('<%= CONFIG_URL %>/config.json')
+        .then(function(response) {
+          if (response.status !== 200) {
+            return Promise.reject('Failed to load configuration file!');
+          }
+
+          return response.json();
+        })
+        .then(function(config) {
+          return getJwt(config).then(function(jwt) {
+            return Object.assign(config, { jwt: jwt });
+          });
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+    }
+
+    function getJwt(config) {
+      var presetJwt = jwt || config.jwt;
+
+      if (presetJwt) {
+        return Promise.resolve(presetJwt);
+      }
+
+      return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
+    }
+
+    function init(config) {
+      var st = ST(config);
+      var clickToPayAdapterInitParams = { // TODO update init params
+        formId: 'st-form',
+        cardListContainerId: 'st-ctp-cards',
+        signInContainerId: 'st-ctp-login',
+        srciDpaId: 'TrustPayments-test-merchant',
+        dpaTransactionOptions: {
+          consumerNameRequested: true,
+          consumerEmailAddressRequested: true,
+          consumerPhoneNumberRequested: true,
+          reviewAction: 'pay',
+          transactionAmount: {
+            transactionAmount: 100.00,
+            transactionCurrencyCode: 'GBP'
+          }
+        },
+        onUpdateView: onUpdateView,
+        onCheckout: onCheckout
+      };
+
+      st.ClickToPay({ adapter: 'hpp' })
+        .then(function(adapter) {
+          return adapter.init(clickToPayAdapterInitParams);
+        })
+        .then(function(adapter) {
+          printLogs('CTP adapter is initialized');
+          setLookupMyCardsClickListener(adapter);
+          checkIfUserIsRecognized(adapter);
+          getSrcName(adapter);
+        })
+        .catch(function(error) {
+          if (error === 'ClickToPay is not available on Internet Explorer') {
+            return null;
+          } else {
+            console.error(error);
+          }
+        });
+
+      st.on('paymentInitStarted', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT INIT STARTED' });
+      });
+      st.on('paymentInitCompleted', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT INIT COMPLETED' });
+      });
+      st.on('paymentInitFailed', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT INIT FAILED' });
+      });
+      st.on('paymentStarted', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT STARTED' });
+      });
+      st.on('paymentCompleted', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT COMPLETED' });
+      });
+      st.on('paymentFailed', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT FAILED' });
+      });
+      st.on('paymentCanceled', function(data) {
+        printLogs({ name: data.name, step: 'PAYMENT CANCELED' });
+      });
+
+      return st;
+    }
+
+    function setLookupMyCardsClickListener(adapterInstance) {
+      document.querySelector('#st-ctp-lookup-btn').addEventListener('click', function() {
+        adapterInstance.identifyUser()
+          .then(function(result) {
+            printLogs('CTP - user identified: ');
+            printLogs(JSON.stringify(result, null, 2));
+            if (result.isSuccessful) {
+              adapterInstance.showCardList().catch(error => {
+                console.error(error);
+              });
+            }
+          })
+          .catch(function(e) {
+            console.error(e);
+          });
+      });
+    }
+
+    function checkIfUserIsRecognized(adapterInstance) {
+      adapterInstance.isRecognized().then(function(isRecognized) {
+        if (isRecognized) {
+          adapterInstance.showCardList().catch(error => {
+            console.error(error);
+          });
+        } else {
+          enableClickToPayForNotRecognizedUser();
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+
+    function getSrcName(adapterInstance) {
+      document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
+    }
+
+    function inputHandler(adapterInstance) {
+      return function(event) {
+        if (event.target.value) {
+          const cardType = adapterInstance.getSrcName(event.target.value);
+          cardType.then(function(srcName) {
+            srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
+          });
+        } else {
+          showCheckToRegisterSection();
+        }
+      };
+    }
+
+    function hideCheckToRegisterSection() {
+      document.getElementById('st-ctp-registration').style.display = 'none';
+      document.getElementById('register').checked = false;
+    }
+
+    function showCheckToRegisterSection() {
+      document.getElementById('st-ctp-registration').style.display = 'block';
+    }
+
+    function onUpdateView(updateView) {
+      var cardDetailsElement = document.getElementById('st-card-details-section');
+      var submitElement = document.getElementById('st-ctp-submit-section');
+      var merchantSubmitButton = document.getElementById('merchant-submit-button');
+      var merchantSubmitLabel = document.getElementById('merchant-submit-label');
+      var ctpImage = '<svg id="ctp-logo" width="20px" height="20px" version="1.0" viewBox="0 0 92 59" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 59) scale(.1 -.1)"><path fill="#fff" d="m29 554c-24-26-24-26-24-260v-234l28-27c27-28 29-28 175-31l148-3 127 134c70 74 127 143 127 152s-42 64-92 122c-51 57-94 109-96 114s12 9 32 9c32 0 43-9 140-121l106-121-49-57c-27-31-66-72-86-91s-50-52-67-73c-44-54-29-67 77-67h83l124 131c67 71 127 137 131 145 6 11 2 24-15 42-14 15-71 80-127 145-64 72-110 117-122 117-40 0-16-43 92-165l110-125-20-26c-11-14-58-65-105-115-79-83-89-90-120-87l-34 3 99 108c69 74 97 112 92 121-4 8-61 75-127 150l-119 137-95-3c-60-2-97-7-99-14s48-72 111-145l115-133-79-85c-43-47-91-99-107-114l-30-28-268 6-3 227-2 228 22 5c13 3 57 6 98 7 69 3 75 5 78 26 3 22 2 22-101 22-98 0-105-1-128-26z"/></g></svg>';
+
+      if (updateView.displayMaskedCardNumber) {
+        merchantSubmitButton.innerHTML = `Continue with ${ctpImage} ...${updateView.displayMaskedCardNumber}`;
+      } else {
+        merchantSubmitButton.innerHTML = 'Pay securely';
+      }
+
+      if (updateView.displayCardType) {
+        merchantSubmitLabel.innerHTML = `Your ${updateView.displayCardType} payment is enabled by Click to Pay`;
+      } else {
+        merchantSubmitLabel.innerHTML = 'We accept VISA';
+      }
+
+      if (updateView.displayCardForm === true) {
+        cardDetailsElement.classList.remove('hidden');
+        enableClickToPayForNotRecognizedUser();
+      } else {
+        cardDetailsElement.classList.add('hidden');
+      }
+
+      if (updateView.displaySubmitButton === true) {
+        submitElement.classList.remove('hidden');
+      } else {
+        submitElement.classList.add('hidden');
+      }
+    }
+
+    function onCheckout(checkoutResult) {
+      console.log('CTP - cecheckout result: ', checkoutResult);
+    }
+
+    function onCheckout(checkoutResult) {
+      printLogs('CTP - checkout result:' + JSON.stringify(checkoutResult, null, 2));
+    }
+
+    function printLogs(logs) {
+      var outputElement = document.getElementById('st-log-area');
+
+      if (typeof logs === 'object') {
+        logs = JSON.stringify(logs, null, 2);
+      }
+
+      outputElement.value += '' + logs + '\n';
+    }
+
+    function setCallbacks(config) {
+      var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
+      configCallbackKeys.forEach(function(callbackKey) {
+        var callbackFunctionName = config[callbackKey] || null;
+        if (callbackFunctionName && typeof callbackFunctionName === 'function') {
+          config[callbackKey] = callbackFunctionName;
+        } else if (callbackFunctionName && typeof callbackFunctionName === 'string' && typeof window.predefinedCallbacks[callbackFunctionName] === 'function') {
+          config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
+        } else {
+          config[callbackKey] = null;
+        }
+      });
+    }
+
+    function enableClickToPayForNotRecognizedUser() {
+      document.querySelector('.st-form__visa--ctp').classList.remove('hidden');
+    }
+  });
+</script>
+</body>
+</html>

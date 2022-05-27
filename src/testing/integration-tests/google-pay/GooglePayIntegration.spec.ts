@@ -17,7 +17,7 @@ import { JwtReducer } from '../../../application/core/store/reducers/jwt/JwtRedu
 import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
 import { googlePayConfigMock } from '../../../client/integrations/google-pay/GooglePayConfigMock';
-import { GooglePayInitializeSubscriber } from '../../../client/integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
+import { GooglePayClientInitializer } from '../../../client/integrations/google-pay/google-pay-client-initializer/GooglePayClientInitializer';
 import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
@@ -34,7 +34,7 @@ describe.skip('GooglePay Payment', () => {
   let messageBus: IMessageBus;
   let config: IConfig;
   let paymentResultSubmitterSubscriber: PaymentResultSubmitterSubscriber;
-  let googlePayInitializeSubscriber: GooglePayInitializeSubscriber;
+  let googlePayInitializeSubscriber: GooglePayClientInitializer;
   let googlePaySessionPaymentsClientMock: GooglePaySessionPaymentsClientMock;
   let transportServiceMock: TransportService;
   let threeDVerificationServiceMock: IThreeDVerificationService<unknown>;
@@ -54,7 +54,7 @@ describe.skip('GooglePay Payment', () => {
     );
     Container.set(TransportService, instance(transportServiceMock));
     Container.set({ id: PaymentResultSubmitterSubscriber, type: PaymentResultSubmitterSubscriber });
-    Container.set({ id: GooglePayInitializeSubscriber, type: GooglePayInitializeSubscriber });
+    Container.set({ id: GooglePayClientInitializer, type: GooglePayClientInitializer });
     Container.set({ id: HttpClient, type: HttpClient });
     Container.set({ id: IThreeDVerificationService, value: instance(threeDVerificationServiceMock) });
     Container.set({ id: IGatewayClient, type: TransportServiceGatewayClient });
@@ -63,7 +63,7 @@ describe.skip('GooglePay Payment', () => {
     configProvider = Container.get(ConfigProviderToken) as TestConfigProvider;
     messageBus = Container.get(MessageBusToken);
     paymentResultSubmitterSubscriber = Container.get(PaymentResultSubmitterSubscriber);
-    googlePayInitializeSubscriber = Container.get(GooglePayInitializeSubscriber);
+    googlePayInitializeSubscriber = Container.get(GooglePayClientInitializer);
     googlePaySessionPaymentsClientMock = new GooglePaySessionPaymentsClientMock();
     DomMethods.insertScript = jest.fn().mockImplementation(() => {
       return Promise.resolve(document.createElement('script'));

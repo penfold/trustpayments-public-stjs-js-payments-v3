@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"MIME-Version: 1.0\n"
+"mime-version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2019-07-31T14:46:41.067Z\n"
-"PO-Revision-Date: 2019-07-31T14:46:41.067Z\n"
+"POT-Creation-Date: 2022-05-16T17:34:51.711Z\n"
+"PO-Revision-Date: 2022-05-16T17:34:51.711Z\n"
 "Language: en_GB\n"
 
 msgid "Timeout"
@@ -66,6 +66,9 @@ msgstr "Form is not valid"
 msgid "Pay"
 msgstr "Pay"
 
+msgid "Please wait"
+msgstr "Please wait"
+
 msgid "Processing"
 msgstr "Processing"
 
@@ -74,3 +77,140 @@ msgstr "Invalid field"
 
 msgid "Card number is invalid"
 msgstr "Card number is invalid"
+
+msgid "You are not logged to Apple account"
+msgstr "You are not logged to Apple account"
+
+msgid ""
+"A target element for the input field with id could not be found. Please "
+"check your configuration"
+msgstr ""
+"A target element for the input field with id could not be found. Please "
+"check your configuration"
+
+msgid "Jwt has not been specified"
+msgstr "Jwt has not been specified"
+
+msgid ""
+"A target iframe-factory for the input field with id could not be found. "
+"Please check your configuration"
+msgstr ""
+"A target iframe-factory for the input field with id could not be found. "
+"Please check your configuration"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "MM/YY"
+msgstr "MM/YY"
+
+msgid "**** **** **** ****"
+msgstr "**** **** **** ****"
+
+msgid "***"
+msgstr "***"
+
+msgid "****"
+msgstr "****"
+
+msgid "Add a card"
+msgstr "Add a card"
+
+msgid "Add new card"
+msgstr "Add new card"
+
+msgid "Expiry date"
+msgstr "Expiry date"
+
+msgid "View all cards"
+msgstr "View all cards"
+
+msgid "Not you?"
+msgstr "Not you?"
+
+msgid "Something went wrong, try again or use another email."
+msgstr "Something went wrong, try again or use another email."
+
+msgid "Account assigned to this email is currently not accessible"
+msgstr "Account assigned to this email is currently not accessible"
+
+msgid "OTP code has expired. Click resend to generate new code."
+msgstr "OTP code has expired. Click resend to generate new code."
+
+msgid "The code you have entered is incorrect"
+msgstr "The code you have entered is incorrect"
+
+msgid "OTP code could not be sent."
+msgstr "OTP code could not be sent."
+
+msgid "The number of retries for generating the OTP exceeded the limit."
+msgstr "The number of retries for generating the OTP exceeded the limit."
+
+msgid "Invalid email. Use correct email and try again"
+msgstr "Invalid email. Use correct email and try again"
+
+msgid "Consumer identity is missing in the request."
+msgstr "Consumer identity is missing in the request."
+
+msgid "Validation data missing."
+msgstr "Validation data missing."
+
+msgid "Email is not in valid format."
+msgstr "Email is not in valid format."
+
+msgid "Consumer email could not be recognized."
+msgstr "Consumer email could not be recognized."
+
+msgid "The user account was locked or disabled."
+msgstr "The user account was locked or disabled."
+
+msgid "The email address you have entered is not registered for Click to Pay."
+msgstr "The email address you have entered is not registered for Click to Pay."
+
+msgid "Enter your email address to access your cards"
+msgstr "Enter your email address to access your cards"
+
+msgid "Email address"
+msgstr "Email address"
+
+msgid "Continue"
+msgstr "Continue"
+
+msgid "Pay with confidence with trusted brands"
+msgstr "Pay with confidence with trusted brands"
+
+msgid ""
+"For an easy and smart checkout, simply click to pay whenever you see the "
+"Click to Pay icon {{clickToPayLogo}}, and your card is accepted."
+msgstr ""
+"For an easy and smart checkout, simply click to pay whenever you see the "
+"Click to Pay icon {{clickToPayLogo}}, and your card is accepted."
+
+msgid ""
+"You can choose to be remembered on your device and browser for faster "
+"checkout."
+msgstr ""
+"You can choose to be remembered on your device and browser for faster "
+"checkout."
+
+msgid ""
+"Built on industry standards for online transactions and supported by global "
+"payment brands."
+msgstr ""
+"Built on industry standards for online transactions and supported by global "
+"payment brands."
+
+msgid "Confirm it's you"
+msgstr "Confirm it's you"
+
+msgid "Enter the code sent to {{validationChannel}} to checkout with Click to Pay."
+msgstr "Enter the code sent to {{validationChannel}} to checkout with Click to Pay."
+
+msgid "Resend"
+msgstr "Resend"
+
+msgid "Verify"
+msgstr "Verify"
+
+msgid "Selected card is not currently supported for Click to Pay"
+msgstr "Selected card is not currently supported for Click to Pay"

@@ -29,5 +29,6 @@
   "A target element for the input field with id could not be found. Please check your configuration": "A target element for the input field with id could not be found. Please check your configuration",
   "Jwt has not been specified": "Jwt has not been specified",
   "A target iframe-factory for the input field with id could not be found. Please check your configuration": "A target iframe-factory for the input field with id could not be found. Please check your configuration",
-  "Cancel": "Cancel"
+  "Cancel": "Cancel",
+  "VISA_CTP card validation message": "Selected card is not currently supported for Click to Pay"
 }
