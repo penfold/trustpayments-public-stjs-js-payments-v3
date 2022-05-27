@@ -1,8 +1,7 @@
 import { Observable, of, throwError } from 'rxjs';
-import { HttpClient, IHttpClientResponse } from '@trustpayments/http-client';
+import { HttpClient, IHttpClientConfig, IHttpClientResponse } from '@trustpayments/http-client';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
-import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
@@ -20,6 +19,7 @@ import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { ISentryMessageEvent, SentryDataFields } from '../../../../shared/services/sentry/models/ISentryData';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
@@ -43,6 +43,13 @@ export class TransportService {
       ? of(gatewayUrl)
       : this.configProvider.getConfig$().pipe(map(config => config.datacenterurl));
     const requestObject: IRequestObject = this.requestEncoder.encode(request);
+
+    const requestId: ISentryMessageEvent = {
+      name: SentryDataFields.CurrentRequestId,
+      value: requestObject?.request[0]?.requestid,
+    }
+    this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: requestId }, EventScope.ALL_FRAMES);
+
     const httpOptions: IHttpClientConfig = this.httpOptionsProvider.getOptions(requestObject);
     let resolvedUrl = '';
 
@@ -51,13 +58,13 @@ export class TransportService {
         resolvedUrl = url;
       }),
       tap(() => {
-        const decodedJwt = this.jwtDecoder.decode(requestObject.jwt);
+        const decodedJwt = this.jwtDecoder.decode(requestObject?.jwt);
         // sentry filters out messages with "AUTH"
         const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
         this.messageBus.publish({
           type: PUBLIC_EVENTS.GATEWAY_REQUEST_SEND,
           data: {
-            customMessage: `requestid: ${requestObject.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`,
+            customMessage: `requestid: ${requestObject?.request[0]?.requestid}, requesttypedescriptions: ${requestTypeMessage}`,
           },
         }, EventScope.ALL_FRAMES);
 
@@ -66,10 +73,16 @@ export class TransportService {
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => {
         const { errorcode, errormessage } = response.customerOutput;
+        const sentryMessageEvent: ISentryMessageEvent = {
+          name: SentryDataFields.CurrentResponseId,
+          value: response?.requestreference,
+        }
+        this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: sentryMessageEvent }, EventScope.ALL_FRAMES);
+
         this.messageBus.publish({
           type: PUBLIC_EVENTS.GATEWAY_RESPONSE_RECEIVED,
           data: {
-            customMessage: `errorcode: ${errorcode}, errormessage: ${errormessage}, requestreference: ${response.requestreference}`,
+            customMessage: `errorcode: ${errorcode}, errormessage: ${errormessage}, requestreference: ${response?.requestreference}`,
           },
         }, EventScope.ALL_FRAMES);
         if (Number(errorcode) !== 0) {
