@@ -1,7 +1,7 @@
 import './st.css';
 import { Container, Service } from 'typedi';
-import { from, Observable, Subject, Subscription } from 'rxjs';
-import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
@@ -54,6 +54,11 @@ import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
+import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
+import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
+import { IClickToPayAdapter } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayClientAdapter';
+import { IClickToPayAdapterInitParams } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayAdapterInitParams';
+import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 import { TokenizedCardPaymentAdapter } from '../../integrations/tokenized-card/application/TokenizedCardPaymentAdapter';
 import {
   TokenizedCardPaymentConfigName,
@@ -61,7 +66,9 @@ import {
 } from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
 import { DefaultConfig } from '../../application/core/models/constants/config-resolver/DefaultConfig';
+
 declare const ST_VERSION: string | undefined;
+
 @Service()
 export class ST {
   private config: IConfig;
@@ -126,6 +133,7 @@ export class ST {
     private cardFrames: CardFrames,
     private sentryService: SentryService,
     private tokenizedCardPaymentAdapter: TokenizedCardPaymentAdapter,
+    private clickToPayAdapterFactory: ClickToPayAdapterFactory
   ) {
   }
 
@@ -136,7 +144,7 @@ export class ST {
         ofType(ExposedEvents[eventName]),
         map(event => event.data),
         delay(0),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe(callback);
   }
@@ -172,7 +180,7 @@ export class ST {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
           data: JSON.stringify(this.config),
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -199,7 +207,7 @@ export class ST {
             config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -230,7 +238,7 @@ export class ST {
             config: this.config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -261,7 +269,7 @@ export class ST {
             config: this.config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -290,21 +298,21 @@ export class ST {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
           data: undefined,
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
 
-  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter>{
-    if(!jwtCard){
-      return
+  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter> {
+    if (!jwtCard) {
+      return;
     }
 
     tokenizedCardPaymentConfig = {
       ...DefaultConfig[TokenizedCardPaymentConfigName],
       ...this.config[TokenizedCardPaymentConfigName],
       ...tokenizedCardPaymentConfig,
-    }
+    };
 
     this.configService.updateProp(TokenizedCardPaymentConfigName, tokenizedCardPaymentConfig);
 
@@ -331,14 +339,27 @@ export class ST {
             config: tokenizedCardPaymentConfig,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
 
     return new Promise((resolve) => {
       resolve(this.tokenizedCardPaymentAdapter);
     });
+  }
 
+  ClickToPay(clickToPayConfig: IClickToPayConfig): Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter> {
+    if (window.navigator.userAgent.indexOf('MSIE') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1) {
+      const message = 'ClickToPay is not available on Internet Explorer';
+      console.warn(message);
+      return Promise.reject(message);
+    }
+
+    return firstValueFrom(
+      this.initControlFrame$().pipe(
+        mapTo(this.clickToPayAdapterFactory.create(clickToPayConfig.adapter))
+      )
+    );
   }
 
   Cybertonica(): Promise<string | null> {
@@ -369,7 +390,7 @@ export class ST {
       {
         type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
-      EventScope.ALL_FRAMES,
+      EventScope.ALL_FRAMES
     );
 
     this.destroy$.next();
@@ -423,7 +444,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      }, EventScope.ALL_FRAMES,
+      }, EventScope.ALL_FRAMES
     );
   }
 
@@ -459,7 +480,7 @@ export class ST {
         this.merchantFields.init();
       }),
       shareReplay(1),
-      takeUntil(this.destroy$),
+      takeUntil(this.destroy$)
     );
 
     return this.controlFrameLoader$;
@@ -478,7 +499,7 @@ export class ST {
         'font-size: 2em; font-weight: bold',
         'font-size: 2em; font-weight: 1000; color: #e71b5a',
         'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: regular; color: #e71b5a',
+        'font-size: 2em; font-weight: regular; color: #e71b5a'
       );
     }
   }

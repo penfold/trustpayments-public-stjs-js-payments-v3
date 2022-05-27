@@ -43,6 +43,7 @@ class PaymentMethodsPage(BasePage):
                                                    'data-notification-color')
 
     def get_logs(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
         logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
         result = re.findall('"name": "(.*)",\n  "step": "(.*)"', logs)
         res = defaultdict(list)

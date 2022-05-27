@@ -170,6 +170,7 @@ class Actions:
         return css_value
 
     def clear_input(self, locator):
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.clear()
 
@@ -211,6 +212,10 @@ class Actions:
     def select_element_from_list(self, locator, element_number):
         select = Select(self._driver.find_elements(*locator))
         select.select_by_index(element_number)
+
+    def select_element_from_list_by_value(self, locator: tuple, element_value: str) -> None:
+        select = Select(self._driver.find_element(*locator))
+        select.select_by_value(value=element_value)
 
     def select_element_by_text(self, locator, text):
         select = Select(self._driver.find_element(*locator))

@@ -16,12 +16,17 @@ import { IFrameQueryingService } from '../../shared/services/message-bus/interfa
 import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
+import { ClickToPayAdapterName } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterName';
+import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
+import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';
 
 const messageBusMock: SimpleMessageBus = new SimpleMessageBus();
 const framesHubMock: FramesHub = mock(FramesHub);
+const clickToPayAdapterFactoryMock = mock(ClickToPayAdapterFactory);
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set(IMessageBus, messageBusMock);
@@ -31,6 +36,7 @@ Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
 Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
 Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
 Container.set({ id: FramesHub, value: instance(framesHubMock) });
+Container.set({ id: ClickToPayAdapterFactory, value: instance(clickToPayAdapterFactoryMock) });
 
 when(framesHubMock.waitForFrame(anything())).thenCall(frame => of(frame));
 
@@ -150,6 +156,46 @@ describe('ST', () => {
 
     it(`should send ${PUBLIC_EVENTS.THREED_CANCEL} event on MessageBus`, () => {
       expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
+    });
+  });
+
+  describe('ClickToPay()', () => {
+    let clickToPayConfig: IClickToPayConfig;
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      stInstance['initControlFrame$'] = jest.fn().mockReturnValueOnce(of(null));// TODO mock dependencies properly
+      consoleSpy = jest.spyOn(console, 'warn');
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      when(clickToPayAdapterFactoryMock.create(ClickToPayAdapterName.hpp))
+        .thenReturn(new HPPClickToPayAdapter(
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+        ));
+    });
+
+    it('should create ClickToPayAdapter depending on adapter type and return Promise with reference to it', done => {
+      clickToPayConfig = { adapter: ClickToPayAdapterName.hpp };
+      stInstance.ClickToPay(clickToPayConfig).then(adapter => {
+        expect(adapter).toBeInstanceOf(HPPClickToPayAdapter);
+        done();
+      });
+    });
+
+    it('should stop initialization Click To Pay when user uses Internet Explorer', done => {
+      Object.defineProperty(window.navigator, 'userAgent', { value : 'MSIE' });
+      clickToPayConfig = { adapter: ClickToPayAdapterName.hpp };
+      stInstance.ClickToPay(clickToPayConfig).catch((error) => {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(consoleSpy).toHaveBeenCalledWith(error);
+        done();
+      });
     });
   });
 });

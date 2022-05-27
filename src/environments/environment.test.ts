@@ -56,4 +56,14 @@ export const environment = {
   },
   SCRIPT_LOAD_TIMEOUT: 30000,
   FRAUD_CONTROL_TIMEOUT: 10000,
+  CLICK_TO_PAY: {
+    VISA: {
+      SRC_SDK_URL: {
+        SANDBOX: 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+        PROD: 'https://assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+      },
+      SRC_INITIATOR_ID: 'GSTIDU1J8I2NQRWAU7EL21puifGrG2BzgnL9XfBjMzwo9wmtM',
+      ENCRYPTION_KID: 'A5CHRN38V3PJ90ACENUH13CCVOyXIL7A8rC9xClvyZyxvMgrE',
+    },
+  },
 };

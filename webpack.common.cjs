@@ -9,7 +9,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
-    "test":["./src/test.ts"],
     st: [
       './src/shared/imports/polyfills.ts',
       './src/bootstrap.ts',
@@ -147,13 +146,17 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         exclude: [
           path.resolve(__dirname, './src/client/st/st.css'),
-          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss')
-        ]
+          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/card-list/CardListGenerator.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/adapter/hpp-adapter/hpp-adapter.scss'),
+        ],
       },
       {
         include: [
           path.resolve(__dirname, './src/client/st/st.css'),
-          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss')
+          path.resolve(__dirname, './src/integrations/apm/client/APMClient.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/card-list/CardListGenerator.scss'),
+          path.resolve(__dirname, './src/integrations/click-to-pay/adapter/hpp-adapter/hpp-adapter.scss'),
         ],
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
@@ -183,8 +186,11 @@ module.exports = {
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
           path.join(__dirname, 'node_modules/topo'),
-          path.join(__dirname, 'node_modules/caniuse-lite')
-        ]
+          path.join(__dirname, 'node_modules/caniuse-lite'),
+          path.join(__dirname, 'node_modules/node-jose'),
+          path.join(__dirname, 'node_modules/buffer'),
+          path.join(__dirname, 'node_modules/pako'),
+        ],
       },
       {
         test: /\.ts$/,
