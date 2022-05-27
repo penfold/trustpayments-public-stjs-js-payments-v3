@@ -1,5 +1,5 @@
 {
-  "errorReporting": false,
+  "errorReporting": true,
   "components": {
     "startOnLoad": true
   },

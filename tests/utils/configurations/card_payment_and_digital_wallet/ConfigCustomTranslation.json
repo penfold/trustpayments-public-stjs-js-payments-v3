@@ -1,5 +1,5 @@
 {
-  "errorReporting": false,
+  "errorReporting": true,
   "submitOnSuccess": false,
   "translations": {
     "Card number": "CARD_NO_TRANSLATION_OVERRIDE",
