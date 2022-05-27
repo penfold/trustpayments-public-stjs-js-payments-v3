@@ -1,5 +1,5 @@
 {
-  "errorReporting": false,
+  "errorReporting": true,
   "threeDSecure": {
     "challengeDisplayMode": "INLINE",
     "challengeDisplayInlineTargetElementId": "st-card-payment",
