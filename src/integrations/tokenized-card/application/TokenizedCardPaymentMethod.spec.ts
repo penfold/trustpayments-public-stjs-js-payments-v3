@@ -26,7 +26,7 @@ const gatewayClientMock = mock<IGatewayClient>()
 const requestProcessingInitializerMock = mock(RequestProcessingInitializer)
 const configProviderMock = mock(ConfigProvider)
 const frameQueryingServiceMock = mock<IFrameQueryingService>();
-const messageBus = new SimpleMessageBus()
+const messageBus = new SimpleMessageBus();
 const storeMock = mock<IStore<IApplicationFrameState>>()
 
 const processingServiceMock = mock<IRequestProcessingService>()

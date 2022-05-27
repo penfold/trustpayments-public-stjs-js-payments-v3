@@ -1,10 +1,9 @@
 import { HttpClient, IHttpClientResponse } from '@trustpayments/http-client';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, capture, deepEqual, instance, mock, resetCalls, spy, verify, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IStRequest } from '../../models/IStRequest';
 import { IRequestObject } from '../../models/IRequestObject';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
 import { RequestEncoderService } from '../st-codec/RequestEncoderService';
@@ -15,6 +14,7 @@ import { SentryService } from '../../../../shared/services/sentry/SentryService'
 import { GatewayError } from '../st-codec/GatewayError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { EventScope } from '../../models/constants/EventScope';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { TransportService } from './TransportService';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
@@ -46,10 +46,11 @@ describe('TransportService', () => {
   let httpClientMock: HttpClient;
   let configProviderMock: ConfigProvider;
   let httpOptionsProviderMock: IHttpOptionsProvider;
-  let messageBusMock: IMessageBus;
+  const messageBus = new SimpleMessageBus();
   let transportService: TransportService;
   let sentryServiceMock: SentryService;
   let jwtDecoderMock: JwtDecoder;
+  const messageBusSpied = spy(messageBus)
 
   beforeEach(() => {
     requestEncoderMock = mock(RequestEncoderService);
@@ -57,7 +58,6 @@ describe('TransportService', () => {
     httpClientMock = mock(HttpClient);
     configProviderMock = mock<ConfigProvider>();
     httpOptionsProviderMock = mock<IHttpOptionsProvider>();
-    messageBusMock = mock<IMessageBus>();
     sentryServiceMock = mock(SentryService);
     jwtDecoderMock = mock(JwtDecoder);
     transportService = new TransportService(
@@ -66,7 +66,7 @@ describe('TransportService', () => {
       instance(httpClientMock),
       instance(configProviderMock),
       instance(httpOptionsProviderMock),
-      instance(messageBusMock),
+      messageBus,
       instance(sentryServiceMock),
       instance(jwtDecoderMock),
     );
@@ -98,6 +98,10 @@ describe('TransportService', () => {
     });
   });
 
+  afterEach(() => {
+    resetCalls(messageBusSpied);
+  });
+
   describe('sendRequest()', () => {
     it('sends request to gateway url from config and returns response data with jwt', done => {
       transportService.sendRequest(request).subscribe(result => {
@@ -116,19 +120,48 @@ describe('TransportService', () => {
 
     it('adds sentry breadcrumbs on request and response', done => {
       transportService.sendRequest(request).subscribe(() => {
-
-        verify(messageBusMock.publish(deepEqual({
+        verify(messageBusSpied.publish(deepEqual({
           type: PUBLIC_EVENTS.GATEWAY_REQUEST_SEND,
           data: {
             customMessage: 'requestid: test-123, requesttypedescriptions: A*UTH',
           },
         }), EventScope.ALL_FRAMES)).once();
-        verify(messageBusMock.publish(deepEqual({
+        verify(messageBusSpied.publish(deepEqual({
           type: PUBLIC_EVENTS.GATEWAY_RESPONSE_RECEIVED,
           data: {
             customMessage: 'errorcode: 0, errormessage: SUCCESS, requestreference: test',
           },
         }), EventScope.ALL_FRAMES)).once();
+        done();
+      });
+    });
+
+    it('should publish SENTRY_DATA_UPDATED event with requestId', done => {
+      transportService.sendRequest(request).subscribe(() => {
+        const sentryRequestEvent = capture(messageBusSpied.publish).first()
+
+        expect(sentryRequestEvent).toContainEqual({
+          data: {
+            name: 'currentRequestId',
+            value: 'test-123',
+          },
+          type:  PUBLIC_EVENTS.SENTRY_DATA_UPDATED,
+        })
+        done();
+      });
+    });
+
+    it('should publish SENTRY_DATA_UPDATED event with responseId', done => {
+      transportService.sendRequest(request).subscribe(() => {
+        const sentryRequestEvent = capture(messageBusSpied.publish).third()
+
+        expect(sentryRequestEvent).toContainEqual({
+          data: {
+            name: 'currentResponseId',
+            value: 'test',
+          },
+          type:  PUBLIC_EVENTS.SENTRY_DATA_UPDATED,
+        })
         done();
       });
     });
@@ -167,7 +200,7 @@ describe('TransportService', () => {
           requesttypedescription: 'FOOBAR',
           transactionstartedtimestamp: '',
         });
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
+        verify(messageBusSpied.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
         done();
       });
     });
@@ -180,7 +213,7 @@ describe('TransportService', () => {
       transportService.sendRequest(request).subscribe({
         error: (error: Error) => {
           expect(error).toBe(httpError);
-          verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
+          verify(messageBusSpied.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
           done();
         },
       });
@@ -194,7 +227,7 @@ describe('TransportService', () => {
       transportService.sendRequest(request).subscribe({
         error: (error: Error) => {
           expect(error).toBe(decodeError);
-          verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
+          verify(messageBusSpied.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
           done();
         },
       });
@@ -202,7 +235,7 @@ describe('TransportService', () => {
 
     it('publishes the JWT_REPLACED event when response contains a new merchants JWT', done => {
       transportService.sendRequest(request).subscribe(() => {
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_REPLACED, data: 'merchantjwt' }))).once();
+        verify(messageBusSpied.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_REPLACED, data: 'merchantjwt' }))).once();
         done();
       });
     });

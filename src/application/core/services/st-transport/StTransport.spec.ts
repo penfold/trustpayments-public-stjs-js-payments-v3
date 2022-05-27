@@ -1,5 +1,5 @@
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
-import { mock, instance as mockInstance, when, anything } from 'ts-mockito';
+import { mock, instance as mockInstance, when, anything, spy, capture, resetCalls } from 'ts-mockito';
 import { Utils } from '../../shared/utils/Utils';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -7,11 +7,15 @@ import { StCodec } from '../st-codec/StCodec';
 import { environment } from '../../../../environments/environment';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { StTransport } from './StTransport';
 
 const customGlobal: GlobalWithFetchMock = (global as unknown) as GlobalWithFetchMock;
 customGlobal.fetch = require('jest-fetch-mock');
 customGlobal.fetchMock = customGlobal.fetch;
+
+const messageBus = new SimpleMessageBus();
+const messageBusSpied = spy(messageBus);
 
 jest.mock('./../../shared/notification/Notification');
 
@@ -46,7 +50,7 @@ describe('StTransport class', () => {
 
   beforeEach(() => {
     when(configProviderMock.getConfig()).thenReturn(config);
-    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(sentryServiceMock));
+    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(sentryServiceMock), messageBus);
     // This effectively creates a MVP codec so that we aren't testing all that here
     // @ts-ignore
     instance.codec = codec = {
@@ -72,6 +76,7 @@ describe('StTransport class', () => {
 
   afterEach(() => {
     environment.testEnvironment = false;
+    resetCalls(messageBusSpied)
   });
 
   describe('Header options', () => {
@@ -212,6 +217,50 @@ describe('StTransport class', () => {
 
       expect(mockFT).toHaveBeenCalledTimes(1);
     });
+
+    it('should publish SENTRY_DATA_UPDATED event with requestId', async () => {
+      const requestObject = { requesttypedescriptions: ['AUTH'], request: [{ requestid: 'foo' }] };
+      mockFT.mockReturnValue(
+        resolvingPromise({
+          json: () => ({ errorcode: 0 }),
+        })
+      );
+
+      await instance.sendRequest(requestObject);
+
+      const event = capture(messageBusSpied.publish).first()
+
+      expect(event).toContainEqual({
+        data: {
+          name: 'currentRequestId',
+          value: 'foo',
+        },
+        type: 'SENTRY_DATA_UPDATED',
+      })
+    })
+
+    it('should publish SENTRY_DATA_UPDATED event with responseId', async () => {
+      const requestObject = { requesttypedescriptions: ['AUTH'], request: [{ requestid: 'foo' }] };
+      mockFT.mockReturnValue(
+        resolvingPromise({
+          json: () => (resolvingPromise({
+            requestreference: 'bar',
+          })),
+        })
+      );
+
+      await instance.sendRequest(requestObject);
+
+      const event = capture(messageBusSpied.publish).second()
+
+      expect(event).toContainEqual({
+        data: {
+          name: 'currentResponseId',
+          value: 'bar',
+        },
+        type: 'SENTRY_DATA_UPDATED',
+      })
+    })
   });
 
   describe('_fetchRetry()', () => {

@@ -15,6 +15,10 @@ import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IResponseData } from '../../models/IResponseData';
 import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { ISentryMessageEvent, SentryDataFields } from '../../../../shared/services/sentry/models/ISentryData';
+import { EventScope } from '../../models/constants/EventScope';
 
 interface IFetchOptions {
   headers: {
@@ -48,7 +52,7 @@ export class StTransport {
   private config: IConfig;
   private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, private messageBus: IMessageBus) {}
 
   /**
    * Perform a JSON API request with ST
@@ -102,9 +106,17 @@ export class StTransport {
     const decodedJwt = this.jwtDecoder.decode(parsedRequestBody.jwt);
     // sentry filters out messages with "AUTH"
     const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
+    const requestId: string = parsedRequestBody?.request[0]?.requestid;
+    const sentryMessageEvent: ISentryMessageEvent = {
+      name: SentryDataFields.CurrentRequestId,
+      value: requestId,
+    };
+
+    this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: sentryMessageEvent }, EventScope.ALL_FRAMES);
+
     this.sentryService.addBreadcrumb(
       SentryBreadcrumbsCategories.GATEWAY_REQUEST,
-      `requestid: ${parsedRequestBody.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`
+      `requestid: ${requestId}, requesttypedescriptions: ${requestTypeMessage}`
     );
 
     return this.fetchRetry(gatewayUrl, {
@@ -112,17 +124,28 @@ export class StTransport {
       body: requestBody,
     })
       .then(response => codec.decode(response, JSON.parse(requestBody))
-      .then(decodedResponse => {
-        this.sentryService.addBreadcrumb(
-          SentryBreadcrumbsCategories.GATEWAY_RESPONSE,
-          `errorcode: ${(decodedResponse.response as IResponseData).errorcode}, errormessage: ${(decodedResponse.response as IResponseData).errormessage}, requestreference: ${decodedResponse.requestreference}`
-        );
-        return decodedResponse;
-      }))
-      .catch((error: Error | unknown) => {
-        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { type: TimeoutDetailsType.GATEWAY, requestUrl: gatewayUrl }));
+        .then(decodedResponse => {
+          const response: IResponseData = decodedResponse?.response as IResponseData;
+          const sentryMessageEvent: ISentryMessageEvent = {
+            name: SentryDataFields.CurrentResponseId,
+            value: String(decodedResponse?.requestreference),
+          };
 
-        if (error instanceof InvalidResponseError) {
+          this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: sentryMessageEvent }, EventScope.ALL_FRAMES);
+
+          this.sentryService.addBreadcrumb(
+            SentryBreadcrumbsCategories.GATEWAY_RESPONSE,
+            `errorcode: ${response?.errorcode}, errormessage: ${response?.errormessage}, requestreference: ${decodedResponse?.requestreference}`
+          );
+          return decodedResponse;
+        }))
+      .catch((error: Error | unknown) => {
+        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', {
+          type: TimeoutDetailsType.GATEWAY,
+          requestUrl: gatewayUrl,
+        }));
+
+        if(error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }
 

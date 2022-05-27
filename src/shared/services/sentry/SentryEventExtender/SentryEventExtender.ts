@@ -23,7 +23,16 @@ export class SentryEventExtender {
   }
 
   private extendData(event: Event, originalException: Error | string ): Event {
-    event.extra.initialConfig = this.store.getState().initialConfig;
+
+    const { initialConfig, sentryData } = this.store.getState();
+
+    event.extra = {
+      initialConfig,
+      transactionReference: {
+        requestId: sentryData?.currentRequestId  || null,
+        responseId: sentryData?.currentResponseId || null,
+      },
+    }
 
     switch (true) {
       // case  originalException instanceof GatewayError :
