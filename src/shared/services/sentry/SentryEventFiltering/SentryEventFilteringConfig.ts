@@ -61,5 +61,12 @@ export const SENTRY_EVENT_FILTERING_CONFIG: ErrorFilter[] = [
      messageList: SENTRY_EXCEPTION_MESSAGE_LIST,
     },
   },
+  {
+    id: 4,
+    description: 'Exclude FrameCommunicationError',
+    filters: {
+      errorTypeName: ErrorTypeName.FrameCommunicationError,
+    },
+  },
 ];
 
