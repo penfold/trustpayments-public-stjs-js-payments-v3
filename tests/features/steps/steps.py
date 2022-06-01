@@ -132,14 +132,14 @@ def _browser_device(context):
         name = context.browser
     name = name.upper()
 
-    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S21', 'IPHONE 13')
+    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S21', 'IPHONE 13 PRO')
 
     return {
         'IE': name,
         'CHROME': name,
         'SAFARI': name,
         'SAMSUNG GALAXY S21': 'SGS21',
-        'IPHONE 13': 'IP13',
+        'IPHONE 13 PRO': 'IP13',
     }[name]
 
 
