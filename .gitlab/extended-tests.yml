@@ -801,7 +801,7 @@ SamsungGalaxyS21-11.0-visual-tests-styling-nightly:
 
 .iPhone13-15.0-visual-tests:
   variables:
-    DEVICE: iPhone 13
+    DEVICE: iPhone 13 Pro
     OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
@@ -823,7 +823,7 @@ iPhone13-15.0-visual-tests-nightly:
 
 .iPhone13-15.0-visual-tests-styling:
   variables:
-    DEVICE: iPhone 13
+    DEVICE: iPhone 13 Pro
     OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
