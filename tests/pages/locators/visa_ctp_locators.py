@@ -89,7 +89,7 @@ class VisaClickToPayLocators:
     street_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'streetNumber\')]')
     phone_number_placeholder: By = (By.XPATH, '//label[contains(@for, \'phone-number-field\')]')
     email_address_placeholder: By = (
-    By.XPATH, '//div[contains(@class, \'formControl\')]/label[contains(@for, \'email\')]')
+        By.XPATH, '//div[contains(@class, \'formControl\')]/label[contains(@for, \'email\')]')
 
     @classmethod
     def get_delivery_address_from_visa_dcf(cls, value) -> By.XPATH:
@@ -126,6 +126,7 @@ class VisaClickToPayLocators:
     expiry_date_list_month_modal: By = (By.ID, 'expiryDateMonthId')
     expiry_date_list_year_modal: By = (By.ID, 'expiryDateYearId')
     security_code_modal_input: By = (By.ID, 'cvv')
+    insufficient_delivery_details_message: By = (By.XPATH, '//p[contains(@class, \'error\')]')
 
     @classmethod
     def get_available_address_from_list(cls, value) -> By.XPATH:
