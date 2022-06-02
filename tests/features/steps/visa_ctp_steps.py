@@ -1,7 +1,7 @@
 # type: ignore[no-redef]
 
 from assertpy import assert_that, soft_assertions
-from behave import use_step_matcher, step
+from behave import use_step_matcher, step, when, then
 
 from configuration import CONFIGURATION
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
@@ -549,3 +549,29 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     assert_that(vctp_page.is_email_input_displayed()).is_false()
+
+
+@when('User fills Billing detail form with defined values')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    for row in context.table:
+        if row['key'] == 'billingcountry':
+            vctp_page.select_billing_address_country(row['value'])
+        else:
+            vctp_page.fill_specific_field_in_billing_detail_form(row['key'], row['value'])
+
+
+@then('User will see lack of Card delivery details message on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assertion_message = 'Warning message about insufficient card delivery details should be displayed, but is not.'
+    assert_that(vctp_page.check_if_delivery_warning_message_is_visible, assertion_message).is_true()
+
+
+@then('User will see that billing details on VISA_CTP popup are unfilled')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.switch_to_visa_iframe()
+    with soft_assertions():
+        for row in context.table:
+            assert_that(vctp_page.get_field_value_in_address_popup(row['key'])).is_empty()
