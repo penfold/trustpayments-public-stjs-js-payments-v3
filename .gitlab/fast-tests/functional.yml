@@ -8,13 +8,13 @@
 .e2e-tests-parallel:
   extends:
     - .fast-tests
-    - .parallel-e2e-tests
+    - .e2e-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .e2e-tests-sequentially:
   extends:
     - .fast-tests
-    - .sequentially-tests
+    - .e2e-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # Card Payments E2E Tests Headless
@@ -25,7 +25,8 @@ e2e-card-payments-tests-review:
     - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 27
 
 e2e-card-payments-tests-release:
@@ -35,7 +36,8 @@ e2e-card-payments-tests-release:
     - .rules-when-release
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 27
 
 # Cardinal Commerce E2E Tests Headless
@@ -46,7 +48,9 @@ e2e-card-payments-tests-release:
     - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_cardinal_commerce'
+    IGNORED_FILES: 'e2e_timeout-not-for-pipelines'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 9
 
 .e2e-cardinal-commerce-tests-release:
@@ -56,7 +60,9 @@ e2e-card-payments-tests-release:
     - .rules-when-release
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_cardinal_commerce'
+    IGNORED_FILES: 'e2e_timeout-not-for-pipelines'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 9
 
 # Should be uncommented when gateway on prod will be ready
@@ -67,7 +73,7 @@ e2e-card-payments-tests-release:
 #    - .services-app-html-review
 #    - .rules-when-review
 #  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
+#    FEATURES_DIR: 'tests/features/e2e_tests/e2e_3ds_sdk'
 #  parallel: 23
 #
 #e2e-3ds-sdk-tests-release:
@@ -76,7 +82,7 @@ e2e-card-payments-tests-release:
 #    - .service-app-html-release-merchant
 #    - .rules-when-release
 #  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
+#    FEATURES_DIR: 'tests/features/e2e_tests/e2e_3ds_sdk'
 #  parallel: 23
 #
 # APMs E2E Tests Headless
@@ -87,7 +93,8 @@ e2e-apms-tests-review:
     - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_apm/ppro'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 20
 
 e2e-apms-tests-release:
@@ -97,7 +104,8 @@ e2e-apms-tests-release:
     - .rules-when-release
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_apm/ppro'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 20
 
 #Visa Click to Pay E2E Tests Headless
@@ -108,7 +116,8 @@ e2e-vctp-tests-review:
     - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_visa_click_to_pay'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 6
 
 e2e-vctp-tests-release:
@@ -118,7 +127,8 @@ e2e-vctp-tests-release:
     - .rules-when-release
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_to_pay'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_visa_click_to_pay'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 6
 
 # Merchants features E2E Tests Headless
@@ -129,7 +139,8 @@ e2e-merchants-features-tests-nightly:
     - .rules-when-review-manual-allow-failure
   variables:
     IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_merchants_requests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 4
 
 e2e-merchants-features-tests-release:
@@ -139,7 +150,8 @@ e2e-merchants-features-tests-release:
     - .rules-when-release
   variables:
     IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_merchants_requests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 4
 
 # Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
@@ -150,7 +162,8 @@ e2e-smoke-tests-review:
     - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_smoke_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 4
 
 .e2e-smoke-tests-release:
@@ -160,7 +173,8 @@ e2e-smoke-tests-review:
     - .rules-when-release
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_smoke_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 4
 
 # Additional coverage E2E Tests Headless
@@ -170,7 +184,8 @@ e2e-smoke-tests-review:
     - .services-app-html-review
     - .rules-when-review-manual-allow-failure
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_additional_coverage'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 19
 
 ################################### Component Tests ###################################
@@ -183,9 +198,10 @@ e2e-smoke-tests-review:
 .card-payments-contract-tests:
   extends:
     - .component-app-html-mock
-    - .parallel-component-tests
+    - .generic-tests
   variables:
-    FEATURE_FILES_DIR: 'features/component_tests/contract_tests'
+    FEATURES_DIR: 'tests/features/component_tests/contract_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 12
 
 contract-card-payments-tests-review:
@@ -201,9 +217,11 @@ contract-card-payments-tests-release:
 .visa-checkout-component-tests:
   extends:
     - .component-app-html-mock
-    - .sequentially-component-tests
+    - .e2e-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/visa_checkout.feature'
+    BEHAVE_TESTS_SCENARIOS: 'visa_test'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
 
 component-visa-checkout-tests-review:
   extends:
@@ -218,9 +236,11 @@ component-visa-checkout-tests-release:
 .google-pay-component-tests:
   extends:
     - .component-app-html-mock
-    - .sequentially-component-tests
+    - .e2e-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/google_pay.feature'
+    BEHAVE_TESTS_SCENARIOS: 'googlepay_test'
+    FEATURES_DIR: 'tests/features/component_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
 
 component-google-pay-tests-review:
   extends:

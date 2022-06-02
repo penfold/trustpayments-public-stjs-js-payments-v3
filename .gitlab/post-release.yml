@@ -1,6 +1,16 @@
-trigger-publish-to-cdn-prod-from-release-latest:
+trigger-publish-to-cdn-prod-eu-from-release-latest:
   extends:
-    - .trigger-publish-to-cdn-prod-from-release
+    - .trigger-publish-to-cdn-prod-eu-from-release
+    - .rules-when-release-manual-required
+  stage: post-release
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release/dist/st.js"
+    PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH: "latest"
+
+trigger-publish-to-cdn-prod-us-from-release-latest:
+  extends:
+    - .trigger-publish-to-cdn-prod-us-from-release
     - .rules-when-release-manual-required
   stage: post-release
   variables:

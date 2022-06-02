@@ -3,7 +3,7 @@ Feature: GooglePay
   I want to use GooglePay payment method
   In order to check full payment functionality
 
-
+  @googlepay_test
   Scenario Outline: GooglePay - checking payment status for <action_code> response code
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -26,7 +26,7 @@ Feature: GooglePay
       | SUCCESS     | Payment has been successfully processed | green | success       |
       | ERROR       | An error occurred                       | red   | error         |
 
-
+  @googlepay_test
   Scenario: GooglePay - checking translation for "Payment has been cancelled" status for <language>
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -37,7 +37,7 @@ Feature: GooglePay
     When User chooses GOOGLE_PAY as payment method
     Then User will see payment notification text: "Payment has been cancelled" translated into "es_ES"
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with enabled 'submit on success' process
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key             | value |
@@ -66,7 +66,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - error payment with enabled 'submit on error' process
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key           | value |
@@ -86,7 +86,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - error payment with disabled 'submit on error' process
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key           | value |
@@ -109,7 +109,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - canceled payment with enabled 'submitOnCancel' process
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key            | value |
@@ -125,7 +125,7 @@ Feature: GooglePay
       | errormessage | cancel |
       | errorcode    | 1      |
 
-
+  @googlepay_test
   Scenario: GooglePay - canceled payment with disabled 'submitOnCancel' process
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key            | value |
@@ -146,7 +146,7 @@ Feature: GooglePay
       | request_type |
       | GOOGLE_PAY   |
 
-
+  @googlepay_test
   Scenario: GooglePay - Successful payment with updated JWT
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -170,7 +170,7 @@ Feature: GooglePay
       | AUTH         |
     And JSINIT requests contains updated jwt
 
-
+  @googlepay_test
   Scenario: GooglePay - update JWT and submitOnSuccess
     Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
       | key             | value |
@@ -200,7 +200,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: AUTH
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -219,7 +219,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value             |
@@ -238,7 +238,7 @@ Feature: GooglePay
       | GOOGLE_PAY         |
       | ACCOUNTCHECK, AUTH |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value        |
@@ -257,7 +257,7 @@ Feature: GooglePay
       | GOOGLE_PAY   |
       | ACCOUNTCHECK |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, AUTH
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value        |
@@ -276,7 +276,7 @@ Feature: GooglePay
       | GOOGLE_PAY    |
       | RISKDEC, AUTH |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                     |
@@ -295,7 +295,7 @@ Feature: GooglePay
       | GOOGLE_PAY                  |
       | RISKDEC, ACCOUNTCHECK, AUTH |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: AUTH, SUBSCRIPTION
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value             |
@@ -314,7 +314,7 @@ Feature: GooglePay
       | GOOGLE_PAY         |
       | AUTH, SUBSCRIPTION |
 
-
+  @googlepay_test
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value                     |
@@ -333,7 +333,7 @@ Feature: GooglePay
       | GOOGLE_PAY                 |
       | ACCOUNTCHECK, SUBSCRIPTION |
 
-
+  @googlepay_test
   Scenario: GooglePay - SEON - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -351,7 +351,7 @@ Feature: GooglePay
       | request_type |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario: GooglePay - SEON - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt JWT_WITH_FRAUD_CONTROL with additional attributes
       | key                     | value |
@@ -369,7 +369,7 @@ Feature: GooglePay
       | request_type |
       | AUTH         |
 
-
+  @googlepay_test
   Scenario Outline: GooglePay - <payment> payment logs
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
@@ -390,7 +390,7 @@ Feature: GooglePay
       | successful | SUCCESS     | Payment has been successfully processed | PAYMENT COMPLETED |
       | error      | ERROR       | An error occurred                       | PAYMENT FAILED    |
 
-
+  @googlepay_test
   Scenario: GooglePay - canceled payment logs
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |
