@@ -57,7 +57,12 @@
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
       alias: merchant.securetrading.net
 
-.services-app-html-smoke-merchant:
+.services-app-html-smoke-eu-merchant:
   services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE}"
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_EU}"
+      alias: merchant.securetrading.net
+
+.services-app-html-smoke-us-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_US}"
       alias: merchant.securetrading.net

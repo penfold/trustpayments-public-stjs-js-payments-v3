@@ -15,9 +15,16 @@
     PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release/dist'
     TARGET_PREFIX: ''
 
-trigger-publish-sdk-review-to-cdn-stage-from-review:
+trigger-publish-sdk-review-to-cdn-stage-eu-from-review:
   extends:
-    - .trigger-publish-to-cdn-stage-from-review
+    - .trigger-publish-to-cdn-stage-eu-from-review
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
+
+trigger-publish-sdk-review-to-cdn-stage-us-from-review:
+  extends:
+    - .trigger-publish-to-cdn-stage-us-from-review
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'

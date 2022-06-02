@@ -1,10 +1,27 @@
-e2e-app-html-smoke:
+e2e-app-html-smoke-eu:
   stage: smoke-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
+  variables:
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   extends:
     - .variables
     - .tags-js-docker
-    - .parallel-e2e-tests
-    - .services-app-html-smoke-merchant
+    - .e2e-tests
+    - .services-app-html-smoke-eu-merchant
+    - .rules-when-release
+  parallel: 27
+
+e2e-app-html-smoke-us:
+  stage: smoke-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+  variables:
+    FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+  extends:
+    - .variables
+    - .tags-js-docker
+    - .e2e-tests
+    - .services-app-html-smoke-us-merchant
     - .rules-when-release
   parallel: 27

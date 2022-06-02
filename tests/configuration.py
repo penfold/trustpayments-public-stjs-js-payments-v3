@@ -19,7 +19,7 @@ def load_config():
         'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
-        'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
+        'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'tests/screenshots'),
         'SECRET_KEY': get_from_env('JWT_SECRET_KEY', 'you_will_never_guess'),
         'ISS_KEY': get_from_env('JWT_ISS_KEY', 'you_will_never_guess'),
         'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_jsautocardinal91923'),
