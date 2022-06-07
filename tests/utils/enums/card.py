@@ -275,9 +275,9 @@ class Card(Enum):
     @property
     def expiration_date(self) -> str:
         expiration_date: str = self.__expiration_date
-        if not expiration_date or expiration_date.__eq__('FUTURE'):
+        if not expiration_date or expiration_date == 'FUTURE':
             return self.future_expiration_date
-        elif self.__expiration_date.__eq__('PAST'):
+        elif self.__expiration_date == 'PAST':
             return self.past_expiration_date
         return expiration_date
 
