@@ -58,6 +58,10 @@ def load_config():
         'VCTP_EMAIL_3': get_from_env('VCTP_EMAIL_3', ''),
         'VCTP_EMAIL_4': get_from_env('VCTP_EMAIL_4', ''),
         'VCTP_PASSWORD': get_from_env('VCTP_PASSWORD', ''),
+        'VCTP_PASSWORD_1': get_from_env('VCTP_PASSWORD_1', ''),
+        'VCTP_PASSWORD_2': get_from_env('VCTP_PASSWORD_2', ''),
+        'VCTP_PASSWORD_3': get_from_env('VCTP_PASSWORD_3', ''),
+        'VCTP_PASSWORD_4': get_from_env('VCTP_PASSWORD_4', ''),
     }
 
     return AttrDict(config)
