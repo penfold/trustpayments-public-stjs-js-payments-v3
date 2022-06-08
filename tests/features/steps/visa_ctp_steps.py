@@ -58,17 +58,18 @@ def step_impl(context, param):
 def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     email = {
-        'valid': CONFIGURATION.VCTP_EMAIL_1,
-        'not registered': 'notregistered@testemail.com',
-        'invalid format': 'test@123',
-        'empty': '',
-        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
-        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
-        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
-        'vctp_4': CONFIGURATION.VCTP_EMAIL_4
+        'valid': [CONFIGURATION.VCTP_EMAIL_1, CONFIGURATION.VCTP_PASSWORD_1],
+        'not registered': ['notregistered@testemail.com', ''],
+        'invalid format': ['test@123', ''],
+        'empty': ['', ''],
+        'vctp_1': [CONFIGURATION.VCTP_EMAIL_1, CONFIGURATION.VCTP_PASSWORD_1],
+        'vctp_2': [CONFIGURATION.VCTP_EMAIL_2, CONFIGURATION.VCTP_PASSWORD_2],
+        'vctp_3': [CONFIGURATION.VCTP_EMAIL_3, CONFIGURATION.VCTP_PASSWORD_3],
+        'vctp_4': [CONFIGURATION.VCTP_EMAIL_4, CONFIGURATION.VCTP_PASSWORD_4]
     }
-    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
-    vctp_page.fill_email_input(email[email_state])
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state][0])
+    add_to_shared_dict(SharedDictKey.VCTP_PASSWORD.value, email[email_state][1])
+    vctp_page.fill_email_input(email[email_state][0])
     vctp_page.click_submit_email_btn()
 
 
@@ -188,13 +189,14 @@ def step_impl(context):
 def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     email = {
-        'vctp_1': CONFIGURATION.VCTP_EMAIL_1,
-        'vctp_2': CONFIGURATION.VCTP_EMAIL_2,
-        'vctp_3': CONFIGURATION.VCTP_EMAIL_3,
-        'vctp_4': CONFIGURATION.VCTP_EMAIL_4,
+        'vctp_1': [CONFIGURATION.VCTP_EMAIL_1, CONFIGURATION.VCTP_PASSWORD_1],
+        'vctp_2': [CONFIGURATION.VCTP_EMAIL_2, CONFIGURATION.VCTP_PASSWORD_2],
+        'vctp_3': [CONFIGURATION.VCTP_EMAIL_3, CONFIGURATION.VCTP_PASSWORD_3],
+        'vctp_4': [CONFIGURATION.VCTP_EMAIL_4, CONFIGURATION.VCTP_PASSWORD_4]
     }
-    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state])
-    vctp_page.fill_email_input(email[email_state])
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state][0])
+    add_to_shared_dict(SharedDictKey.VCTP_PASSWORD.value, email[email_state][1])
+    vctp_page.fill_email_input(email[email_state][0])
     vctp_page.click_submit_email_btn()
     vctp_page.get_code_and_fill_otp_field()
 
