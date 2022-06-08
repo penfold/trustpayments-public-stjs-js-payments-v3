@@ -5,7 +5,7 @@
 
 .zap-url-to-scan-library:
   variables:
-    URL_TO_SCAN: "https://library.securetrading.net:8443"
+    URL_TO_SCAN: "https://library.securetrading.net:8443/st.js"
 
 merchant-securetrading-net-review-security-tests-zap-baseline-scan:
   extends:
