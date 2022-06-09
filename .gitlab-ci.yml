@@ -15,7 +15,7 @@ include:
   - local: '/.gitlab/post-build/image-html.yml'
   - local: '/.gitlab/post-build/image-other.yml'
   - local: '/.gitlab/post-build/publish-to-cdn.yml'
-#  - local: '/.gitlab/fast-tests/functional.yml'
+  - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
   - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
