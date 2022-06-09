@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 51.0.5
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 51.0.8
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
