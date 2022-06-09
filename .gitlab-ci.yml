@@ -15,7 +15,7 @@ include:
   - local: '/.gitlab/post-build/image-html.yml'
   - local: '/.gitlab/post-build/image-other.yml'
   - local: '/.gitlab/post-build/publish-to-cdn.yml'
-  - local: '/.gitlab/fast-tests/functional.yml'
+#  - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
   - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
@@ -38,7 +38,7 @@ variables:
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
   SMOKE_MOCK_TESTS_TAG: '@smoke_mock_test'
-  SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
+  SMOKE_E2E_TESTS_TAG: '@debug'
   VISUAL_ACS_POPUP_TESTS_TAG: '@visual_acs_popup_regression'
   VISUAL_TESTS_TAG: '@visual_regression'
   VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
@@ -65,7 +65,7 @@ variables:
   # DISABLE_JOB_check_schedules: true'
   # DISABLE_JOB_unit_tests: 'true'
   # DISABLE_JOB_js_static_analysis: 'true'
-  # DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
+   DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'

@@ -214,15 +214,15 @@ iPhone13-15.0-component-tests-smoke-nightly:
     PYTHONPATH: "${PYTHONPATH}:tests"
     BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win10-Chrome-latest-e2e-tests-smoke-release:
+win10-Chrome-latest-e2e-tests-smoke-release:
   extends:
-    - .e2e-tests-browserstack-release
+    - .component-tests-browserstack
     - .win10-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
 win10-Chrome-latest-e2e-tests-smoke-nightly:
   extends:
-    - .e2e-tests-browserstack-review
+    - .component-tests-browserstack
     - .win10-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
