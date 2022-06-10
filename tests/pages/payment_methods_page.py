@@ -292,7 +292,6 @@ class PaymentMethodsPage(BasePage):
         self.fill_merchant_input_field(FieldType.PHONE.name, phone)
 
     def fill_amount_field(self, value):
-        time.sleep(500)
         self._actions.send_keys(PaymentMethodsLocators.amount_field, value)
         self._waits.wait_for_javascript()
 

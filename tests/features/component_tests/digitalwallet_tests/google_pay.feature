@@ -146,7 +146,7 @@ Feature: GooglePay
       | request_type |
       | GOOGLE_PAY   |
 
-  @debug
+  @googlepay_test @debug
   Scenario: GooglePay - Successful payment with updated JWT
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value |

@@ -189,65 +189,65 @@ e2e-smoke-tests-review:
   parallel: 19
 
 ################################### Component Tests ###################################
-#.component-app-html-mock:
-#  extends:
-#    - .fast-tests
-#    - .services-app-html-mock
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-#.card-payments-contract-tests:
-#  extends:
-#    - .component-app-html-mock
-#    - .generic-tests
-#  variables:
-#    FEATURES_DIR: 'tests/features/component_tests/contract_tests'
-#    PYTHONPATH: "${PYTHONPATH}:tests"
-#  parallel: 12
-#
-#contract-card-payments-tests-review:
-#  extends:
-#    - .card-payments-contract-tests
-#    - .rules-when-review
-#
-#contract-card-payments-tests-release:
-#  extends:
-#    - .card-payments-contract-tests
-#    - .rules-when-release
-#
-#.visa-checkout-component-tests:
-#  extends:
-#    - .component-app-html-mock
-#    - .e2e-tests
-#  variables:
-#    BEHAVE_TESTS_SCENARIOS: 'visa_test'
-#    FEATURES_DIR: 'tests/features'
-#    PYTHONPATH: "${PYTHONPATH}:tests"
-#
-#component-visa-checkout-tests-review:
-#  extends:
-#    - .visa-checkout-component-tests
-#    - .rules-when-review
-#
-#component-visa-checkout-tests-release:
-#  extends:
-#    - .visa-checkout-component-tests
-#    - .rules-when-release
-#
-#.google-pay-component-tests:
-#  extends:
-#    - .component-app-html-mock
-#    - .e2e-tests
-#  variables:
-#    BEHAVE_TESTS_SCENARIOS: 'googlepay_test'
-#    FEATURES_DIR: 'tests/features/component_tests'
-#    PYTHONPATH: "${PYTHONPATH}:tests"
-#
-#component-google-pay-tests-review:
-#  extends:
-#    - .google-pay-component-tests
-#    - .rules-when-review
-#
-#component-google-pay-tests-release:
-#  extends:
-#    - .google-pay-component-tests
-#    - .rules-when-release
+.component-app-html-mock:
+  extends:
+    - .fast-tests
+    - .services-app-html-mock
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
+.card-payments-contract-tests:
+  extends:
+    - .component-app-html-mock
+    - .generic-tests
+  variables:
+    FEATURES_DIR: 'tests/features/component_tests/contract_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+  parallel: 12
+
+contract-card-payments-tests-review:
+  extends:
+    - .card-payments-contract-tests
+    - .rules-when-review
+
+contract-card-payments-tests-release:
+  extends:
+    - .card-payments-contract-tests
+    - .rules-when-release
+
+.visa-checkout-component-tests:
+  extends:
+    - .component-app-html-mock
+    - .e2e-tests
+  variables:
+    BEHAVE_TESTS_SCENARIOS: 'visa_test'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+
+component-visa-checkout-tests-review:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-review
+
+component-visa-checkout-tests-release:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-release
+
+.google-pay-component-tests:
+  extends:
+    - .component-app-html-mock
+    - .e2e-tests
+  variables:
+    BEHAVE_TESTS_SCENARIOS: 'googlepay_test'
+    FEATURES_DIR: 'tests/features/component_tests'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+
+component-google-pay-tests-review:
+  extends:
+    - .google-pay-component-tests
+    - .rules-when-review
+
+component-google-pay-tests-release:
+  extends:
+    - .google-pay-component-tests
+    - .rules-when-release
