@@ -9,7 +9,11 @@ Feature: Card Payments - validation of requests send
       | requesttypedescriptions | THREEDQUERY AUTH |
     And Frictionless card payment mock responses are set as BASE_JSINIT and payment status SUCCESS
     When User opens example page
-    Then JSINIT request was sent only once
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And User calls updateJWT function by filling amount field
+    And User clicks Pay button
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And JSINIT request was sent 1 time
 
 
   Scenario: Verify number of JSINIT requests together with UpdateJWT
