@@ -92,7 +92,7 @@ def get_number_of_requests_with_updated_jwt(request_type, url, update_jwt):
                           json={'url': url, 'bodyPatterns': [
                               {'matchesJsonPath': '$.[?(@.jwt=="' + update_jwt + '")]'}
                           ],
-                                'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
+                                'headers': {'ST-Request-Types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
