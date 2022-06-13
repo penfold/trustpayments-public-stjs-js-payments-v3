@@ -1,4 +1,6 @@
 # type: ignore[no-redef]
+import time
+
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
 from configuration import CONFIGURATION
@@ -282,6 +284,7 @@ def step_impl(context, status):
 @step('(?P<request_type>.+) requests contains updated jwt')
 def step_impl(context, request_type):
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
+    time.sleep(20)
     updated_jwt = context.update_jwt
     if request_type == 'WALLETVERIFY':
         updated_jwt = decode_jwt_from_jsinit(JSinitResponse.JSINIT_UPDATED_JWT.value)
