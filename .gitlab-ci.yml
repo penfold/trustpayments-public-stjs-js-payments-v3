@@ -30,8 +30,10 @@ variables:
 
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_EU: ${CI_REGISTRY_IMAGE}/app-html-smoke-eu:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_US: ${CI_REGISTRY_IMAGE}/app-html-smoke-us:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_EU: ${CI_REGISTRY_IMAGE}/app-html-smoke-latest-eu:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_US: ${CI_REGISTRY_IMAGE}/app-html-smoke-latest-us:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_EU: ${CI_REGISTRY_IMAGE}/app-html-smoke-version-eu:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_US: ${CI_REGISTRY_IMAGE}/app-html-smoke-version-us:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
 
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
@@ -115,7 +117,10 @@ stages:
   - prepare-release
   - build
   - post-build
+  - build-images-smoke
+  - publish-cdn-smoke
   # Tests
+  - smoke-tests-version
   - fast-tests
   - extended-tests
   - validate-merge-request-description
@@ -128,6 +133,5 @@ stages:
   - release
   - post-release
   # Smoke tests
-  - smoke-build-app
-  - smoke-build-images
-  - smoke-tests
+  - validate-cdn-latest
+  - smoke-tests-latest
