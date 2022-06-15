@@ -57,12 +57,22 @@
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
       alias: merchant.securetrading.net
 
-.services-app-html-smoke-eu-merchant:
+.services-app-html-smoke-latest-eu-merchant:
   services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_EU}"
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_EU}"
       alias: merchant.securetrading.net
 
-.services-app-html-smoke-us-merchant:
+.services-app-html-smoke-latest-us-merchant:
   services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_US}"
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_US}"
+      alias: merchant.securetrading.net
+
+.services-app-html-smoke-version-eu-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_EU}"
+      alias: merchant.securetrading.net
+
+.services-app-html-smoke-version-us-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_US}"
       alias: merchant.securetrading.net
