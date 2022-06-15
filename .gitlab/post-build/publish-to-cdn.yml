@@ -34,7 +34,7 @@ trigger-publish-sdk-release-to-cdn-stage-eu-from-release:
     - .trigger-publish-to-cdn-stage-eu-from-release
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-eu-release'
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-eu-release'
 
 trigger-publish-sdk-release-to-cdn-prod-eu-from-release:
   extends:
@@ -48,7 +48,7 @@ trigger-publish-sdk-release-to-cdn-stage-us-from-release:
     - .trigger-publish-to-cdn-stage-us-from-release
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-us-release'
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-us-release'
 
 trigger-publish-sdk-release-to-cdn-prod-us-from-release:
   extends:
