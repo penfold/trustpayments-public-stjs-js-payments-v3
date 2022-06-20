@@ -26,3 +26,9 @@ global.RadioNodeList = class extends NodeList {
     return ''
   }
 }
+
+global.TextEncoder = function(...params) {
+}
+
+global.TextDecoder = function(...params) {
+}
