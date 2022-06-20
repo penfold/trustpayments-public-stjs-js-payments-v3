@@ -58,9 +58,7 @@
     "example:vue:start": "run-p start:bundle example:vue:dev",
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
-    "prepare": "husky install",
-    "translations:missing": "./bin/translations.js missing",
-    "translations:coverage": "./bin/translations.js coverage"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -185,6 +183,7 @@
     "fastestsmallesttextencoderdecoder": "1.0.22",
     "i18next": "21.6.5",
     "joi": "17.5.0",
+    "jose": "^4.8.1",
     "jwt-decode": "3.1.2",
     "libphonenumber-js": "^1.9.51",
     "location-origin": "1.1.4",

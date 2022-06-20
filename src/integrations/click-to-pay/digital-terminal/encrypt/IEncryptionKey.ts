@@ -1,4 +1,4 @@
 export interface IEncryptionKey {
   kid: string;
-  pem: string;
+  pem: string | any;
 }
