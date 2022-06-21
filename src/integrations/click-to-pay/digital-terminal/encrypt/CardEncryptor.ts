@@ -1,8 +1,7 @@
-import * as jose from 'node-jose';
 import { Service } from 'typedi';
 import { from, Observable } from 'rxjs';
+import { CompactEncrypt, importJWK } from 'jose';
 import { IEncryptionKey } from './IEncryptionKey';
-import EncryptOptions = jose.JWE.EncryptOptions;
 
 @Service()
 export class CardEncryptor {
@@ -11,38 +10,24 @@ export class CardEncryptor {
   }
 
   private async doEncrypt(payload: unknown, encryptionKey: IEncryptionKey): Promise<string> {
-    const pem = await this.readKey(encryptionKey.pem);
-    const keyInput = {
+    const jwk = {
+      e: encryptionKey.jwk.e,
+      n: encryptionKey.jwk.n,
       kty: 'RSA',
-      e: pem.e, // Public key exponent
-      n: pem.n, // Public key modulus
       kid: encryptionKey.kid,
-      use: 'enc',
-      alg: 'RSA-OAEP-256',
-      ext_content: 'payload',
     };
-    const key = await jose.JWK.asKey(keyInput);
-    const contentAlg = 'A256GCM';
-    const options: EncryptOptions = {
-      format: 'compact',
-      contentAlg,
-      fields: {
-        kid: key.kid,
+
+    const importedJWK = await importJWK(jwk, 'RSA-OAEP-256');
+
+    return new CompactEncrypt(
+      new TextEncoder().encode(JSON.stringify(payload))
+    )
+      .setProtectedHeader({
+        alg: 'RSA-OAEP-256',
+        enc: 'A256GCM',
+        kid: encryptionKey.kid,
         typ: 'JOSE',
-        iat: Date.now(),
-        alg: key.alg,
-        enc: contentAlg,
-      },
-    };
-
-    return jose.JWE.createEncrypt(options, key)
-      .update(JSON.stringify(payload))
-      .final();
-  }
-
-  private async readKey(pem: string): Promise<{ n: string, e: string }> {
-    const key = await jose.JWK.asKey(pem, 'pem');
-
-    return key.toJSON() as { n: string, e: string };
+      })
+      .encrypt(importedJWK);
   }
 }
