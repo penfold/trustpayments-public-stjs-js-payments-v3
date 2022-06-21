@@ -118,7 +118,7 @@ e2e-vctp-tests-review:
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_visa_click_to_pay'
     PYTHONPATH: "${PYTHONPATH}:tests"
-  parallel: 6
+  parallel: 7
 
 e2e-vctp-tests-release:
   extends:
@@ -129,7 +129,7 @@ e2e-vctp-tests-release:
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_visa_click_to_pay'
     PYTHONPATH: "${PYTHONPATH}:tests"
-  parallel: 6
+  parallel: 7
 
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:
