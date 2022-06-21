@@ -331,12 +331,14 @@ class VisaClickToPayPage(BasePage):
     def confirm_payment(self):
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
         self._actions.scroll_directly_to_element(VisaClickToPayLocators.pay_now_btn)
+        time.sleep(1)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def fill_cvv_field_on_visa_popup(self):
         if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup, max_try=15):
             self._actions.send_keys(VisaClickToPayLocators.cvv_input_on_visa_popup, '123')
             self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
+            time.sleep(2)
             self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_pay_now_btn(self):
