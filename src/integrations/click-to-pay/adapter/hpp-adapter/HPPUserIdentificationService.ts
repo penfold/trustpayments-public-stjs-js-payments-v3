@@ -99,6 +99,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
         srcAggregate.identityLookup({
           type: 'EMAIL',
           identityValue: email,
+          identityType:'EMAIL_ADDRESS',
         }).pipe(
           tap(result => {
             if (result?.consumerPresent === false) {
@@ -106,6 +107,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
             }
           }),
           filter(result => result?.consumerPresent),
+          tap(console.log),
           map(result => result.srcNames[0]),
           catchError(errorResponse => {
             if (captureErrors) {
@@ -121,6 +123,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   }
 
   private completeIdentification(srcName: SrcName, srcAggregate: SrcAggregate): Observable<ICompleteIdValidationResponse> {
+    console.log(srcName)
     const codeSendTrigger = new BehaviorSubject<boolean>(true);
 
     return combineLatest([of(srcName), codeSendTrigger])
@@ -142,6 +145,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   }
 
   private handleInvalidOTPCode(errorResponse) {
+    console.log(errorResponse)
     this.otpPrompt.showError(this.getErrorMessage(errorResponse));
     return NEVER;
   }

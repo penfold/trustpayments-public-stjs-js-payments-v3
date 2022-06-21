@@ -582,11 +582,9 @@
         formId: 'st-form',
         cardListContainerId: 'st-ctp-cards',
         signInContainerId: 'st-ctp-login',
-        srciDpaId: 'TrustPayments-test-merchant',
+        srciDpaId: 'TestMerchant',
         dpaTransactionOptions: {
-          consumerNameRequested: true,
-          consumerEmailAddressRequested: true,
-          consumerPhoneNumberRequested: true,
+          dpaLocale:'en_GB',
           reviewAction: 'pay',
           transactionAmount: {
             transactionAmount: 100.00,
@@ -673,7 +671,7 @@
     }
 
     function getSrcName(adapterInstance) {
-      document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
+      // document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
     }
 
     function inputHandler(adapterInstance) {

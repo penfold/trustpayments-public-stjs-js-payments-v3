@@ -65,6 +65,7 @@ export class CheckoutDataTransformer {
   ): Observable<SrcNameAndCheckoutData> {
     return this.srcNameFinder.findSrcNameByPan(cardData.primaryAccountNumber).pipe(
       switchMap(srcName => {
+        console.log(srcName)
         if (!srcName) {
           return throwError(() => new Error('Unknown or unsupported card type'));
         }

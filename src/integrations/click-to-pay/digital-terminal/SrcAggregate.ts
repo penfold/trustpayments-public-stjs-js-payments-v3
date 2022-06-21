@@ -1,5 +1,5 @@
-import { forkJoin, from, Observable, switchMap } from 'rxjs';
-import { map, mapTo, tap } from 'rxjs/operators';
+import { forkJoin, from, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, map, mapTo, tap } from 'rxjs/operators';
 import { InjectMany, Service } from 'typedi';
 import { SrcProviderToken } from '../../../client/dependency-injection/InjectionTokens';
 import {
@@ -25,7 +25,7 @@ export class SrcAggregate {
 
   constructor(
     @InjectMany(SrcProviderToken) private srcProviders: ISrcProvider[],
-    private cardAggregator: CardAggregator,
+    private cardAggregator: CardAggregator
   ) {
   }
 
@@ -36,7 +36,7 @@ export class SrcAggregate {
 
     return this.forkJoinSrcs(src => src.init(initData)).pipe(
       tap(v => console.log('INIT', v)),
-      mapTo(undefined),
+      mapTo(undefined)
     );
   }
 
@@ -46,8 +46,8 @@ export class SrcAggregate {
       map(result => Object.values(result).reduce((acc, next) => ({
         recognized: acc.recognized || next.recognized,
         idTokens: [...acc.idTokens, ...(next.idTokens || [])],
-      }), { recognized: false, idTokens: [] })),
-    )
+      }), { recognized: false, idTokens: [] }))
+    );
   }
 
   getSrcProfile(idTokens: string[]): Observable<IAggregatedProfiles> {
@@ -55,11 +55,12 @@ export class SrcAggregate {
       map(result => ({
         srcProfiles: result,
         aggregatedCards: this.cardAggregator.aggregate(result),
-      })),
+      }))
     );
   }
 
   identityLookup(consumerIdentity: IConsumerIdentity): Observable<IIdentityLookupResult> {
+    console.log(consumerIdentity);
     const reductorFunc = (acc: IIdentityLookupResult, next: [SrcName, IIdentityLookupResponse]): IIdentityLookupResult => {
       const [srcName, { consumerPresent }] = next;
       return {
@@ -68,27 +69,39 @@ export class SrcAggregate {
       };
     };
 
-    return this.forkJoinSrcs(src => src.identityLookup(consumerIdentity)).pipe(
+    // @ts-ignore
+    return this.forkJoinSrcs(src => src.identityLookup({ consumerIdentity })).pipe(
       tap(v => console.log('IDENTITY LOOKUP', v)),
-      map(result => Object.entries(result).reduce(reductorFunc, { consumerPresent: false, srcNames: [] })),
+      catchError(e => {
+        console.log(e);
+        return throwError(e);
+      }),
+      map(result => Object.entries(result).reduce(reductorFunc, { consumerPresent: false, srcNames: [] }))
     );
   }
 
   initiateIdentityValidation(srcName: SrcName): Observable<IInitiateIdentityValidationResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.initiateIdentityValidation())),
+      switchMap(src => from(src.initiateIdentityValidation()))
     );
   }
 
   completeIdentityValidation(srcName: SrcName, validationData: string): Observable<ICompleteIdValidationResponse> {
+    console.log(srcName, this.srcs.get(srcName));
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.completeIdentityValidation(validationData))),
+      switchMap(src => {
+        console.log(src, validationData);
+        // @ts-ignore
+        return from(src.completeIdentityValidation({ validationData }));
+      })
     );
   }
 
   checkout(srcName: SrcName, data: ICheckoutData): Observable<ICheckoutResponse> {
+    console.log('AAAAAAAAAAAAAAAAA', srcName, data);
+    // @ts-ignore
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.checkout(data))),
+      switchMap(src => from(src.checkout({ ...data, srciActionCode: 'NEW_USER' } as any))),
     );
   }
 
@@ -101,7 +114,7 @@ export class SrcAggregate {
 
     this.srcs.forEach((src$, srcName) => {
       sources[srcName] = src$.pipe(
-        switchMap(src => from(callback(src))),
+        switchMap(src => from(callback(src)))
       );
     });
 

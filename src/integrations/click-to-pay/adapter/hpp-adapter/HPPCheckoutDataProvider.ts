@@ -68,6 +68,7 @@ export class HPPCheckoutDataProvider {
       consumerData.emailAddress = billingEmail;
       consumerData.consumerIdentity = {
         type: 'EMAIL',
+        identityType: 'EMAIL',
         identityValue: billingEmail,
       };
     }

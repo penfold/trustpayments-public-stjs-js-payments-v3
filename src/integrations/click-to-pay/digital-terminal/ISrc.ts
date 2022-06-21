@@ -61,6 +61,7 @@ export interface IConsumerIdentity {
   identityProvider?: string;
   identityValue: string;
   type: 'EMAIL' | 'MOBILE_NUMBER' | 'CUSTOM_IDENTIFIER';
+  identityType: 'EMAIL' | 'MOBILE_NUMBER' | 'CUSTOM_IDENTIFIER';
 }
 
 export interface IPhoneNumber {

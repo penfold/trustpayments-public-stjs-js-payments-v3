@@ -11,7 +11,7 @@ export class CardEncryptor {
   }
 
   private async doEncrypt(payload: unknown, encryptionKey: IEncryptionKey): Promise<string> {
-    const pem = await this.readKey(encryptionKey.pem);
+    const pem = typeof encryptionKey.pem === 'string' ? await this.readKey(encryptionKey.pem) : encryptionKey.pem;
     const keyInput = {
       kty: 'RSA',
       e: pem.e, // Public key exponent

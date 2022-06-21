@@ -37,7 +37,7 @@ export class DigitalTerminal {
 
     return this.srcAggregate.init({
       srciDpaId: data.srciDpaId,
-      srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
+      srcInitiatorId: environment.CLICK_TO_PAY.MASTERCARD.SRC_INITIATOR_ID,
       srciTransactionId: this.srciTransactionId,
       dpaTransactionOptions: {
         ...data.dpaTransactionOptions,
@@ -56,7 +56,7 @@ export class DigitalTerminal {
   }
 
   getSrcProfiles(): Observable<IAggregatedProfiles> {
-    return this.srcAggregate.getSrcProfile(this.idTokens).pipe(
+    return this.srcAggregate.getSrcProfile({ idTokens: this.idTokens }).pipe(
       tap(profiles => {
         this.srcProfiles = profiles;
       })
@@ -66,6 +66,7 @@ export class DigitalTerminal {
   identifyUser(userIdentificationService: IUserIdentificationService, identificationData: IIdentificationData): Observable<IIdentificationResult> {
     return userIdentificationService.identifyUser(this.srcAggregate, identificationData).pipe(
       tap(result => {
+        console.log('RESULT', result);
         this.idTokens.push(result.idToken);
       }),
       map(result => ({

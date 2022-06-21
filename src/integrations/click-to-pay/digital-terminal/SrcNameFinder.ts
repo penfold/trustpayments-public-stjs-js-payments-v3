@@ -7,10 +7,12 @@ import { SrcName } from './SrcName';
 export class SrcNameFinder {
   findSrcNameByPan(pan: string): Observable<SrcName | null> {
     const lookupResult = iinLookup.lookup(pan);
-
+    console.log(lookupResult)
     switch (lookupResult.type) {
       case 'VISA':
         return of(SrcName.VISA);
+      case 'MASTERCARD':
+        return of(SrcName.MASTERCARD);
       default:
         return of(null);
     }
