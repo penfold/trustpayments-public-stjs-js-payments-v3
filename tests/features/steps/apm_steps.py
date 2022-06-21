@@ -127,7 +127,7 @@ def step_impl(context):
 @step('User fills ZIP phone number field')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.fill_phone_number('7380336237')
+    payment_page.fill_phone_number('7897024362')
 
 
 @step('User fills ZIP one time password')

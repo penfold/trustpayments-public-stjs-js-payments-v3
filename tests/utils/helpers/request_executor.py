@@ -16,7 +16,7 @@ BROWSERSTACK_API_URL = 'https://api.browserstack.com/automate/sessions/'
 WEBSERVICES_URL = 'https://webservices.securetrading.net:6443/'
 WEBSERVICES_ADMIN_REQUESTS_COUNT_URL = WEBSERVICES_URL + '__admin/requests/count'
 THIRDPARTY_URL = 'https://thirdparty.example.com:6443/'
-ZIP_SMS_URL = 'https://0hw6hlmlvj.execute-api.us-east-1.amazonaws.com/dev/ecd8b8af-81ae-42b5-a448-a63c97b4f6b5/numbers/+447380336237'
+ZIP_SMS_URL = 'https://0hw6hlmlvj.execute-api.us-east-1.amazonaws.com/dev/ecd8b8af-81ae-42b5-a448-a63c97b4f6b5/numbers/+447897024362'
 
 
 def add_to_shared_dict(key, value):

@@ -489,64 +489,43 @@ Feature: E2E ZIP Payments
       | transactionreference | should not be none |
       | settle_status        | 3                  |
 
-# Test moved to smoke_test scope
-#  Scenario: RedirectUrl for success and parameters verification
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | AUTH            |
-#      | billingfirstname        | FirstName       |
-#      | billinglastname         | LastName        |
-#      | billingemail            | email@email.com |
-#      | billingpremise          | Premise         |
-#      | billingtown             | test            |
-#      | billingcounty           | test            |
-#      | billingstreet           | test            |
-#      | billingpostcode         | PO1 3AX         |
-#      | billingcountryiso2a     | GB              |
-#      | orderreference          | 123445          |
-#      | currencyiso3a           | GBP             |
-#      | baseamount              | 1000            |
-#    And User opens example page WITH_APM
-#    And User focuses on APM payment methods section
-#    And User chooses ZIP from APM list
-#    And User will be sent to apm page - zip
-#    When User will click on allow button on ZIP example page
-#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
-#      | key                  | value              |
-#      | transactionreference | should not be none |
-#      | settle_status        | 0                  |
-#
-#
-#  Scenario: RedirectUrl for error and parameters verification
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | AUTH            |
-#      | billingfirstname        | FirstName       |
-#      | billinglastname         | LastName        |
-#      | billingemail            | email@email.com |
-#      | billingpremise          | Premise         |
-#      | billingtown             | test            |
-#      | billingcounty           | test            |
-#      | billingstreet           | test            |
-#      | billingpostcode         | PO1 3AX         |
-#      | billingcountryiso2a     | GB              |
-#      | orderreference          | 123445          |
-#      | currencyiso3a           | GBP             |
-#      | baseamount              | 1000            |
-#    And User opens example page WITH_APM
-#    And User focuses on APM payment methods section
-#    And User chooses ZIP from APM list
-#    And User will be sent to apm page - zip
-#    When User will click on Decline button on ZIP example page
-#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
-#      | key                  | value              |
-#      | transactionreference | should not be none |
-#      | settle_status        | 3                  |
-
+  Scenario: RedirectUrl for error and parameters verification
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value                                                 |
+      | requesttypedescriptions | AUTH                                                  |
+      | billingfirstname        | FirstName                                             |
+      | billinglastname         | LastName                                              |
+      | billingemail            | email@email.com                                       |
+      | billingpremise          | Premise                                               |
+      | billingtown             | test                                                  |
+      | billingcounty           | test                                                  |
+      | billingstreet           | test                                                  |
+      | billingpostcode         | PO1 3AX                                               |
+      | billingcountryiso2a     | GB                                                    |
+      | customerfirstname       | FirstName                                             |
+      | customerlastname        | LastName                                              |
+      | customeremail           | email@email.com                                       |
+      | customerpremise         | Premise                                               |
+      | customertown            | test                                                  |
+      | customercounty          | test                                                  |
+      | customerstreet          | test                                                  |
+      | customerpostcode        | PO1 3AX                                               |
+      | customercountryiso2a    | GB                                                    |
+      | orderreference          | 123445                                                |
+      | currencyiso3a           | GBP                                                   |
+      | baseamount              | 1000                                                  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com |
+    And User opens example page WITH_APM
+    And User focuses on APM payment methods section
+    And User chooses ZIP from APM list
+    And User will be sent to apm page - zip
+    When User will click on Decline button on ZIP example page
+    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+      | key                  | value              |
+      | transactionreference | should not be none |
+      | settle_status        | 3                  |
 
   Scenario: default configuration override
     Given JS library configured by inline config BASIC_CONFIG

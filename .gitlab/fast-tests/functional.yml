@@ -27,7 +27,7 @@ e2e-card-payments-tests-review:
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
     PYTHONPATH: "${PYTHONPATH}:tests"
-  parallel: 27
+  parallel: 26
 
 e2e-card-payments-tests-release:
   extends:
@@ -38,7 +38,7 @@ e2e-card-payments-tests-release:
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
     PYTHONPATH: "${PYTHONPATH}:tests"
-  parallel: 27
+  parallel: 26
 
 # Cardinal Commerce E2E Tests Headless
 .e2e-cardinal-commerce-tests-review:
@@ -186,7 +186,7 @@ e2e-smoke-tests-review:
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_additional_coverage'
     PYTHONPATH: "${PYTHONPATH}:tests"
-  parallel: 19
+  parallel: 20
 
 ################################### Component Tests ###################################
 .component-app-html-mock:
