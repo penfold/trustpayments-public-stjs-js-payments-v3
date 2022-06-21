@@ -176,7 +176,7 @@ Feature: Visa Click To Pay
     And User removes card from VISA_CTP wallet
     And User will not see previously added card in card list
 
-    #TODO STJS-3188
+   # Form validation will be made on hpp
   Scenario: Unsuccessful card adding - invalid card details
     Given JS library configured by inline config BASIC_CONFIG
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -186,9 +186,12 @@ Feature: Visa Click To Pay
     And User selects Look up my cards
     And User login to vctp_1 account with valid credentials
     And User clicks Add new card button
-    When User fills card details with defined card MASTERCARD_INVALID_CVV_CARD
+    When User fills card details with defined card VISA_INVALID_CVV
     And User clicks Pay Securely button
-#    Then Validation
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
 
   Scenario: Unsuccessful card adding - unsupported card
     Given JS library configured by inline config BASIC_CONFIG
@@ -245,49 +248,12 @@ Feature: Visa Click To Pay
     When User clicks cancel button on login view
     Then User will not see login view
 
-#TODO Uncomment this test when browser native validation will be replaced by new one
-#  Scenario Outline: Email field validation
-#    Given JS library configured by inline config BASIC_CONFIG
-
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value              |
-#      | requesttypedescriptions | AUTH               |
-#      | orderreference          | order-01           |
-#      | baseamount              | 1000               |
-#      | billingfirstname        | FirstName          |
-#      | billingemail            | FirstName@email.pl |
-#      | billingcountryiso2a     | GB                 |
-#      | currencyiso3a           | GBP                |
-#    And User opens example page VISA_CTP
-#    When User selects Look up my cards
-#    And User login to VISA_CTP account with <email_state> e-mail address
-#    Then User will see validation message "<validation_message>"
-#
-#    Examples:
-#      | email_state    | validation_message |
-#      | invalid format | TODO               |
-#      | empty          | TODO               |
-#
-#TODO Uncomment this test when browser native validation will be replaced by new one
-#  Scenario Outline: Unsuccessful authentication with invalid format of otp
-#    Given JS library configured by inline config BASIC_CONFIG
-
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value              |
-#      | requesttypedescriptions | AUTH               |
-#      | orderreference          | order-01           |
-#      | baseamount              | 1000               |
-#      | billingfirstname        | FirstName          |
-#      | billingemail            | FirstName@email.pl |
-#      | billingcountryiso2a     | GB                 |
-#      | currencyiso3a           | GBP                |
-#    And User opens example page VISA_CTP
-#    When User selects Look up my cards
-#    And User login to VISA_CTP account with <email_state> e-mail address
-#    And User fills invalid VISA_CTP one time password
-#    Then User will see validation message "<validation_message>"
-#
-#        Examples:
-#      | email_state    | validation_message |
-#      | invalid format | TODO               |
-#      | empty          | TODO               |
+  Scenario: Email field validation
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    And User selects Look up my cards
+    And User login to VISA_CTP account with invalid format e-mail address
+    Then User will see login validation message "Email is not in valid format."

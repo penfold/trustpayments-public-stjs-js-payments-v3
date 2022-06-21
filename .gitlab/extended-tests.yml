@@ -207,7 +207,7 @@ iPhone13-15.0-component-tests-smoke-nightly:
 .win10-Chrome-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
     FEATURES_DIR: 'tests/features'
@@ -228,26 +228,26 @@ win10-Chrome-latest-e2e-tests-smoke-nightly:
 
 #
 
-.win8.1-Chrome-almost-latest-e2e-tests-smoke:
+.win10-Chrome-almost-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest-1'
     FEATURES_DIR: 'tests/features'
     PYTHONPATH: "${PYTHONPATH}:tests"
     BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win8.1-Chrome-almost-latest-e2e-tests-smoke-release:
+.win10-Chrome-almost-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Chrome-almost-latest-e2e-tests-smoke
+    - .win10-Chrome-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Chrome-almost-latest-e2e-tests-smoke-nightly:
+win10-Chrome-almost-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Chrome-almost-latest-e2e-tests-smoke
+    - .win10-Chrome-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -276,50 +276,50 @@ win10-IE-11.0-e2e-tests-smoke-review:
 
 #
 
-.win8.1-Edge-latest-e2e-tests-smoke:
+.win10-Edge-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Edge
     BROWSER_VERSION: 'latest'
     FEATURES_DIR: 'tests/features'
     PYTHONPATH: "${PYTHONPATH}:tests"
     BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win8.1-Edge-latest-e2e-tests-smoke-release:
+.win10-Edge-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Edge-latest-e2e-tests-smoke
+    - .win10-Edge-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Edge-latest-e2e-tests-smoke-nightly:
+win10-Edge-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Edge-latest-e2e-tests-smoke
+    - .win10-Edge-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.win8.1-Edge-almost-latest-e2e-tests-smoke:
+.win10-Edge-almost-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Edge
     BROWSER_VERSION: 'latest-1'
     FEATURES_DIR: 'tests/features'
     PYTHONPATH: "${PYTHONPATH}:tests"
     BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win8.1-Edge-almost-latest-e2e-tests-smoke-release:
+.win10-Edge-almost-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Edge-almost-latest-e2e-tests-smoke
+    - .win10-Edge-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Edge-almost-latest-e2e-tests-smoke-nightly:
+win10-Edge-almost-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Edge-almost-latest-e2e-tests-smoke
+    - .win10-Edge-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #

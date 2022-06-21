@@ -323,7 +323,7 @@ class VisaClickToPayPage(BasePage):
 
     def click_terms_of_service_checkbox(self):
         if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.terms_of_service_checkbox,
-                                                           max_try=10):
+                                                           max_try=15):
             self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
             self._actions.scroll_directly_to_element(VisaClickToPayLocators.terms_of_service_checkbox)
             self._actions.click(VisaClickToPayLocators.terms_of_service_checkbox)
@@ -334,8 +334,9 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def fill_cvv_field_on_visa_popup(self):
-        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup, max_try=5):
+        if self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.cvv_input_on_visa_popup, max_try=15):
             self._actions.send_keys(VisaClickToPayLocators.cvv_input_on_visa_popup, '123')
+            self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.pay_now_btn)
             self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_pay_now_btn(self):

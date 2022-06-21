@@ -8,7 +8,7 @@
     - .tags-js-docker
     - .e2e-tests
     - .rules-when-release
-  parallel: 27
+  parallel: 26
 
 e2e-app-html-smoke-version-eu:
   stage: smoke-tests-version
