@@ -219,4 +219,3 @@ Feature: Visa Click To Pay for unregistered user
       | lastName   |
       | city       |
       | postalCode |
-
