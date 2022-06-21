@@ -132,7 +132,6 @@ module.exports = {
       context: path.join(__dirname, 'src')
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
     })
   ],
