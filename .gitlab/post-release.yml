@@ -5,7 +5,7 @@ trigger-publish-to-cdn-prod-eu-from-release-latest:
   stage: post-release
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-eu-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release/dist/st.js"
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release_eu/dist/st.js"
     PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH: "latest"
 
 trigger-publish-to-cdn-prod-us-from-release-latest:
@@ -15,5 +15,5 @@ trigger-publish-to-cdn-prod-us-from-release-latest:
   stage: post-release
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-us-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release/dist/st.js"
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release_us/dist/st.js"
     PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH: "latest"
