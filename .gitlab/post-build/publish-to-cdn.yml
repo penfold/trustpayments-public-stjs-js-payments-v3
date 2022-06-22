@@ -55,7 +55,7 @@ trigger-publish-sdk-release-to-cdn-stage-us-from-release:
 
 trigger-publish-sdk-release-to-cdn-prod-us-from-release:
   extends:
-    - .trigger-publish-to-cdn-prod-eu-from-release
+    - .trigger-publish-to-cdn-prod-us-from-release
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-us-release'
