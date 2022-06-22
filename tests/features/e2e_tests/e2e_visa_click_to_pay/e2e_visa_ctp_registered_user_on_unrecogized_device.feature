@@ -11,7 +11,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     When User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
@@ -49,7 +49,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     When User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
@@ -67,7 +67,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     When User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
@@ -88,7 +88,7 @@ Feature: Visa Click To Pay
     When User login to VISA_CTP account with not registered e-mail address
     Then User will see login validation message "The email address you have entered is not registered for Click to Pay."
     When User clears email field
-    And User login to vctp_1 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
@@ -105,7 +105,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     When User fills incorrect VISA_CTP one time password
     Then User will see otp validation message "The code you have entered is incorrect"
     When User fills valid VISA_CTP one time password
@@ -137,7 +137,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     When User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     Then User see that first card on the list is auto-selected
     And User see that submit button label indicates selected card
@@ -153,7 +153,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     When User selects Look up my cards
-    And User login to vctp_1 account with valid credentials
+    And User login to VCTP account with valid credentials
     When User clicks Add new card button
     And User see that first card on the list is not selected
     And User see default submit button label
@@ -169,7 +169,7 @@ Feature: Visa Click To Pay
       | submit        |
     When User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_1 account with valid credentials
+    And User login to VCTP account with valid credentials
     Then User see previously added card in card list
     And User clicks Pay Securely button
     And User selects Edit card on VISA_CTP popup
@@ -184,7 +184,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_1 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User clicks Add new card button
     When User fills card details with defined card VISA_INVALID_CVV
     And User clicks Pay Securely button
@@ -200,7 +200,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_1 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User clicks Add new card button
     When User fills card details with defined card MASTERCARD_CARD
     And User clicks Pay Securely button
@@ -224,10 +224,10 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to VISA_CTP account with vctp_1 e-mail address
+    And User login to VCTP account with valid credentials
     When User clicks cancel button on otp view
     Then User will back to login view
-    When User login to VISA_CTP account with vctp_1 e-mail address
+    When User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button

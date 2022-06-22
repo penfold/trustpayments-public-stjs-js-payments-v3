@@ -11,7 +11,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User selects Add New Card on VISA_CTP popup
@@ -26,7 +26,7 @@ Feature: Visa Click To Pay
       | submit        |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     Then User see previously added card in card list
     And User clicks Pay Securely button
     And User selects Edit card on VISA_CTP popup
@@ -42,7 +42,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User selects Edit card on VISA_CTP popup
@@ -62,7 +62,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User selects Switch card on VISA_CTP popup
@@ -82,7 +82,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User selects Add address on VISA_CTP popup
@@ -95,7 +95,7 @@ Feature: Visa Click To Pay
       | success       |
       | submit        |
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User clicks Pay Securely button
     Then User selects Delete address on VISA_CTP popup
     And User confirms address deletion
@@ -107,7 +107,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User selects Switch address on VISA_CTP popup
@@ -122,7 +122,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_4 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     When User signs out from VISA_CTP on popup

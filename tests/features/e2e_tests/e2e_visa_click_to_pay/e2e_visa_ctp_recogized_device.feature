@@ -11,7 +11,7 @@ Feature: Visa Click To Pay
 #      | requesttypedescriptions | AUTH  |
 #    And User opens example page VISA_CTP
 #    And User selects Look up my cards
-#    And User login to vctp_3 account with valid credentials
+#    User login to VCTP account with valid credentials
 #    And User see that first card on the list is auto-selected
 #    And User clicks Pay Securely button
 #    And User reviews VISA_CTP checkout page and confirm with remember me
@@ -36,7 +36,7 @@ Feature: Visa Click To Pay
 #      | requesttypedescriptions | AUTH  |
 #    And User opens example page VISA_CTP
 #    And User selects Look up my cards
-#    And User login to vctp_3 account with valid credentials
+#    User login to VCTP account with valid credentials
 #    And User clicks Pay Securely button
 #    And User reviews VISA_CTP checkout page and confirm with remember me
 #    Then User will see that VISA_CTP checkout is completed
@@ -60,7 +60,7 @@ Feature: Visa Click To Pay
 #      | requesttypedescriptions | AUTH  |
 #    And User opens example page VISA_CTP
 #    And User selects Look up my cards
-#    And User login to vctp_3 account with valid credentials
+#    User login to VCTP account with valid credentials
 #    And User see that first card on the list is auto-selected
 #    And User clicks Pay Securely button
 #    And User reviews VISA_CTP checkout page and confirm with remember me

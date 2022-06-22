@@ -57,11 +57,23 @@ def load_config():
         'VCTP_EMAIL_2': get_from_env('VCTP_EMAIL_2', ''),
         'VCTP_EMAIL_3': get_from_env('VCTP_EMAIL_3', ''),
         'VCTP_EMAIL_4': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_5': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_6': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_7': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_8': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_9': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_EMAIL_10': get_from_env('VCTP_EMAIL_4', ''),
         'VCTP_PASSWORD': get_from_env('VCTP_PASSWORD', ''),
         'VCTP_PASSWORD_1': get_from_env('VCTP_PASSWORD_1', ''),
         'VCTP_PASSWORD_2': get_from_env('VCTP_PASSWORD_2', ''),
         'VCTP_PASSWORD_3': get_from_env('VCTP_PASSWORD_3', ''),
         'VCTP_PASSWORD_4': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_5': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_6': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_7': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_8': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_9': get_from_env('VCTP_PASSWORD_4', ''),
+        'VCTP_PASSWORD_10': get_from_env('VCTP_PASSWORD_4', ''),
     }
 
     return AttrDict(config)

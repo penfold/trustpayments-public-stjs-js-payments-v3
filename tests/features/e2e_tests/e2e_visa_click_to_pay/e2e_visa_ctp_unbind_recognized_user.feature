@@ -10,7 +10,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to VISA_CTP account with vctp_2 e-mail address
+    And User login to VCTP account with valid credentials
     And User fills valid VISA_CTP one time password
     When User clicks Not you button
     Then User is not recognized by VISA_CTP
@@ -22,7 +22,7 @@ Feature: Visa Click To Pay
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
     And User selects Look up my cards
-    And User login to vctp_2 account with valid credentials
+    And User login to VCTP account with valid credentials
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
     Then User will see that VISA_CTP checkout is completed

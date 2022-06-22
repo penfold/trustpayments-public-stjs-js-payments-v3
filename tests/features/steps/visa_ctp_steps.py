@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+import random
 
 from assertpy import assert_that, soft_assertions
 from behave import use_step_matcher, step, when, then
@@ -185,18 +186,26 @@ def step_impl(context):
     assert_that(context.otp_after_first_login).is_equal_to(context.otp_after_resend)
 
 
-@step('User login to (?P<email_state>.+) account with valid credentials')
-def step_impl(context, email_state):
+@step('User login to VCTP account with valid credentials')
+def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     email = {
         'vctp_1': [CONFIGURATION.VCTP_EMAIL_1, CONFIGURATION.VCTP_PASSWORD_1],
         'vctp_2': [CONFIGURATION.VCTP_EMAIL_2, CONFIGURATION.VCTP_PASSWORD_2],
         'vctp_3': [CONFIGURATION.VCTP_EMAIL_3, CONFIGURATION.VCTP_PASSWORD_3],
-        'vctp_4': [CONFIGURATION.VCTP_EMAIL_4, CONFIGURATION.VCTP_PASSWORD_4]
+        'vctp_4': [CONFIGURATION.VCTP_EMAIL_4, CONFIGURATION.VCTP_PASSWORD_4],
+        'vctp_5': [CONFIGURATION.VCTP_EMAIL_5, CONFIGURATION.VCTP_PASSWORD_5],
+        'vctp_6': [CONFIGURATION.VCTP_EMAIL_6, CONFIGURATION.VCTP_PASSWORD_6],
+        'vctp_7': [CONFIGURATION.VCTP_EMAIL_7, CONFIGURATION.VCTP_PASSWORD_7],
+        'vctp_8': [CONFIGURATION.VCTP_EMAIL_8, CONFIGURATION.VCTP_PASSWORD_8],
+        'vctp_9': [CONFIGURATION.VCTP_EMAIL_9, CONFIGURATION.VCTP_PASSWORD_9],
+        'vctp_10': [CONFIGURATION.VCTP_EMAIL_10, CONFIGURATION.VCTP_PASSWORD_10],
+
     }
-    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[email_state][0])
-    add_to_shared_dict(SharedDictKey.VCTP_PASSWORD.value, email[email_state][1])
-    vctp_page.fill_email_input(email[email_state][0])
+    random_email = random.choice(list(email.keys()))
+    add_to_shared_dict(SharedDictKey.VCTP_EMAIL_LOGIN.value, email[random_email][0])
+    add_to_shared_dict(SharedDictKey.VCTP_PASSWORD.value, email[random_email][1])
+    vctp_page.fill_email_input(email[random_email][0])
     vctp_page.click_submit_email_btn()
     vctp_page.get_code_and_fill_otp_field()
 
