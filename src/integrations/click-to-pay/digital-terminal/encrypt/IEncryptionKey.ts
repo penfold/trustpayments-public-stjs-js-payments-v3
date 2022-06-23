@@ -1,4 +1,6 @@
+import { JWK } from 'jose';
+
 export interface IEncryptionKey {
   kid: string;
-  pem: string;
+  jwk: JWK;
 }

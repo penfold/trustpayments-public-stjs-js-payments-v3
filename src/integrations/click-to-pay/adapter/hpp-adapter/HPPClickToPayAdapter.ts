@@ -195,15 +195,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       );
     }
 
-    if (response.dcfActionCode === DcfActionCode.cancel || response.dcfActionCode === DcfActionCode.complete) {
-      return this.digitalTerminal.unbindAppInstance().pipe(
-        switchMap(() => from(this.isRecognized())),
-        switchMap(recognized => recognized ? from(this.showCardList()) : of(this.cardListGenerator.hideForm())),
-        mapTo(response)
-      );
-    }
-    else if (response.unbindAppInstance) {
-      return this.digitalTerminal.unbindAppInstance().pipe(tap(() => this.cardListGenerator.hideForm()),mapTo(response));
+    if (response.dcfActionCode === DcfActionCode.cancel) {
+      return response.idToken?.length ? from(this.showCardList()).pipe(mapTo(response)) : of(response);
+    } else if (response.unbindAppInstance) {
+      return this.digitalTerminal.unbindAppInstance().pipe(tap(() => this.cardListGenerator.hideForm()), mapTo(response));
     }
 
     return of(response);

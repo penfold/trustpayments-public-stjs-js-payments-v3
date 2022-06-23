@@ -1,4 +1,5 @@
 require('reflect-metadata');
+require('fast-text-encoding');
 
 const V = window.V;
 global.V = V;
@@ -23,6 +24,6 @@ global.MutationObserver = class {
 // mocked due to https://github.com/jsdom/jsdom/issues/2600
 global.RadioNodeList = class extends NodeList {
   get value() {
-    return ''
+    return '';
   }
-}
+};
