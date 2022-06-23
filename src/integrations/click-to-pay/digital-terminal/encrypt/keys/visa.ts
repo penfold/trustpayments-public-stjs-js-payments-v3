@@ -1,3 +1,5 @@
+import { JWK } from 'jose';
+
 export const VISA_PEM = `
 -----BEGIN CERTIFICATE-----
 MIIFDzCCA/egAwIBAgIUGia+bgG/HZCJvOJ2CDGqqMIyuQswDQYJKoZIhvcNAQEL
@@ -29,3 +31,10 @@ rfGQ+gM8Et4pc1zoi4Jmz5J1YOSOY8KdgYtl0QTE6vyVNo8zkzggUqb0vqd4fR6o
 JweYbZt2x8j75ze/mrDGacQIiRLSI5Em9UYYtW0Wyy+qUwzqgQng2Gxrr2yxShV3
 0tgK
 -----END CERTIFICATE-----`;
+
+// JWK generated from PEM
+export const VISA_JWK: JWK = {
+  'kty': 'RSA',
+  'n': 'sZPIusDf7yQnnhBkU9mu14VOO3Crui3b7rAf2KYeobURmXA17b1JX9jg0Cd-vgpmuyTrxBUSc-4b0-UPgSwGFqPWUpx08ExqrwPDOvFojBou2wlyq8bcy0Us-BfeCzSE5lMVdSXTXXXcNqu-qb22jCCCJALpxsArsboMOXsLedh3M4XNQ5XGAtRf7b--uTY5Dr9KLYyUvZKAnY04MKJPEO54YiIFM5DTAhNOms089jdMdx-URIKJjPU2-RpHG1u8LCG028RTIpPsNbRanuS5TAY_zlxDgb1hKJ36YbZENHLg9PXTBhdOMlU90DTLlfcbLTa-D7DgljAaWCuvzLPaGw',
+  'e': 'AQAB',
+};

@@ -1,6 +1,7 @@
 import { anyFunction, anyString, anything, instance, mock, objectContaining, spy, verify, when } from 'ts-mockito';
 import { of, Subject, throwError } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
+import faker from '@faker-js/faker';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
@@ -228,7 +229,7 @@ describe('HPPClickToPayAdapter', () => {
         );
       });
 
-      describe.each([DcfActionCode.cancel, DcfActionCode.complete])('when checkout response contains dcfActionCode = %s', dcfCode => {
+      describe.each([DcfActionCode.cancel])('when checkout response contains dcfActionCode = %s', dcfCode => {
         const mockCheckoutResponse: ICheckoutResponse = {
           checkoutResponse: '',
           dcfActionCode: dcfCode,
@@ -250,38 +251,18 @@ describe('HPPClickToPayAdapter', () => {
           });
         });
 
-        it('should  it should unbindAppInstance then try to recognize user', done => {
-          sut.init(initParams).then(adapterInstance => {
-            formSubmitEventMock.asObservable().subscribe(() => {
-              verify(digitalTerminalMock.unbindAppInstance()).once();
-              verify(digitalTerminalMock.isRecognized()).once();
-              done();
-            });
-            formSubmitEventMock.next();
-          });
-
-        });
-
-        it('if user is recognized it should display card list again', done => {
-          when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
+        it('should display card list again if response contains idToken', done => {
           when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(srcProfilesMock));
+          when(digitalTerminalMock.checkout(anything())).thenReturn(of({
+            ...mockCheckoutResponse,
+            idToken: faker.datatype.uuid(),
+          }));
 
           sut.init(initParams).then(adapterInstance => {
-            checkoutResultSubject.pipe(first()).subscribe(() => {
+            checkoutResultSubject.pipe(first()).subscribe((result) => {
+              console.log(result)
               verify(digitalTerminalMock.getSrcProfiles()).once();
               verify(cardListGeneratorMock.displayCards(initParams.formId, initParams.cardListContainerId, srcProfilesMock.aggregatedCards)).once();
-              done();
-            });
-            formSubmitEventMock.next();
-          });
-        });
-
-        it('if user is not recognized it should not display card list', done => {
-          when(digitalTerminalMock.isRecognized()).thenReturn(of(false));
-
-          sut.init(initParams).then(adapterInstance => {
-            checkoutResultSubject.pipe(first()).subscribe(() => {
-              verify(cardListGeneratorMock.hideForm()).once();
               done();
             });
             formSubmitEventMock.next();

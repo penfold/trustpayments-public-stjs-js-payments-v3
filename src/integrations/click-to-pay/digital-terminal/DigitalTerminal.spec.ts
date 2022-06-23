@@ -1,5 +1,6 @@
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { of, switchMap } from 'rxjs';
+import faker from '@faker-js/faker';
 import { environment } from '../../../environments/environment';
 import { DigitalTerminal } from './DigitalTerminal';
 import { SrcAggregate } from './SrcAggregate';
@@ -26,7 +27,7 @@ describe('DigitalTerminal', () => {
     digitalTerminal = new DigitalTerminal(
       instance(srcAggregateMock),
       instance(checkoutDataTransformerMock),
-      instance(localeProvider),
+      instance(localeProvider)
     );
 
     when(srcAggregateMock.init(anything())).thenReturn(of(undefined));
@@ -143,7 +144,7 @@ describe('DigitalTerminal', () => {
   });
 
   describe('checkout()', () => {
-    const idTokens = ['idtoken'];
+    const idTokens = [faker.datatype.uuid(), faker.datatype.uuid()];
     const profiles: IAggregatedProfiles = {
       aggregatedCards: [],
       srcProfiles: {
@@ -153,10 +154,27 @@ describe('DigitalTerminal', () => {
         },
       },
     };
+    const initialCheckoutData: IInitialCheckoutData = {
+      srcDigitalCardId: 'foobar',
+    };
+    const transformedCheckoutData: ICheckoutData = {
+      srcCorrelationId: 'correlationid',
+    };
+    const checkoutResponse: ICheckoutResponse = {
+      checkoutResponse: 'checkoutResponse',
+      dcfActionCode: DcfActionCode.complete,
+      idToken: faker.datatype.uuid(),
+      unbindAppInstance: false,
+    };
 
     beforeEach(() => {
       when(srcAggregateMock.isRecognized()).thenReturn(of({ recognized: true, idTokens }));
       when(srcAggregateMock.getSrcProfile(deepEqual(idTokens))).thenReturn(of(profiles));
+      when(checkoutDataTransformerMock.transform(initialCheckoutData, anyString(), profiles)).thenReturn(of({
+        srcName: SrcName.VISA,
+        checkoutData: transformedCheckoutData,
+      }));
+      when(srcAggregateMock.checkout(anything(), anything())).thenReturn(of(checkoutResponse));
 
       digitalTerminal.init({ srciDpaId: '', dpaTransactionOptions: {} }).pipe(
         switchMap(() => digitalTerminal.isRecognized()),
@@ -165,30 +183,22 @@ describe('DigitalTerminal', () => {
     });
 
     it('runs checkout process on proper SRC using transformed checkout data', done => {
-      const initialCheckoutData: IInitialCheckoutData = {
-        srcDigitalCardId: 'foobar',
-      };
-      const transformedCheckoutData: ICheckoutData = {
-        srcCorrelationId: 'correlationid',
-      };
-      const checkoutResponse: ICheckoutResponse = {
-        checkoutResponse: 'checkoutResponse',
-        dcfActionCode: DcfActionCode.complete,
-        idToken: 'token',
-        unbindAppInstance: false,
-      };
-
-      when(checkoutDataTransformerMock.transform(initialCheckoutData, anyString(), profiles)).thenReturn(of({
-        srcName: SrcName.VISA,
-        checkoutData: transformedCheckoutData,
-      }));
-      when(srcAggregateMock.checkout(anything(), anything())).thenReturn(of(checkoutResponse));
-
       digitalTerminal.checkout(initialCheckoutData).subscribe(result => {
         verify(srcAggregateMock.checkout(SrcName.VISA, transformedCheckoutData)).once();
         expect(result).toBe(checkoutResponse);
         done();
       });
+    });
+
+    describe.each([DcfActionCode.addCard, DcfActionCode.changeCard, DcfActionCode.cancel])('for certain conditions', (dcfActionCode: DcfActionCode) => {
+      it('should replace idTokens with array consisting of idToken returned in checkout response', done => {
+          when(srcAggregateMock.checkout(anything(), anything())).thenReturn(of({ ...checkoutResponse, dcfActionCode }));
+          digitalTerminal.checkout(initialCheckoutData).subscribe(result => {
+            expect(digitalTerminal['idTokens']).toEqual([result.idToken]);
+            done();
+          });
+        }
+      );
     });
   });
 

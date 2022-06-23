@@ -1,5 +1,8 @@
 import { SrcName } from '../SrcName';
+import { environment } from '../../../../environments/environment';
 import { EncryptionKeyProvider } from './EncryptionKeyProvider';
+import { VISA_JWK } from './keys/visa';
+import { IEncryptionKey } from './IEncryptionKey';
 import DoneCallback = jest.DoneCallback;
 
 describe('EncryptionKeyProvider', () => {
@@ -9,13 +12,17 @@ describe('EncryptionKeyProvider', () => {
     encryptionKeyProvider = new EncryptionKeyProvider();
   });
 
-  describe('getEncryptionKey()', () => {
-    it.each<SrcName | DoneCallback>([SrcName.VISA])('returns encryption keys for supported SRCs', (srcName: SrcName, done: DoneCallback) => {
-      encryptionKeyProvider.getEncryptionKey(SrcName.VISA).subscribe(result => {
-        expect(result).toEqual({
-          kid: expect.anything(),
-          pem: expect.anything(),
-        })
+  describe.each([
+    [
+      SrcName.VISA, {
+      kid: environment.CLICK_TO_PAY.VISA.ENCRYPTION_KID,
+      jwk: VISA_JWK,
+    } as IEncryptionKey,
+    ],
+  ])('getEncryptionKey()', (srcName: SrcName, encryptionKey: IEncryptionKey) => {
+    it('returns encryption keys for supported SRC %s', (done: DoneCallback) => {
+      encryptionKeyProvider.getEncryptionKey(srcName).subscribe(result => {
+        expect(result).toEqual(encryptionKey);
         done();
       });
     });
