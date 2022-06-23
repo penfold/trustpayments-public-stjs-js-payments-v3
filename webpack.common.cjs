@@ -132,7 +132,6 @@ module.exports = {
       context: path.join(__dirname, 'src')
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
     })
   ],
@@ -190,6 +189,7 @@ module.exports = {
           path.join(__dirname, 'node_modules/node-jose'),
           path.join(__dirname, 'node_modules/buffer'),
           path.join(__dirname, 'node_modules/pako'),
+          path.join(__dirname, 'node_modules/jose'),
         ],
       },
       {

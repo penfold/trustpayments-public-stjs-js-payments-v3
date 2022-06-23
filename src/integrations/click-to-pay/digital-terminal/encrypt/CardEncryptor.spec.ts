@@ -1,32 +1,68 @@
-import { switchMap } from 'rxjs';
-import { SrcName } from '../SrcName';
+import faker from '@faker-js/faker';
+import { importJWK, JWK } from 'jose';
 import { ICardData } from '../interfaces/ICardData';
 import { CardEncryptor } from './CardEncryptor';
-import { EncryptionKeyProvider } from './EncryptionKeyProvider';
+
+// jose library classes are not injected, hence module mock
+jest.mock('jose', () => ({
+  CompactEncrypt: function() {
+    this.encrypt = jest.fn().mockResolvedValue('encrypted-data');
+    this.setContentEncryptionKey = jest.fn().mockReturnThis();
+    this.setInitializationVector = jest.fn().mockReturnThis();
+    this.setKeyManagementParameters = jest.fn().mockReturnThis();
+    this.setProtectedHeader = jest.fn().mockReturnThis();
+  },
+  importJWK: jest.fn(),
+}));
 
 describe('CardEncryptor', () => {
   let cardEncryptor: CardEncryptor;
-  let encryptionKeyProvider: EncryptionKeyProvider;
+  const testCardData: ICardData = {
+    primaryAccountNumber: faker.finance.creditCardNumber(),
+    cardholderFullName: faker.name.firstName() + faker.name.lastName(),
+    billingAddress: null,
+    panExpirationYear: faker.date.past().getFullYear().toString(),
+    panExpirationMonth: faker.date.month(),
+    cardholderLastName: faker.name.lastName(),
+    cardSecurityCode: faker.finance.creditCardCVV(),
+    cardholderFirstName: faker.name.firstName(),
+  };
+
+  const testSrcKid = faker.datatype.uuid();
+  const testSrcJWK: JWK = {
+    n: faker.datatype.uuid(),
+    e: faker.datatype.uuid(),
+    d: faker.datatype.uuid(),
+  };
 
   beforeEach(() => {
     cardEncryptor = new CardEncryptor();
-    encryptionKeyProvider = new EncryptionKeyProvider();
   });
 
   describe('encrypt()', () => {
-    it('encrypts card data', done => {
-      const cardData: ICardData = {
-        primaryAccountNumber: '4111111111111111',
-        panExpirationMonth: '01',
-        panExpirationYear: '2023',
-        cardSecurityCode: '123',
-        cardholderFullName: 'John Doe',
-      };
+    it('import provided SRC JWK and make sure that it contains SRC KID', done => {
+      cardEncryptor.encrypt(testCardData, {
+          kid: testSrcKid,
+          jwk: testSrcJWK,
+        }
+      ).subscribe((encryptedCard) => {
+        expect(importJWK).toHaveBeenCalledWith({
+          kid: testSrcKid,
+          kty: 'RSA',
+          e: testSrcJWK.e,
+          n: testSrcJWK.n,
+        } as JWK, 'RSA-OAEP-256');
 
-      encryptionKeyProvider.getEncryptionKey(SrcName.VISA).pipe(
-        switchMap(key => cardEncryptor.encrypt(cardData, key)),
-      ).subscribe(result => {
-        expect(result).toEqual(expect.any(String));
+        done();
+      });
+    });
+    it('encrypts card data with imported key using compact JWE encryption and returns Promise with string', done => {
+      cardEncryptor.encrypt(testCardData, {
+          kid: testSrcKid,
+          jwk: testSrcJWK,
+        }
+      ).subscribe((encryptedCard) => {
+        expect(encryptedCard).toEqual('encrypted-data');
         done();
       });
     });

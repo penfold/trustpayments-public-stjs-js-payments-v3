@@ -30,6 +30,7 @@ build-app-image-html-rr-release:
     - .rules-when-release
   variables:
     UTILITY_NAME: 'app-html-release'
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release_eu/dist --build-arg APP_DIST_PATH=.artifacts_app_html_release/dist"
 
 ### local
 

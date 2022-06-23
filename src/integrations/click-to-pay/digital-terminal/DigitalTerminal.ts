@@ -81,8 +81,10 @@ export class DigitalTerminal {
     return this.checkoutDataTransformer.transform(data, this.srciTransactionId, this.srcProfiles).pipe(
       switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData)),
       tap((response: ICheckoutResponse) => {
+        // TODO consider moving that to HPPClickToPayAdapter
+        // this is probably VISA-specific
         if (this.shouldUseTokenFromResponse(response)) {
-          this.idTokens.push(response.idToken);
+          this.idTokens = [response.idToken];
         }
       })
     );
@@ -98,7 +100,7 @@ export class DigitalTerminal {
   }
 
   private shouldUseTokenFromResponse(response: ICheckoutResponse): boolean {
-    const hasRequiredStates = response.dcfActionCode === DcfActionCode.addCard || response.dcfActionCode === DcfActionCode.changeCard;
-    return (hasRequiredStates && response.unbindAppInstance === false && !!response.idToken?.length);
+    const applicableActionCodes = [DcfActionCode.addCard, DcfActionCode.changeCard, DcfActionCode.cancel];
+    return (applicableActionCodes.includes(response.dcfActionCode) && response.unbindAppInstance === false && !!response.idToken?.length);
   }
 }
