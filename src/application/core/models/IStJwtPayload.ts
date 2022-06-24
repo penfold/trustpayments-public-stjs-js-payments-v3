@@ -24,4 +24,20 @@ export interface IStJwtPayload {
   billingcountryiso2a?: string;
   customercountryiso2a?: string;
   fraudcontroltransactionid?: string;
+  successfulurlredirect?: string;
+  errorrurlredirect?: string;
+  cancelurlredirect?: string;
+  returnurl?: string;
+  billingprefixname?: string;
+  billingfirstname?: string;
+  billingmiddlename?: string;
+  billinglastname?: string;
+  billingsuffixname?: string;
+  billingpremise?: string;
+  billingstreet?: string;
+  billingtown?: string;
+  billingpostcode?: string;
+  billingcounty?: string;
+  billingemail?: string;
+  billingtelephone?:string;
 }

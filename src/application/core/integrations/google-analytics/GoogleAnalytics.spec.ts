@@ -11,70 +11,48 @@ describe('GoogleAnalytics', () => {
   let sentryServiceMock: SentryService;
   let sut: GoogleAnalytics;
 
+  beforeEach(() => {
+    sentryServiceMock = mock(SentryService);
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anyString())).thenReturn(source => source);
+    jest.spyOn(DomMethods, 'insertScript').mockReturnValue(of(null));
+    sut = new GoogleAnalytics(instance(sentryServiceMock));
+  });
+
   describe('init()', () => {
-    beforeEach(() => {
-      // @ts-ignore
-      sentryServiceMock = mock(SentryService);
-      when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anyString())).thenReturn(source => source);
-      jest.spyOn(DomMethods, 'insertScript').mockReturnValue(of(null));
-      sut = new GoogleAnalytics(instance(sentryServiceMock));
-
-      // @ts-ignore
-      sut.createGAScript = jest.fn().mockResolvedValueOnce({});
-    });
-
     it('should call insertGALibrary and GoogleAnalytics.disableUserIDTracking', () => {
       sut.init();
-      expect(DomMethods.insertScript).toHaveBeenCalledWith('head', { async: 'async', src: environment.GA_SCRIPT_SRC, id: 'googleAnalytics' });
+      expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
+        async: 'async',
+        src: environment.GA_SCRIPT_SRC,
+      });
     });
   });
 
   describe('sendGaData', () => {
+    const mockGA = jest.fn();
     beforeEach(() => {
+
+      // TODO find a way to mock this properly
+      sut['insertGAScript'] = jest.fn().mockReturnValue(of(mockGA))
+      sut.init();
       // @ts-ignore
       window.ga = jest.fn();
       sut.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
     });
 
     it('should call send method from google analytics', () => {
-      // @ts-ignore
-      expect(window.ga).toHaveBeenCalled();
+      expect(mockGA).toHaveBeenCalledWith('send', { eventAction: 'payment status', eventCategory: 'Visa Checkout', eventLabel: 'Visa Checkout payment error', hitType: 'event' }
+    );
     });
   });
 
   describe('createGAScript', () => {
     beforeEach(() => {
-      // @ts-ignore
-      sut.createGAScript = jest.fn().mockResolvedValueOnce('Google Analytics: script has been appended');
       sut.init();
     });
 
     it('should call createGAScript function', () => {
-      // @ts-ignore
-      expect(sut.createGAScript).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('insertGALibrary', () => {
-    beforeEach(() => {
-      // @ts-ignore
-      document.head.appendChild = jest.fn();
-      document.head;
-    });
-
-    it('should append script', async () => {
-      // @ts-ignore
-      const data = await sut.insertGAScript();
-      // @ts-ignore
-      expect(data).toEqual('Google Analytics: script has been appended');
-    });
-
-    //
-    it('should call document.head.appendChild', async () => {
-      // @ts-ignore
-      await sut.insertGAScript();
-      // @ts-ignore
-      expect(document.head.appendChild).toHaveBeenCalled();
+      expect(document.querySelector('script#googleAnalytics')).toBeDefined()
     });
   });
 });

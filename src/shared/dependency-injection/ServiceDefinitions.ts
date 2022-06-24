@@ -2,6 +2,7 @@ import { Container } from 'typedi';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { MessageBusFactory } from '../../application/core/shared/message-bus/MessageBusFactory';
 import { ApplePayReducer } from '../../application/core/store/reducers/apple-pay/ApplePayReducer';
+import { InitialConfigReducer } from '../../application/core/store/reducers/initial-config/InitialConfigReducer';
 import { IStore } from '../../application/core/store/IStore';
 import { StoreFactory } from '../../application/core/store/StoreFactory';
 import { ConfigReducer } from '../../application/core/store/reducers/config/ConfigReducer';
@@ -13,6 +14,7 @@ import { ITranslator } from '../../application/core/shared/translator/ITranslato
 import { TranslatorWithMerchantTranslations } from '../../application/core/shared/translator/TranslatorWithMerchantTranslations';
 import { IFrameQueryingService } from '../services/message-bus/interfaces/IFrameQueryingService';
 import { FrameQueryingService } from '../services/message-bus/FrameQueryingService';
+import { SentryReducer } from '../../application/core/store/reducers/sentry/SentryReducer';
 import { MessageBusToken, StoreToken, TranslatorToken } from './InjectionTokens';
 
 Container.set({ id: IMessageBus, factory: [MessageBusFactory, 'create'] });
@@ -23,4 +25,4 @@ Container.set({ id: ITranslationProvider, type: TranslationProvider });
 Container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });
 Container.set({ id: TranslatorToken, type: TranslatorWithMerchantTranslations });
 Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
-Container.import([ConfigReducer, StorageReducer, ApplePayReducer, LocaleSubscriber]);
+Container.import([ConfigReducer, StorageReducer, ApplePayReducer, InitialConfigReducer, LocaleSubscriber, SentryReducer]);

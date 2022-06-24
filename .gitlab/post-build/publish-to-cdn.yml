@@ -15,26 +15,51 @@
     PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release/dist'
     TARGET_PREFIX: ''
 
-trigger-publish-sdk-review-to-cdn-stage-from-review:
+trigger-publish-sdk-review-to-cdn-stage-eu-from-review:
   extends:
-    - .trigger-publish-to-cdn-stage-from-review
+    - .trigger-publish-to-cdn-stage-eu-from-review
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
 
-trigger-publish-sdk-release-to-cdn-stage-from-release:
+trigger-publish-sdk-review-to-cdn-stage-us-from-review:
   extends:
-    - .trigger-publish-to-cdn-stage-from-release
+    - .trigger-publish-to-cdn-stage-us-from-review
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
 
-trigger-publish-sdk-release-to-cdn-prod-from-release:
+trigger-publish-sdk-release-to-cdn-stage-eu-from-release:
   extends:
-    - .trigger-publish-to-cdn-prod-from-release
+    - .trigger-publish-to-cdn-stage-eu-from-release
     - .trigger-publish-to-cdn-before-script-sdk
   variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-eu-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_smoke_eu_release/dist'
+
+trigger-publish-sdk-release-to-cdn-prod-eu-from-release:
+  extends:
+    - .trigger-publish-to-cdn-prod-eu-from-release
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-eu-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release_eu/dist'
+
+trigger-publish-sdk-release-to-cdn-stage-us-from-release:
+  extends:
+    - .trigger-publish-to-cdn-stage-us-from-release
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-us-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_smoke_us_release/dist'
+
+trigger-publish-sdk-release-to-cdn-prod-us-from-release:
+  extends:
+    - .trigger-publish-to-cdn-prod-us-from-release
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-us-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release_us/dist'
 
 # app-html
 
@@ -45,23 +70,43 @@ trigger-publish-sdk-release-to-cdn-prod-from-release:
     PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_app_html_release/dist'
     TARGET_PREFIX: 'example/html/'
 
-trigger-publish-app-html-review-to-cdn-stage-from-review:
+.trigger-publish-app-html-review-to-cdn-stage-from-review:
   extends:
     - .trigger-publish-to-cdn-stage-from-review
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-review'
 
-trigger-publish-app-html-release-to-cdn-stage-from-release:
+.trigger-publish-app-html-release-to-cdn-stage-from-release:
   extends:
     - .trigger-publish-to-cdn-stage-from-release
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'
 
-trigger-publish-app-html-release-to-cdn-prod-from-release:
+.trigger-publish-app-html-release-to-cdn-prod-from-release:
   extends:
     - .trigger-publish-to-cdn-prod-from-release
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'
+
+trigger-publish-to-cdn-stage-eu-from-release-version:
+  extends:
+    - .trigger-publish-to-cdn-before-script
+    - .trigger-publish-to-cdn-stage-eu-from-release
+    - .rules-when-release
+  stage: publish-cdn-smoke
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-eu-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_smoke_eu_release/dist/st.js"
+
+trigger-publish-to-cdn-stage-us-from-release-version:
+  extends:
+    - .trigger-publish-to-cdn-before-script
+    - .trigger-publish-to-cdn-stage-us-from-release
+    - .rules-when-release
+  stage: publish-cdn-smoke
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-us-release'
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_smoke_us_release/dist/st.js"

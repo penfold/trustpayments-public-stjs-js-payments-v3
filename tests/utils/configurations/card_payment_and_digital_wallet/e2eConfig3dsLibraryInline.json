@@ -1,5 +1,5 @@
 {
-  "errorReporting": false,
+  "errorReporting": true,
   "submitCallback": "submitCallback",
   "successCallback": "successCallback",
   "errorCallback": "errorCallback",

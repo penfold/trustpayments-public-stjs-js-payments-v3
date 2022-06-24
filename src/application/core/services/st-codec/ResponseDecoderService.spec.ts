@@ -140,6 +140,7 @@ describe('ResponseDecoderService', () => {
 
       expect(result).toEqual({
         responseJwt: 'somejwt',
+        requestreference: '123456',
         customerOutput: {
           ccc: 'ccc',
           ddd: 'ddd',
@@ -178,6 +179,7 @@ describe('ResponseDecoderService', () => {
 
       expect(result).toEqual({
         responseJwt: 'somejwt',
+        requestreference: '123456',
         customerOutput: {
           eee: 'eee',
           fff: 'fff',
@@ -208,6 +210,7 @@ describe('ResponseDecoderService', () => {
 
       expect(result).toEqual({
         responseJwt: 'somejwt',
+        requestreference: '123456',
         updatedMerchantJwt: 'updatedjwt',
         customerOutput: {
           aaa: 'aaa',

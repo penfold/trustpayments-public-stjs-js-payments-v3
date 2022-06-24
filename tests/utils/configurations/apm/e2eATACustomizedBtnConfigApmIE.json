@@ -1,0 +1,15 @@
+{
+  "placement": "st-apm",
+  "apmList": [
+    {
+      "name": "ATA",
+      "button": {
+        "text": "A2A Payment",
+        "backgroundColor": "black",
+        "textColor": "white",
+        "width": "120px",
+        "height": "60px"
+      }
+    }
+  ]
+}

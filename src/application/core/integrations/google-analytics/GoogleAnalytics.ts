@@ -1,56 +1,41 @@
 import { Service } from 'typedi';
-import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { EMPTY, interval, Observable, ReplaySubject, switchMap, throwError } from 'rxjs';
+import { catchError, filter, first, map, mapTo, shareReplay } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 
+interface GA {
+  (type: string, data: unknown): void;
+}
+
 @Service()
 export class GoogleAnalytics {
-  private communicate: string;
-  private gaScript: HTMLScriptElement;
-  private gaScriptContent: Text;
+  private ga: ReplaySubject<GA> = new ReplaySubject<GA>();
 
   constructor(private sentryService: SentryService) {
   }
 
   init(): void {
-    this.insertGALibrary();
-    this.createGAScript()
-      .then(() => {
-        this.insertGAScript()
-          .then(() => {
-            return (window[`ga-disable-UA-${environment.GA_MEASUREMENT_ID}-Y`] = true);
-          })
-          .catch(error => {
-            throw new Error(error);
-          });
-      })
-      .catch(error => {
-        throw new Error(error);
-      });
+    this.insertGALibrary().pipe(
+      map(() => this.createGAScript()),
+      switchMap(gaScript => this.insertGAScript(gaScript)),
+      catchError(error => throwError(() => new Error(error)))
+    ).subscribe((ga: GA) => this.ga.next(ga));
   }
 
-  sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void | boolean {
-    // @ts-ignore
-    if (window.ga) {
-      // @ts-ignore
-      window.ga('send', { hitType, eventCategory, eventAction, eventLabel });
-    } else {
-      return false;
-    }
+  sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void {
+    this.ga.subscribe(ga => ga('send', { hitType, eventCategory, eventAction, eventLabel }));
   }
 
-  private createGAScript(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.gaScript = document.createElement('script');
-      this.gaScript.type = 'text/javascript';
-      this.gaScript.id = 'googleAnalytics';
-      this.gaScriptContent = document.createTextNode(this.returnScriptWithFeatures());
-      this.gaScript.appendChild(this.gaScriptContent);
-      resolve((this.communicate = 'Google Analytics: script has been created'));
-      reject((this.communicate = 'Google Analytics: an error occurred loading script'));
-    });
+  private createGAScript(): HTMLScriptElement {
+    const gaScriptContent = document.createTextNode(this.returnScriptWithFeatures());
+    const gaScript = document.createElement('script');
+    gaScript.type = 'text/javascript';
+    gaScript.id = 'googleAnalytics';
+    gaScript.appendChild(gaScriptContent);
+
+    return gaScript;
   }
 
   private returnScriptWithFeatures(): string {
@@ -62,20 +47,24 @@ export class GoogleAnalytics {
     ga('send', 'pageview', location.pathname);`;
   }
 
-  private insertGALibrary(): void {
-    DomMethods.insertScript('head', { async: 'async', src: environment.GA_SCRIPT_SRC, id: 'googleAnalytics' }).pipe(
-      this.sentryService.captureAndReportResourceLoadingTimeout('Google Analytics script load timeout'),
-      catchError(() => of(null))
-    ).subscribe();
+  private insertGALibrary(): Observable<HTMLScriptElement> {
+    return DomMethods.insertScript('head', { async: 'async', src: environment.GA_SCRIPT_SRC }).pipe(
+      catchError(() => EMPTY)
+    );
   }
 
-  private insertGAScript(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!document.getElementById('googleAnalytics')) {
-        document.head.appendChild(this.gaScript);
-        resolve((this.communicate = 'Google Analytics: script has been appended'));
-        reject((this.communicate = 'Google Analytics: an error occurred appending script'));
-      }
-    });
+  private insertGAScript(gaScript: HTMLScriptElement): Observable<GA> {
+    if (!document.getElementById('googleAnalytics')) {
+      document.head.appendChild(gaScript);
+    }
+
+    return interval().pipe(
+      // @ts-ignore
+      map(() => window?.ga?.loaded),
+      filter(Boolean),
+      first(),
+      mapTo(window['ga']),
+      shareReplay(1)
+    );
   }
 }

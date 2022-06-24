@@ -35,7 +35,11 @@ export const environment = {
   testEnvironment: false,
   overrideDomain: '',
   THREEDS_TERM_URL: 'https://payments.securetrading.net/process/payments/threedsmpilistener',
-  BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.com/3dss/brw/browserData',
+  BROWSER_DATA_URLS: [
+    'https://brw.3ds.trustpayments.com/3dss/brw/browserData',
+    'https://brw.3ds.trustpayments.com/3dss/brw/aragorn',
+    'https://brw.3ds.trustpayments.com/3dss/brw/boromir',
+  ],
   REQUEST_TIMEOUT: 30000,
   SENTRY: {
     DSN: 'https://6319b9ff1fb14ba48cd2c9025d67bd2d@o402164.ingest.sentry.io/5262818',
@@ -46,5 +50,15 @@ export const environment = {
     LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
   },
   SCRIPT_LOAD_TIMEOUT: 30000,
-  FRAUD_CONTROL_TIMEOUT: 5000,
+  FRAUD_CONTROL_TIMEOUT: 10000,
+  CLICK_TO_PAY: {
+    VISA: {
+      SRC_SDK_URL: {
+        SANDBOX: 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+        PROD: 'https://assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+      },
+      SRC_INITIATOR_ID: 'GSTIDU1J8I2NQRWAU7EL21puifGrG2BzgnL9XfBjMzwo9wmtM',
+      ENCRYPTION_KID: 'A5CHRN38V3PJ90ACENUH13CCVOyXIL7A8rC9xClvyZyxvMgrE',
+    },
+  },
 };

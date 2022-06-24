@@ -10,7 +10,8 @@ from behave import given, step, then, use_step_matcher
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
-from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm
+from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm, \
+    create_tokenized_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt
 from utils.enums.config import screenshots
 from utils.enums.config_apm import ConfigApm
@@ -52,6 +53,8 @@ def step_impl(context, e2e_config):
 
 @step('JS library configured by inline configAPMs (?P<apm_config>.+)')
 def step_impl(context, apm_config):
+    if 'IE' in CONFIGURATION.BROWSER and 'scrn_a2a' in context.scenario.tags[0]:
+        apm_config = 'ATA_CUSTOMIZED_BTN_CONFIG_APM_IE'
     e2e_config_apm_dict = get_apm_config_from_json(ConfigApm[apm_config].value)
     context.INLINE_E2E_CONFIG_APM = create_inline_config_apm(e2e_config_apm_dict)
 
@@ -73,6 +76,18 @@ def step_impl(context, jwt_config):
     jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
     jwt = encode_jwt(jwt_payload_dict)
     context.INLINE_E2E_CONFIG = create_inline_config(context.INLINE_E2E_CONFIG_DICT, jwt)
+
+
+@step('JS library configured with Tokenized Card (?P<jwt_config>.+) with additional attributes')
+def step_impl(context,  jwt_config):
+    # map jwt config file (payload part) to dictionary object
+    jwt_payload_dict = get_jwt_config_from_json(ConfigJwt[jwt_config].value)['payload']
+    # override/add default sitereference from config
+    jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
+    # build payload base on additional attributes
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
+    jwt = encode_jwt(jwt_payload_dict)
+    context.INLINE_TOKENIZED_E2E_CONFIG = create_tokenized_inline_config(jwt)
 
 
 @step('User accept success alert')
@@ -117,14 +132,14 @@ def _browser_device(context):
         name = context.browser
     name = name.upper()
 
-    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S20', 'IPHONE 12 MINI')
+    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S21', 'IPHONE 13 PRO')
 
     return {
         'IE': name,
         'CHROME': name,
         'SAFARI': name,
-        'SAMSUNG GALAXY S20': 'SGS20',
-        'IPHONE 12 MINI': 'IP12MINI',
+        'SAMSUNG GALAXY S21': 'SGS21',
+        'IPHONE 13 PRO': 'IP13',
     }[name]
 
 
@@ -132,8 +147,8 @@ def _browser_device(context):
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     with soft_assertions():
-        payment_page.validate_base_url(url)
         context.waits.wait_for_javascript()
+        payment_page.validate_base_url(url)
         actual_url = payment_page.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)

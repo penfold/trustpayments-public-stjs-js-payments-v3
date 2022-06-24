@@ -1,30 +1,23 @@
-import { anything, mock, when } from 'ts-mockito';
+import { anyOfClass, instance, mock, verify } from 'ts-mockito';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { MisconfigurationError } from '../../../../shared/services/sentry/errors/MisconfigurationError';
 import { APMValidator } from './APMValidator';
 
 describe('APMValidator', () => {
   let sut: APMValidator;
-  let configProvider: ConfigProvider;
-  let jwtDecoder: JwtDecoder;
+  let sentryServiceMock: SentryService;
   const configWithError: IAPMConfig = {
     placement: 'test-id',
-    successRedirectUrl: 'successurl',
-    errorRedirectUrl: 'errorurl',
-    cancelRedirectUrl: 'cancelurl',
     apmList: [APMName.ZIP, 'testid' as APMName],
   };
 
   const config: IAPMConfig = {
     placement: 'test-id',
-    successRedirectUrl: 'successurl',
-    errorRedirectUrl: 'errorurl',
-    cancelRedirectUrl: 'cancelurl',
     apmList: [
       APMName.ZIP,
     ],
@@ -33,17 +26,12 @@ describe('APMValidator', () => {
   const configFactory = (apmName: APMName, ...other) => ({
     ...other,
     name: apmName,
-    successRedirectUrl: 'example.com',
-    errorRedirectUrl: 'example.com',
-    returnUrl: 'testurl',
     placement: 'st-apm',
   });
 
   beforeEach(() => {
-    configProvider = mock<ConfigProvider>();
-    jwtDecoder = mock(JwtDecoder);
-    when(configProvider.getConfig()).thenReturn({ jwt: '' });
-    sut = new APMValidator();
+    sentryServiceMock = mock(SentryService);
+    sut = new APMValidator(instance(sentryServiceMock));
   });
 
   describe('validateConfig()', () => {
@@ -59,71 +47,159 @@ describe('APMValidator', () => {
       expect(returnedValue.value).toEqual(configWithError);
       expect(returnedValue.error.message).toEqual('"apmList[1]" does not match any of the allowed types');
     });
-  });
 
-  describe('validateItemConfig()', () => {
+    describe('when validation returns warning about deprecated fields', () => {
+      const warningMessage = '"successRedirectUrl" is no longer supported in APM config. Redirect urls for APMs should be set in JWT and not in APM config' +
+        '. "errorRedirectUrl" is no longer supported in APM config. Redirect urls for APMs should be set in JWT and not in APM config' +
+        '. "cancelRedirectUrl" is no longer supported in APM config. Redirect urls for APMs should be set in JWT and not in APM config';
+      const testConfig = {
+        placement: 'st-apm',
+        apmList: [],
+        successRedirectUrl: 'successUrl',
+        errorRedirectUrl: 'errorUrl',
+        cancelRedirectUrl: 'cancelUrl',
+      } as unknown as IAPMConfig;
 
-    it.each([
-      [
-        configFactory(APMName.ALIPAY), {
-        'billingcountryiso2a': 'PL',
-        'currencyiso3a': 'USD',
-      }, null,
-      ],
-      [
-        configFactory(APMName.ZIP), {
-        'billingcountryiso2a': 'GB',
-        'currencyiso3a': 'GBP',
-      }, null,
-      ],
-    ])('should return an error when jwt fields are missing for any of APMs from apmList in config',
-      (apmConfigList: IAPMItemConfig, jwt, error) => {
-        when(jwtDecoder.decode(anything())).thenReturn({ payload: jwt });
-        expect(sut.validateItemConfig(apmConfigList)).toEqual(error);
+      it('should display console warnign with warning message', () => {
+        console.warn = jest.fn();
+        sut.validateConfig(testConfig);
+
+        expect(console.warn).toHaveBeenCalledWith(warningMessage);
       });
-  });
 
-  describe('validateJwt', () => {
-    it.each([
-        [
-          configFactory(APMName.ALIPAY), {
-          billingcountryiso2a: 'PL',
-          currencyiso3a: 'USD',
-          orderreference: '123',
-        },
-          null,
-        ],
-        [
-          configFactory(APMName.BITPAY), {
-          billingcountryiso2a: 'PL',
-          currencyiso3a: 'USD',
-          orderreference: '123',
-        },
-          null,
-        ],
-        [
-          configFactory(APMName.ZIP), {
-          billingcountryiso2a: 'GB',
-          currencyiso3a: 'GBP',
-          accounttypedescription: 'test',
-          baseamount: '1000',
-          requesttypedescriptions: [RequestType.AUTH],
-          sitereference: 'test',
-          billingfirstname: 'test',
-          billinglastname: 'test',
-          billingpremise: 'test',
-          billingstreet: 'test',
-          billingtown: 'test',
-          billingpostcode: 'test',
-          billingcounty: 'test',
-          billingemail: 'test',
-        },
-          null,
-        ],
+      it('should report it sentry misconfiguration error', () => {
+        console.warn = jest.fn();
+        sut.validateConfig(testConfig);
 
-      ],
-    )('should validate APM with schema from Joi', (config: IAPMItemConfig, payload: IStJwtPayload, error) => {
-      expect(sut.validateJwt(config, payload)).toEqual(error);
+        verify(sentryServiceMock.sendCustomMessage(anyOfClass(MisconfigurationError))).once();
+      });
+    });
+
+    describe('validateItemConfig()', () => {
+      it.each([
+        [configFactory(APMName.ALIPAY), null],
+        [configFactory(APMName.ZIP), null],
+      ])('should return an error when jwt fields are missing for any of APMs from apmList in config',
+        (apmConfigList: IAPMItemConfig, error) => {
+          expect(sut.validateItemConfig(apmConfigList)).toEqual(error);
+        });
+
+      describe
+        .each([
+          [{
+            name: APMName.ZIP,
+            returnUrl: 'returnurl',
+            placement: 'st-apm',
+          } as unknown as IAPMItemConfig, 'returnUrl'],
+          [{
+            name: APMName.ALIPAY,
+            returnUrl: 'returnurl',
+            placement: 'st-apm',
+          } as unknown as IAPMItemConfig, 'returnUrl'],
+          [{
+            name: APMName.ACCOUNT2ACCOUNT,
+            returnUrl: 'returnurl',
+            placement: 'st-apm',
+          } as unknown as IAPMItemConfig, 'returnUrl'],
+          [{
+            name: APMName.PAYU,
+            successRedirectUrl: 'returnurl',
+            placement: 'st-apm',
+          } as unknown as IAPMItemConfig, 'successRedirectUrl'],
+          [{
+            name: APMName.PRZELEWY24,
+            errorRedirectUrl: 'returnurl',
+            placement: 'st-apm',
+          } as unknown as IAPMItemConfig, 'errorRedirectUrl'],
+
+        ] as [IAPMItemConfig, string][])('when validation returns warning about deprecated fields',
+          (config, deprecatedField) => {
+            beforeEach(() => {
+              console.warn = jest.fn();
+            });
+
+            it(`for ${config.name} should print warning using console`, () => {
+              const warningMessage = `"${deprecatedField}" is no longer supported in ${config.name} APM config. Redirect urls for APMs should be set in JWT and not in APM config`;
+              sut.validateItemConfig(config);
+              expect(console.warn).toHaveBeenCalledWith(warningMessage);
+            });
+
+            it('should report it as a MisconfigurationError to Sentry', () => {
+              sut.validateItemConfig(config);
+              verify(sentryServiceMock.sendCustomMessage(anyOfClass(MisconfigurationError))).once();
+            });
+          });
+    });
+
+    describe('validateJwt', () => {
+      it.each([
+          [
+            configFactory(APMName.ALIPAY), {
+            billingcountryiso2a: 'PL',
+            currencyiso3a: 'USD',
+            orderreference: '123',
+          },
+            '"returnurl" is required',
+          ],
+          [
+            configFactory(APMName.BITPAY), {
+            billingcountryiso2a: 'PL',
+            currencyiso3a: 'USD',
+            orderreference: '123',
+          },
+            '"successfulurlredirect" is required',
+          ],
+          [
+            configFactory(APMName.ZIP), {
+            billingcountryiso2a: 'GB',
+            currencyiso3a: 'GBP',
+            accounttypedescription: 'test',
+            baseamount: '1000',
+            requesttypedescriptions: [RequestType.AUTH],
+            sitereference: 'test',
+            billingfirstname: 'test',
+            billinglastname: 'test',
+            billingpremise: 'test',
+            billingstreet: 'test',
+            billingtown: 'test',
+            billingpostcode: 'test',
+            billingcounty: 'test',
+            billingemail: 'test',
+          },
+            '"returnurl" is required',
+          ],
+          [
+            configFactory(APMName.ZIP), {
+            billingcountryiso2a: 'GB',
+            currencyiso3a: 'GBP',
+            accounttypedescription: 'test',
+            baseamount: '1000',
+            requesttypedescriptions: [RequestType.AUTH],
+            sitereference: 'test',
+            billingfirstname: 'test',
+            billinglastname: 'test',
+            billingpremise: 'test',
+            billingstreet: 'test',
+            billingtown: 'test',
+            billingpostcode: 'test',
+            billingcounty: 'test',
+            billingemail: 'test',
+            returnurl: 'url',
+          },
+            null,
+          ],
+
+        ] as [IAPMItemConfig, IStJwtPayload, string | null][]
+      )('should validate JWT with schema from Joi', (config: IAPMItemConfig, payload: IStJwtPayload, expectedError) => {
+        if (expectedError === null) {
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(sut.validateJwt(config, payload)).toEqual(expectedError);
+        } else {
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(sut.validateJwt(config, payload).message).toEqual(expectedError);
+        }
+
+      });
     });
   });
 });

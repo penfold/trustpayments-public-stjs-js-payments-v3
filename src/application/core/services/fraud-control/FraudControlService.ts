@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
 import { catchError, Observable, of, switchMap, timeout, TimeoutError } from 'rxjs';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
-import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
+import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants/RequestTimeout';
 import { environment } from '../../../../environments/environment';
 import { FraudControlServiceSelector } from './FraudControlServiceSelector';
 

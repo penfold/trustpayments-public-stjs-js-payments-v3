@@ -1,17 +1,12 @@
 {
-  "successRedirectUrl": "https://this_is_not_existing_page_success_redirect.com",
-  "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect.com",
-  "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
+    "ATA",
     "BANCONTACT",
     "BITPAY",
     "GIROPAY",
     "EPS",
-    {
-      "name": "ALIPAY",
-      "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
-    },
+    "ALIPAY",
     "IDEAL",
     "MULTIBANCO",
     "MYBANK",
@@ -23,10 +18,7 @@
     "SEPADD",
     "REDPAGOS",
     "SAFETYPAY",
-    {
-      "name": "ZIP",
-      "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
-    },
+    "ZIP",
     "WECHATPAY",
     "UNIONPAY"
   ]

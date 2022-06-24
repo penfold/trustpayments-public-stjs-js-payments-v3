@@ -1,5 +1,5 @@
 {
-  "errorReporting": false,
+  "errorReporting": true,
   "animatedCard": true,
   "panIcon": false,
   "submitOnSuccess": false,

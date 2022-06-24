@@ -28,7 +28,7 @@ export class DomMethods {
               class: DomMethods.CREATED_FIELD_CLASSNAME,
               value: value ? value.toString() : '',
             },
-            DomMethods.INPUT_MARKUP
+            DomMethods.INPUT_MARKUP,
           ) as HTMLInputElement;
         }
 
@@ -136,7 +136,26 @@ export class DomMethods {
   }
 
   static removeAllCreatedFields(form: HTMLFormElement): void {
-    form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => element.remove());
+    form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => DomMethods.removeElement(element));
+  }
+
+  static removeFormFieldByName(form: HTMLFormElement, fieldName: string): void {
+    const elementsToRemove: RadioNodeList | Element = form.elements[fieldName];
+    if (!elementsToRemove) {
+      return;
+    }
+
+    if (this.isRadioNodeList(elementsToRemove)) {
+      while (elementsToRemove.length) {
+        DomMethods.removeElement(elementsToRemove.item(0) as Element);
+      }
+    } else {
+      DomMethods.removeElement((elementsToRemove as Element));
+    }
+  }
+
+  static removeElement(element: Element): void {
+    element?.parentNode.removeChild(element);
   }
 
   static redirect(url: string): void {
@@ -160,5 +179,10 @@ export class DomMethods {
       element.setAttribute(param, params[param]);
     });
     return element;
+  }
+
+  static isRadioNodeList(element: RadioNodeList | Element): element is RadioNodeList {
+    // In IE11 form.elements[<name>] returns HTMLCollection instead of RadioNodeList and RadioNodeList is undefined
+    return (typeof RadioNodeList === 'function' && element instanceof RadioNodeList) || element instanceof  HTMLCollection;
   }
 }

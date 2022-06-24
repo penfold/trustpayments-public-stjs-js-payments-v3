@@ -19,7 +19,10 @@
   extends:
     - .extended-tests
     - .services-app-html-mock
-    - .sequentially-component-browserstack-tests
+    - .e2e-browserstack-tests
+  variables:
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .apple-pay-component-tests-browserstack:
@@ -27,14 +30,16 @@
     - .component-tests-browserstack
   variables:
     OS: "OS X"
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Safari
     BROWSER_VERSION: 'latest'
 
 .apple-pay-component-tests-part-1:
   extends: .apple-pay-component-tests-browserstack
   variables:
-    POETRY_TAGS: apple_test_part1
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: apple_test_part1
 
 .apple-pay-component-tests-part-1-release:
   extends:
@@ -49,7 +54,9 @@ apple-pay-component-tests-part-1-review:
 .apple-pay-component-tests-part-2:
   extends: .apple-pay-component-tests-browserstack
   variables:
-    POETRY_TAGS: apple_test_part2
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: apple_test_part2
 
 .apple-pay-component-tests-part-2-release:
   extends:
@@ -69,7 +76,9 @@ apple-pay-component-tests-part-2-review:
     OS_VERSION: 11
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_TESTS_WITH_APPLE_PAY
 
 .iPhone8-11.0-component-tests-smoke-release:
   extends:
@@ -91,7 +100,9 @@ iPhone8-11.0-component-tests-smoke-nightly:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_TESTS_WITH_APPLE_PAY
 
 .iPhoneXS-12-component-tests-smoke-release:
   extends:
@@ -113,7 +124,9 @@ iPhoneXS-12-component-tests-smoke-nightly:
     OS_VERSION: 13
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_TESTS_WITH_APPLE_PAY
 
 .iPhone11-13-component-tests-smoke-release:
   extends:
@@ -135,9 +148,11 @@ iPhone11-13-component-tests-smoke-nightly:
     OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_TESTS_WITH_APPLE_PAY
 
-iPhone11-14.0-component-tests-smoke-release:
+.iPhone11-14.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
     - .iPhone11-14.0-component-tests-smoke
@@ -149,31 +164,57 @@ iPhone11-14.0-component-tests-smoke-nightly:
     - .iPhone11-14.0-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
+#
+
+.iPhone13-15.0-component-tests-smoke:
+  variables:
+    DEVICE: iPhone 13
+    OS_VERSION: 15
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_TESTS_WITH_APPLE_PAY
+
+iPhone13-15.0-component-tests-smoke-release:
+  extends:
+    - .component-tests-browserstack
+    - .iPhone13-15.0-component-tests-smoke
+    - .rules-extended-tests-release
+
+iPhone13-15.0-component-tests-smoke-nightly:
+  extends:
+    - .component-tests-browserstack
+    - .iPhone13-15.0-component-tests-smoke
+    - .rules-extended-tests-review-manual-allow-failure
+
 ################################### E2E Tests Browserstack ###################################
 .e2e-tests-browserstack-review:
   extends:
     - .extended-tests
     - .services-app-html-review
-    - .sequentially-e2e-browserstack-tests
+    - .e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .e2e-tests-browserstack-release:
   extends:
     - .extended-tests
     - .services-app-html-release
-    - .sequentially-e2e-browserstack-tests
+    - .e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # E2E Smoke Tests
 .win10-Chrome-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-win10-Chrome-latest-e2e-tests-smoke-release:
+.win10-Chrome-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
     - .win10-Chrome-latest-e2e-tests-smoke
@@ -187,24 +228,26 @@ win10-Chrome-latest-e2e-tests-smoke-nightly:
 
 #
 
-.win8.1-Chrome-almost-latest-e2e-tests-smoke:
+.win10-Chrome-almost-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win8.1-Chrome-almost-latest-e2e-tests-smoke-release:
+.win10-Chrome-almost-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Chrome-almost-latest-e2e-tests-smoke
+    - .win10-Chrome-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Chrome-almost-latest-e2e-tests-smoke-nightly:
+win10-Chrome-almost-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Chrome-almost-latest-e2e-tests-smoke
+    - .win10-Chrome-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -215,7 +258,9 @@ win8.1-Chrome-almost-latest-e2e-tests-smoke-nightly:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 win10-IE-11.0-e2e-tests-smoke-release:
   extends:
@@ -231,46 +276,50 @@ win10-IE-11.0-e2e-tests-smoke-review:
 
 #
 
-.win8.1-Edge-latest-e2e-tests-smoke:
+.win10-Edge-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Edge
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-win8.1-Edge-latest-e2e-tests-smoke-release:
+.win10-Edge-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Edge-latest-e2e-tests-smoke
+    - .win10-Edge-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Edge-latest-e2e-tests-smoke-nightly:
+win10-Edge-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Edge-latest-e2e-tests-smoke
+    - .win10-Edge-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.win8.1-Edge-almost-latest-e2e-tests-smoke:
+.win10-Edge-almost-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Edge
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.win8.1-Edge-almost-latest-e2e-tests-smoke-release:
+.win10-Edge-almost-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .win8.1-Edge-almost-latest-e2e-tests-smoke
+    - .win10-Edge-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win8.1-Edge-almost-latest-e2e-tests-smoke-nightly:
+win10-Edge-almost-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .win8.1-Edge-almost-latest-e2e-tests-smoke
+    - .win10-Edge-almost-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -281,9 +330,11 @@ win8.1-Edge-almost-latest-e2e-tests-smoke-nightly:
     OS_VERSION: 10
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-win10-Firefox-latest-e2e-tests-smoke-release:
+.win10-Firefox-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
     - .win10-Firefox-latest-e2e-tests-smoke
@@ -303,7 +354,9 @@ win10-Firefox-latest-e2e-tests-smoke-nightly:
     OS_VERSION: 10
     BROWSER: Firefox
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 .win10-Firefox-almost-latest-e2e-tests-smoke-release:
   extends:
@@ -319,25 +372,52 @@ win10-Firefox-almost-latest-e2e-tests-smoke-nightly:
 
 #
 
+.OSXMonterey-Safari-15.0-e2e-tests-smoke:
+  variables:
+    OS: OS X
+    OS_VERSION: Monterey
+    BROWSER: Safari
+    BROWSER_VERSION: '15.0'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
+
+OSXMonterey-Safari-15.0-e2e-tests-smoke-release:
+  extends:
+    - .e2e-tests-browserstack-release
+    - .OSXMonterey-Safari-15.0-e2e-tests-smoke
+    - .rules-extended-tests-release
+
+OSXMonterey-Safari-15.0-e2e-tests-smoke-review:
+  extends:
+    - .e2e-tests-browserstack-review
+    - .OSXMonterey-Safari-15.0-e2e-tests-smoke
+    - .rules-extended-tests-review
+
+
+#
+
 .OSXBigSur-Safari-14.0-e2e-tests-smoke:
   variables:
     OS: OS X
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-OSXBigSur-Safari-14.0-e2e-tests-smoke-release:
+.OSXBigSur-Safari-14.0-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
     - .OSXBigSur-Safari-14.0-e2e-tests-smoke
     - .rules-extended-tests-release
 
-OSXBigSur-Safari-14.0-e2e-tests-smoke-review:
+OSXBigSur-Safari-14.0-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
     - .OSXBigSur-Safari-14.0-e2e-tests-smoke
-    - .rules-extended-tests-review
+    - .rules-extended-tests-review-manual-allow-failure
 
 #
 
@@ -347,7 +427,9 @@ OSXBigSur-Safari-14.0-e2e-tests-smoke-review:
     OS_VERSION: Catalina
     BROWSER: Safari
     BROWSER_VERSION: '13.1'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 .OSXCatalina-Safari-13.1-e2e-tests-smoke-release:
   extends:
@@ -363,46 +445,50 @@ OSXCatalina-Safari-13.1-e2e-tests-smoke-nightly:
 
 #
 
-.OSXBigSur-Chrome-latest-e2e-tests-smoke:
+.OSXMonterey-Chrome-latest-e2e-tests-smoke:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.OSXBigSur-Chrome-latest-e2e-tests-smoke-release:
+.OSXMonterey-Chrome-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .OSXBigSur-Chrome-latest-e2e-tests-smoke
+    - .OSXMonterey-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-OSXBigSur-Chrome-latest-e2e-tests-smoke-nightly:
+OSXMonterey-Chrome-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .OSXBigSur-Chrome-latest-e2e-tests-smoke
+    - .OSXMonterey-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke:
+.OSXMonterey-Firefox-latest-e2e-tests-smoke:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke-release:
+.OSXMonterey-Firefox-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .OSXBigSur-Firefox-latest-e2e-tests-smoke
+    - .OSXMonterey-Firefox-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke-nightly:
+OSXMonterey-Firefox-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .OSXBigSur-Firefox-latest-e2e-tests-smoke
+    - .OSXMonterey-Firefox-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 # MOBILES
@@ -413,7 +499,9 @@ OSXBigSur-Chrome-latest-e2e-tests-smoke-nightly:
     OS_VERSION: '5.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: browser_info_not_supported
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: browser_info_not_supported
 
 SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests-nightly:
   extends:
@@ -429,7 +517,9 @@ SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests-nightly:
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 .SamsungGalaxyS8-7.0-e2e-tests-smoke-release:
   extends:
@@ -451,7 +541,9 @@ SamsungGalaxyS8-7.0-e2e-tests-smoke-nightly:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 .SamsungGalaxyS9-8.0-e2e-tests-smoke-release:
   extends:
@@ -473,7 +565,9 @@ SamsungGalaxyS9-8.0-e2e-tests-smoke-nightly:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
 .SamsungGalaxyS10Plus-9.0-e2e-tests-smoke-release:
   extends:
@@ -486,6 +580,7 @@ SamsungGalaxyS10Plus-9.0-e2e-tests-smoke-nightly:
     - .visual-regression-tests-review
     - .SamsungGalaxyS10Plus-9.0-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
+
 #
 
 .SamsungGalaxyS20-10.0-e2e-tests-smoke:
@@ -494,9 +589,11 @@ SamsungGalaxyS10Plus-9.0-e2e-tests-smoke-nightly:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-SamsungGalaxyS20-10.0-e2e-tests-smoke-release:
+.SamsungGalaxyS20-10.0-e2e-tests-smoke-release:
   extends:
     - .visual-regression-tests-release
     - .SamsungGalaxyS20-10.0-e2e-tests-smoke
@@ -510,40 +607,65 @@ SamsungGalaxyS20-10.0-e2e-tests-smoke-nightly:
 
 #
 
-.GooglePixel4-10.0-e2e-tests-smoke:
+.SamsungGalaxyS21-11.0-e2e-tests-smoke:
   variables:
-    DEVICE: Google Pixel 4
-    OS_VERSION: '10.0'
+    DEVICE: Samsung Galaxy S21
+    OS_VERSION: '11.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
 
-GooglePixel4-10.0-e2e-tests-smoke-release:
+SamsungGalaxyS21-11.0-e2e-tests-smoke-release:
   extends:
     - .visual-regression-tests-release
-    - .GooglePixel4-10.0-e2e-tests-smoke
+    - .SamsungGalaxyS21-11.0-e2e-tests-smoke
     - .rules-extended-tests-release
 
-GooglePixel4-10.0-e2e-tests-smoke-nightly:
+SamsungGalaxyS21-11.0-e2e-tests-smoke-nightly:
   extends:
     - .visual-regression-tests-review
-    - .GooglePixel4-10.0-e2e-tests-smoke
+    - .SamsungGalaxyS21-11.0-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
+#
+
+.GooglePixel6-12.0-e2e-tests-smoke:
+  variables:
+    DEVICE: Google Pixel 6
+    OS_VERSION: '12.0'
+    REAL_MOBILE: 'true'
+    BROWSER: Chrome
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $SMOKE_E2E_TESTS_TAG
+
+GooglePixel6-12.0-e2e-tests-smoke-release:
+  extends:
+    - .visual-regression-tests-release
+    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .rules-extended-tests-release
+
+GooglePixel6-12.0-e2e-tests-smoke-nightly:
+  extends:
+    - .visual-regression-tests-review
+    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .rules-extended-tests-review-manual-allow-failure
 
 ################################### Visual E2E Tests Browserstack ###################################
 .visual-regression-tests-review:
   extends:
     - .extended-tests
     - .services-app-html-review
-    - .sequentially-e2e-browserstack-tests
+    - .e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .visual-regression-tests-release:
   extends:
     - .extended-tests
     - .services-app-html-release
-    - .sequentially-e2e-browserstack-tests
+    - .e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 #
@@ -554,7 +676,9 @@ GooglePixel4-10.0-e2e-tests-smoke-nightly:
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $VISUAL_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_TESTS_TAG
 
 win10-Chrome-latest-visual-tests-release:
   extends:
@@ -576,7 +700,9 @@ win10-Chrome-latest-visual-tests-review:
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_STYLING_TESTS_TAG
 
 .win10-Chrome-latest-visual-tests-styling-release:
   extends:
@@ -598,7 +724,9 @@ win10-Chrome-latest-visual-tests-styling-nightly:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
 .win10-IE-11.0-visual-tests-release:
   extends:
@@ -626,7 +754,9 @@ win10-IE-11.0-visual-tests-review:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_STYLING_TESTS_TAG
 
 .win10-IE-11.0-visual-tests-styling-release:
   extends:
@@ -642,136 +772,146 @@ win10-IE-11.0-visual-tests-styling-nightly:
 
 #
 
-.OSXBigSur-Safari-14.0-visual-tests:
+.OSXMonterey-Safari-15.0-visual-tests:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Safari
-    BROWSER_VERSION: '14.0'
-    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
+    BROWSER_VERSION: '15.0'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
-.OSXBigSur-Safari-14.0-visual-tests-release:
+.OSXMonterey-Safari-15.0-visual-tests-release:
   extends:
     - .visual-regression-tests-release
-    - .OSXBigSur-Safari-14.0-visual-tests
+    - .OSXMonterey-Safari-15.0-visual-tests
     - .rules-extended-tests-release
 
-OSXBigSur-Safari-14.0-visual-tests-nightly:
+OSXMonterey-Safari-15.0-visual-tests-nightly:
   extends:
     - .visual-regression-tests-review
-    - .OSXBigSur-Safari-14.0-visual-tests
+    - .OSXMonterey-Safari-15.0-visual-tests
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.OSXBigSur-Safari-14.0-visual-tests-styling:
+.OSXMonterey-Safari-15.0-visual-tests-styling:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Safari
-    BROWSER_VERSION: '14.0'
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
+    BROWSER_VERSION: '15.0'
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_STYLING_TESTS_SAFARI_TAG
 
-.OSXBigSur-Safari-14.0-visual-tests-styling-release:
+.OSXMonterey-Safari-15.0-visual-tests-styling-release:
   extends:
     - .component-tests-browserstack
-    - .OSXBigSur-Safari-14.0-visual-tests-styling
+    - .OSXMonterey-Safari-15.0-visual-tests-styling
     - .rules-extended-tests-release
 
-OSXBigSur-Safari-14.0-visual-tests-styling-nightly:
+OSXMonterey-Safari-15.0-visual-tests-styling-nightly:
   extends:
     - .component-tests-browserstack
-    - .OSXBigSur-Safari-14.0-visual-tests-styling
+    - .OSXMonterey-Safari-15.0-visual-tests-styling
     - .rules-extended-tests-review-manual-allow-failure
 
 
 # MOBILES
 
 
-.SamsungGalaxyS20-10.0-visual-tests:
+.SamsungGalaxyS21-11.0-visual-tests:
   variables:
-    DEVICE: Samsung Galaxy S20
-    OS_VERSION: '10.0'
+    DEVICE: Samsung Galaxy S21
+    OS_VERSION: '11.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
-.SamsungGalaxyS20-10.0-visual-tests-release:
+.SamsungGalaxyS21-11.0-visual-tests-release:
   extends:
     - .visual-regression-tests-release
-    - .SamsungGalaxyS20-10.0-visual-tests
+    - .SamsungGalaxyS21-11.0-visual-tests
     - .rules-extended-tests-release
 
-SamsungGalaxyS20-10.0-visual-tests-nightly:
+SamsungGalaxyS21-11.0-visual-tests-nightly:
   extends:
     - .visual-regression-tests-review
-    - .SamsungGalaxyS20-10.0-visual-tests
+    - .SamsungGalaxyS21-11.0-visual-tests
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.SamsungGalaxyS20-10.0-visual-tests-styling:
+.SamsungGalaxyS21-11.0-visual-tests-styling:
   variables:
-    DEVICE: Samsung Galaxy S20
-    OS_VERSION: '10.0'
+    DEVICE: Samsung Galaxy S21
+    OS_VERSION: '11.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_STYLING_TESTS_TAG
 
-.SamsungGalaxyS20-10.0-visual-tests-styling-release:
+.SamsungGalaxyS21-11.0-visual-tests-styling-release:
   extends:
     - .visual-regression-tests-release
-    - .SamsungGalaxyS20-10.0-visual-tests-styling
+    - .SamsungGalaxyS21-11.0-visual-tests-styling
     - .rules-extended-tests-release
 
-SamsungGalaxyS20-10.0-visual-tests-styling-nightly:
+SamsungGalaxyS21-11.0-visual-tests-styling-nightly:
   extends:
     - .visual-regression-tests-review
-    - .SamsungGalaxyS20-10.0-visual-tests-styling
+    - .SamsungGalaxyS21-11.0-visual-tests-styling
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.iPhone12Mini-14-visual-tests:
+.iPhone13-15.0-visual-tests:
   variables:
-    DEVICE: iPhone 12 Mini
-    OS_VERSION: 14
+    DEVICE: iPhone 13 Pro
+    OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_TESTS_SAFARI_TAG
 
-.iPhone12Mini-14-visual-tests-release:
+.iPhone13-15.0-visual-tests-release:
   extends:
     - .component-tests-browserstack
-    - .iPhone12Mini-14-visual-tests
+    - .iPhone13-15.0-visual-tests
     - .rules-extended-tests-release
 
-iPhone12Mini-14-visual-tests-nightly:
+iPhone13-15.0-visual-tests-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone12Mini-14-visual-tests
+    - .iPhone13-15.0-visual-tests
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.iPhone12Mini-14-visual-tests-styling:
+.iPhone13-15.0-visual-tests-styling:
   variables:
-    DEVICE: iPhone 12 Mini
-    OS_VERSION: 14
+    DEVICE: iPhone 13 Pro
+    OS_VERSION: 15
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
+    FEATURES_DIR: 'tests/features'
+    PYTHONPATH: "${PYTHONPATH}:tests"
+    BEHAVE_TESTS_SCENARIOS: $VISUAL_STYLING_TESTS_SAFARI_TAG
 
-.iPhone12Mini-14-visual-tests-styling-release:
+.iPhone13-15.0-visual-tests-styling-release:
   extends:
     - .component-tests-browserstack
-    - .iPhone12Mini-14-visual-tests-styling
+    - .iPhone13-15.0-visual-tests-styling
     - .rules-extended-tests-release
 
-iPhone12Mini-14-visual-tests-styling-nightly:
+iPhone13-15.0-visual-tests-styling-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone12Mini-14-visual-tests-styling
+    - .iPhone13-15.0-visual-tests-styling
     - .rules-extended-tests-review-manual-allow-failure
-
-

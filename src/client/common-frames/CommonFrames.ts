@@ -45,7 +45,8 @@ export class CommonFrames {
     private jwtDecoder: JwtDecoder,
     private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus
-  ) {}
+  ) {
+  }
 
   init(): void {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
@@ -63,10 +64,15 @@ export class CommonFrames {
       this.submitOnError = config.submitOnError;
       this.submitOnSuccess = config.submitOnSuccess;
       this.styles = this.getControlFrameStyles(config.styles);
+
+      if(!this.form){
+        return
+      }
+
+      this.appendControlFrame();
+      this.merchantInputsListener();
+      this.transactionCompleteListener();
     });
-    this.appendControlFrame();
-    this.merchantInputsListener();
-    this.transactionCompleteListener();
   }
 
   private transactionCompleteListener(): void {
@@ -108,7 +114,7 @@ export class CommonFrames {
       return;
     }
 
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data },  EventScope.ALL_FRAMES);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data }, EventScope.ALL_FRAMES);
 
     if (this.shouldSubmitForm(this.getTransactionStatus(data.errorcode)) && !this.isFormSubmitted) {
       this.isFormSubmitted = true;
@@ -172,14 +178,13 @@ export class CommonFrames {
   }
 
   private appendControlFrame(): void {
-    this.form.appendChild(
+    this.form?.appendChild(
       this.iframeFactory.create(
         CONTROL_FRAME_COMPONENT_NAME,
         CONTROL_FRAME_IFRAME,
         this.styles.controlFrame,
         {
           gatewayUrl: this.dataCenterUrl,
-          jwt: this.jwt,
           origin: this.origin,
         },
         -1
@@ -211,15 +216,11 @@ export class CommonFrames {
 
     [...basicSubmitFields, ...this.submitFields]
       .filter((name: string) => !threedQuerySubmitFields.includes(name))
-      .flatMap((name: string) => Array.from(document.getElementsByName(name)))
-      .filter(Boolean)
-      .forEach((element: HTMLElement) => element.remove());
+      .forEach((name: string) => DomMethods.removeFormFieldByName(this.form, name));
   }
 
   private removeThreedQuerySubmitFields(): void {
-    Array.from(document.getElementsByName('settlestatus'))
-      .filter(Boolean)
-      .forEach((element: HTMLElement) => element.remove());
+    DomMethods.removeFormFieldByName(this.form, 'settlestatus');
   }
 
   private onMerchantFieldInput(): void {

@@ -9,6 +9,7 @@ from assertpy import assert_that
 from configuration import CONFIGURATION
 from pages.base_page import BasePage
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
+from pages.locators.tokenized_payments_locators import TokenizedPaymentsLocators
 from utils.configurations import jwt_generator
 from utils.configurations.jwt_generator import replace_jwt
 from utils.enums.auth_data import AuthData
@@ -42,6 +43,7 @@ class PaymentMethodsPage(BasePage):
                                                    'data-notification-color')
 
     def get_logs(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
         logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
         result = re.findall('"name": "(.*)",\n  "step": "(.*)"', logs)
         res = defaultdict(list)
@@ -166,6 +168,13 @@ class PaymentMethodsPage(BasePage):
             is_enabled = self._actions.is_element_enabled(PaymentMethodsLocators.pay_button)
         elif field_type == FieldType.ADDITIONAL_SUBMIT_BUTTON.name:
             is_enabled = self._actions.is_element_enabled(PaymentMethodsLocators.additional_button)
+        elif field_type == FieldType.TOKENIZED_SECURITY_CODE.name:
+            is_enabled = self._actions.switch_to_iframe_and_check_is_element_enabled(
+                TokenizedPaymentsLocators.security_code_iframe,
+                TokenizedPaymentsLocators.security_code_input)
+        elif field_type == FieldType.TOKENIZED_SUBMIT_BUTTON.name:
+            is_enabled = self._actions.is_element_enabled(TokenizedPaymentsLocators.pay_btn)
+
         return is_enabled
 
     def get_element_attribute(self, field_type, attribute):
@@ -188,6 +197,7 @@ class PaymentMethodsPage(BasePage):
         elif field_type == FieldType.EMAIL.name:
             attribute_value = self._actions.get_element_attribute(FieldType.EMAIL.value,
                                                                   PaymentMethodsLocators.merchant_email, attribute)
+
         return attribute_value
 
     def get_field_css_style(self, field_type, property_name):
@@ -245,6 +255,9 @@ class PaymentMethodsPage(BasePage):
 
     def get_security_code_iframe_element_text(self, locator):
         return self._actions.switch_to_iframe_and_get_text(PaymentMethodsLocators.security_code_iframe, locator)
+
+    def get_tokenized_security_code_iframe_element_text(self, locator):
+        return self._actions.switch_to_iframe_and_get_text(TokenizedPaymentsLocators.security_code_iframe, locator)
 
     def change_field_focus(self, field_type):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -323,7 +336,7 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def fill_cardinal_v1_popup(self):
-        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
+        # self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
         self._waits.wait_for_element_to_be_displayed(
             PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
@@ -445,6 +458,9 @@ class PaymentMethodsPage(BasePage):
         elif field_type == FieldType.SECURITY_CODE.name:
             actual_translation = self.get_security_code_iframe_element_text(
                 PaymentMethodsLocators.security_code_field_validation_message)
+        elif field_type == FieldType.TOKENIZED_SECURITY_CODE.name:
+            actual_translation = self.get_tokenized_security_code_iframe_element_text(
+                TokenizedPaymentsLocators.security_code_message)
 
         self.validate_field_text(field_type, actual_translation, expected_text)
 
@@ -457,12 +473,12 @@ class PaymentMethodsPage(BasePage):
         self.validate_expiration_date_iframe_element_text(get_translation_from_json(language, 'Expiration date'))
         self.validate_security_code_iframe_element_text(get_translation_from_json(language, 'Security code'))
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
-                                             PaymentMethodsLocators.pay_button_label,
+                                             PaymentMethodsLocators.pay_button,
                                              get_translation_from_json(language, 'Pay'))
 
     def validate_submit_btn_specific_translation(self, expected_translation):
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
-                                             PaymentMethodsLocators.pay_button_label,
+                                             PaymentMethodsLocators.pay_button,
                                              expected_translation)
 
     def validate_payment_status_translation(self, language, translation_key):
@@ -482,6 +498,16 @@ class PaymentMethodsPage(BasePage):
     def validate_expiration_date_placeholder_text(self, expected_text):
         actual_text = self.get_element_attribute(FieldType.EXPIRATION_DATE.name, 'placeholder')
         self.validate_field_text(FieldType.EXPIRATION_DATE_INPUT.name, actual_text, expected_text)
+
+    def validate_tokenized_security_code_iframe_element_text(self, expected_text):
+        actual_text = self.get_tokenized_security_code_iframe_element_text(
+            TokenizedPaymentsLocators.security_code_label)
+        self.validate_field_text(FieldType.TOKENIZED_SECURITY_CODE.name, actual_text, expected_text)
+
+    def validate_tokenized_submit_btn_specific_translation(self, expected_translation):
+        self.validate_no_iframe_element_text(FieldType.TOKENIZED_SUBMIT_BUTTON.name,
+                                             TokenizedPaymentsLocators.pay_btn,
+                                             expected_translation)
 
     def validate_security_code_iframe_element_text(self, expected_text):
         actual_text = self.get_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label)

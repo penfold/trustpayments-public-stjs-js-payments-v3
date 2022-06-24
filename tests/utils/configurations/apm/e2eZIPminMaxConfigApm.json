@@ -1,0 +1,10 @@
+{
+  "placement": "st-apm",
+  "apmList": [
+    {
+      "name": "ZIP",
+      "minBaseAmount": "1000",
+      "maxBaseAmount": "3000"
+    }
+  ]
+}

@@ -1,19 +1,73 @@
-validate-cdn-latest:
+validate-cdn-latest-js-payments-v3-url:
   extends:
     - .validate-file-in-cdn-with-target
     - .rules-when-release
-  stage: smoke-build-images
+  stage: validate-cdn-latest
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
       REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js-payments-v3/latest/st.js"
-      TARGET_FILE_PATH: ".artifacts_sdk_release/dist/st.js"
+      TARGET_FILE_PATH: ".artifacts_sdk_release_eu/dist/st.js"
 
-build-app-image-html-smoke:
+validate-cdn-latest-eu:
+  extends:
+    - .validate-file-in-cdn-with-target
+    - .rules-when-release
+  stage: validate-cdn-latest
+  needs:
+    - job: trigger-publish-to-cdn-prod-eu-from-release-latest
+  variables:
+      SLEEP_BEFORE_VALIDATE: '0'
+      REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js/latest/st.js"
+      TARGET_FILE_PATH: ".artifacts_sdk_release_eu/dist/st.js"
+
+validate-cdn-latest-us:
+  extends:
+    - .validate-file-in-cdn-with-target
+    - .rules-when-release
+  stage: validate-cdn-latest
+  needs:
+    - job: trigger-publish-to-cdn-prod-us-from-release-latest
+  variables:
+      SLEEP_BEFORE_VALIDATE: '0'
+      REMOTE_FILE_URL: "https://cdn.us.trustpayments.us/js/latest/st.js"
+      TARGET_FILE_PATH: ".artifacts_sdk_release_us/dist/st.js"
+
+build-app-image-html-smoke-latest-eu:
   extends:
     - .build-app-image-html
     - .rules-when-release
-  stage: smoke-build-images
+  stage: build-images-smoke
   variables:
-    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_image"
-    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke/dist"
-    UTILITY_NAME: 'app-html-smoke'
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_latest_eu_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release_eu/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke_latest_eu/dist"
+    UTILITY_NAME: 'app-html-smoke-latest-eu'
+
+build-app-image-html-smoke-latest-us:
+  extends:
+    - .build-app-image-html
+    - .rules-when-release
+  stage: build-images-smoke
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_latest_us_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release_us/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke_latest_us/dist"
+    UTILITY_NAME: 'app-html-smoke-latest-us'
+
+build-app-image-html-smoke-version-eu:
+  extends:
+    - .build-app-image-html
+    - .rules-when-release
+  stage: build-images-smoke
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_version_eu_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_smoke_eu_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke_version_eu/dist"
+    UTILITY_NAME: 'app-html-smoke-version-eu'
+
+build-app-image-html-smoke-version-us:
+  extends:
+    - .build-app-image-html
+    - .rules-when-release
+  stage: build-images-smoke
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_version_us_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_smoke_us_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke_version_us/dist"
+    UTILITY_NAME: 'app-html-smoke-version-us'

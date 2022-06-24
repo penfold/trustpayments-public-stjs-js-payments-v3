@@ -19,10 +19,10 @@ def load_config():
         'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
-        'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
+        'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'tests/screenshots'),
         'SECRET_KEY': get_from_env('JWT_SECRET_KEY', 'you_will_never_guess'),
         'ISS_KEY': get_from_env('JWT_ISS_KEY', 'you_will_never_guess'),
-        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_james38641'),
+        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_jsautocardinal91923'),
         'SITE_REFERENCE_TRUST': get_from_env('SITE_REFERENCE_TRUST', 'you_will_never_guess'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'HEADLESS': get_from_env('HEADLESS', True),
@@ -51,7 +51,17 @@ def load_config():
         'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true'),
         'EXECUTABLE_PATH_EDGE_DRIVER': get_from_env('EXECUTABLE_PATH_EDGE_DRIVER', ''),
         'EXECUTABLE_PATH_IE_DRIVER': get_from_env('EXECUTABLE_PATH_IE_DRIVER', ''),
-        'LOGGING_PREFS': {'browser': 'SEVERE'}
+        'LOGGING_PREFS': {'browser': 'SEVERE'},
+        'VCTP_LOGIN': get_from_env('EMAIL_LOGIN', ''),
+        'VCTP_EMAIL_1': get_from_env('VCTP_EMAIL_1', ''),
+        'VCTP_EMAIL_2': get_from_env('VCTP_EMAIL_2', ''),
+        'VCTP_EMAIL_3': get_from_env('VCTP_EMAIL_3', ''),
+        'VCTP_EMAIL_4': get_from_env('VCTP_EMAIL_4', ''),
+        'VCTP_PASSWORD': get_from_env('VCTP_PASSWORD', ''),
+        'VCTP_PASSWORD_1': get_from_env('VCTP_PASSWORD_1', ''),
+        'VCTP_PASSWORD_2': get_from_env('VCTP_PASSWORD_2', ''),
+        'VCTP_PASSWORD_3': get_from_env('VCTP_PASSWORD_3', ''),
+        'VCTP_PASSWORD_4': get_from_env('VCTP_PASSWORD_4', ''),
     }
 
     return AttrDict(config)

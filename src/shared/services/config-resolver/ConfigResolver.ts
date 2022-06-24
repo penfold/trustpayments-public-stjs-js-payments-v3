@@ -18,8 +18,10 @@ import { environment } from '../../../environments/environment';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
-import { MisconfigurationError } from '../sentry/MisconfigurationError';
+import { MisconfigurationError } from '../sentry/errors/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { TokenizedCardPaymentConfigName } from '../../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 
 @Service()
 export class ConfigResolver {
@@ -65,6 +67,7 @@ export class ConfigResolver {
       translations: this.getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this.setVisaCheckoutConfig(config.visaCheckout),
       [threeDSecureConfigName]: this.setThreeDSecureConfig(config[threeDSecureConfigName]),
+      [TokenizedCardPaymentConfigName]: { ...DefaultConfig[TokenizedCardPaymentConfigName], ...config[TokenizedCardPaymentConfigName] },
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -194,7 +197,13 @@ export class ConfigResolver {
       this.container.get(SentryService).sendCustomMessage(new Error(`Invalid ${item?.context?.key} config value: ${item?.context?.value}`));
     }
     if(item?.type === 'deprecate.error') {
-      this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
+      if (JSON.stringify(item?.path) !== JSON.stringify(['applePay', 'placement'])) {
+        this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
+      }
+
+      setTimeout(() => {
+        this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
+      }, 500);
     }
   }
 }

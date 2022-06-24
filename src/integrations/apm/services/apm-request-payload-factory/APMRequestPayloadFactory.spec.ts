@@ -1,17 +1,13 @@
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
-import { IAPMGatewayRequest } from '../../models/IAPMRequest';
 import { APMRequestPayloadFactory } from './APMRequestPayloadFactory';
 
 describe('APMRequestPayloadFactory', () => {
   const createTestConfig = (name: APMName): IAPMItemConfig => ({
     name,
     placement: 'st-apm',
-    cancelRedirectUrl: 'cancelRedirectUrl',
-    errorRedirectUrl: 'errorRedirectUrl',
-    successRedirectUrl: 'successRedirectUrl',
-    returnUrl: 'returnurl',
   });
+
   let subjectUnderTest: APMRequestPayloadFactory;
 
   beforeEach(() => {
@@ -20,21 +16,33 @@ describe('APMRequestPayloadFactory', () => {
 
   describe('create()', () => {
     it.each([
-      [
-        createTestConfig(APMName.ZIP),
-        {
-          paymenttypedescription: APMName.ZIP,
-          returnurl: 'returnurl',
-        }],
-      [
-        createTestConfig(APMName.ALIPAY),
-        {
-          paymenttypedescription: APMName.ALIPAY,
-          returnurl: 'returnurl',
-        },
-      ],
-    ])('should return request payload object based on APM name and config data', (config: IAPMItemConfig, expected: IAPMGatewayRequest) => {
-      expect(subjectUnderTest.create(config)).toEqual(expected);
-    });
+      APMName.ZIP,
+      APMName.ALIPAY,
+      APMName.ACCOUNT2ACCOUNT,
+      APMName.BANCONTACT,
+      APMName.BITPAY,
+      APMName.EPS,
+      APMName.GIROPAY,
+      APMName.IDEAL,
+      APMName.MULTIBANCO,
+      APMName.MYBANK,
+      APMName.PAYU,
+      APMName.POSTFINANCE,
+      APMName.PRZELEWY24,
+      APMName.REDPAGOS,
+      APMName.SAFETYPAY,
+      APMName.SEPADD,
+      APMName.SOFORT,
+      APMName.TRUSTLY,
+      APMName.UNIONPAY,
+      APMName.WECHATPAY,
+    ])('should return requst payload mapped from provided config  - %s',
+      (apmName: APMName) => {
+        const config = createTestConfig(apmName);
+        const expected = {
+          paymenttypedescription: config.name,
+        };
+        expect(subjectUnderTest.create(config)).toEqual(expected);
+      });
   });
 });

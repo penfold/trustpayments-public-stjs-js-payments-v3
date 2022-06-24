@@ -11,7 +11,7 @@ import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
+import { MisconfigurationError } from '../../../../shared/services/sentry/errors/MisconfigurationError';
 import { APMFilterService } from './APMFilterService';
 
 describe('APMFilterService', () => {

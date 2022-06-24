@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 42.0.13
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 51.0.8
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -16,7 +16,7 @@ include:
   - local: '/.gitlab/post-build/image-other.yml'
   - local: '/.gitlab/post-build/publish-to-cdn.yml'
   - local: '/.gitlab/fast-tests/functional.yml'
-#  - local: '/.gitlab/fast-tests/security.yml'
+  - local: '/.gitlab/fast-tests/security.yml'
   - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
@@ -30,7 +30,10 @@ variables:
 
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE: ${CI_REGISTRY_IMAGE}/app-html-smoke:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_EU: ${CI_REGISTRY_IMAGE}/app-html-smoke-latest-eu:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_LATEST_US: ${CI_REGISTRY_IMAGE}/app-html-smoke-latest-us:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_EU: ${CI_REGISTRY_IMAGE}/app-html-smoke-version-eu:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE_VERSION_US: ${CI_REGISTRY_IMAGE}/app-html-smoke-version-us:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
 
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
@@ -104,7 +107,7 @@ variables:
   ### Schedules configuration : End
 
   ##### Others - project specific #####
-  # BUILD_IMAGES: "true"
+#  BUILD_IMAGES: "true"
   # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
   # LOG_LEVEL: DEBUG # For bash and python scripts
 
@@ -114,7 +117,10 @@ stages:
   - prepare-release
   - build
   - post-build
+  - build-images-smoke
+  - publish-cdn-smoke
   # Tests
+  - smoke-tests-version
   - fast-tests
   - extended-tests
   - validate-merge-request-description
@@ -127,6 +133,5 @@ stages:
   - release
   - post-release
   # Smoke tests
-  - smoke-build-app
-  - smoke-build-images
-  - smoke-tests
+  - validate-cdn-latest
+  - smoke-tests-latest

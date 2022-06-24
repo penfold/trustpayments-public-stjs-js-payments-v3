@@ -1,20 +1,32 @@
 import Joi, { ObjectSchema } from 'joi';
 import { APMName } from './APMName';
 
+const account2accountJwtSchema = Joi.object().keys({
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  returnurl: Joi.string().required(),
+}).unknown();
+
 const alipayJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   orderreference: Joi.string().max(25).required(),
+  returnurl: Joi.string().required(),
 }).unknown();
 
 const pproJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const przelewy24JwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const redpagosJwtSchema = Joi.object().keys({
@@ -22,6 +34,9 @@ const redpagosJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
   billingdob: Joi.string().required(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const sepaddJwtSchema = Joi.object().keys({
@@ -29,11 +44,17 @@ const sepaddJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
   iban: Joi.string().max(255).required(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const wechatpayJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const zipJwtSchema = Joi.object().keys({
@@ -51,9 +72,11 @@ const zipJwtSchema = Joi.object().keys({
   billingpostcode: Joi.string().max(127).required(),
   billingcounty: Joi.string().max(127).required(),
   billingemail: Joi.string().max(255).required(),
+  returnurl: Joi.string().required(),
 }).xor('baseamount', 'mainamount').unknown();
 
 export const APMJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.ACCOUNT2ACCOUNT, account2accountJwtSchema)
   .set(APMName.ALIPAY, alipayJwtSchema)
   .set(APMName.BANCONTACT, pproJwtSchema)
   .set(APMName.BITPAY, pproJwtSchema)

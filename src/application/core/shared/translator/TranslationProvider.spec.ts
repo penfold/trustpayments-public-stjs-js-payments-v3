@@ -1,10 +1,10 @@
 import { Container } from 'typedi';
 import * as translations from '../../models/constants/Translations';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import en_GB from '../../../../translations/json/en_GB.json';
 import cy_GB from './../../../../translations/json/cy_GB.json';
 import da_DK from './../../../../translations/json/da_DK.json';
 import de_DE from './../../../../translations/json/de_DE.json';
-import en_GB from './../../../../translations/json/en_GB.json';
 import en_US from './../../../../translations/json/en_US.json';
 import es_ES from './../../../../translations/json/es_ES.json';
 import fr_FR from './../../../../translations/json/fr_FR.json';

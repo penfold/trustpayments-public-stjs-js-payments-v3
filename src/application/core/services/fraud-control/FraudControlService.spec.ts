@@ -1,7 +1,7 @@
 import { anyOfClass, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { NEVER, Observable, of, throwError, TimeoutError } from 'rxjs';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { environment } from '../../../../environments/environment';
 import { FraudControlService } from './FraudControlService';
 import { FraudControlServiceSelector } from './FraudControlServiceSelector';

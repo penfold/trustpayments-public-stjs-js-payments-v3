@@ -1,3 +1,5 @@
+@import "./_placeholders.scss";
+
 html {
   font-size: 62.5%;
   -webkit-text-size-adjust: 100%;
@@ -76,6 +78,7 @@ input:-webkit-autofill.error-field {
 
 .st-card-number,
 .st-expiration-date,
+.security-code-tokenized,
 .st-security-code {
   &__wrapper {
     display: block;
@@ -109,6 +112,7 @@ input:-webkit-autofill.error-field {
 
 .card-number,
 .expiration-date,
+.security-code-tokenized,
 .security-code {
   padding: 0;
   display: table-cell;

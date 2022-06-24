@@ -6,6 +6,7 @@
   variables:
     BUILD_TYPE: 'prod'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release"
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 build-sdk-rr-review:
   extends:
@@ -13,13 +14,43 @@ build-sdk-rr-review:
     - .rules-when-review
   variables:
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
-build-sdk-rr-release:
+build-sdk-smoke-eu-release:
   extends:
     - .build-sdk-rr
     - .rules-when-release
   variables:
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_smoke_eu_release"
+    EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.eu.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH} --sentry_sourcemaps'
+    NODE_OPTIONS: '--max_old_space_size=4096'
+
+build-sdk-smoke-us-release:
+  extends:
+    - .build-sdk-rr
+    - .rules-when-release
+  variables:
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_smoke_us_release"
+    EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.us.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH} --sentry_sourcemaps'
+    NODE_OPTIONS: '--max_old_space_size=4096'
+
+build-sdk-rr-eu-release:
+  extends:
+    - .build-sdk-rr
+    - .rules-when-release
+  variables:
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release_eu"
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH} --sentry_sourcemaps'
+    NODE_OPTIONS: '--max_old_space_size=4096'
+
+build-sdk-rr-us-release:
+  extends:
+    - .build-sdk-rr
+    - .rules-when-release
+  variables:
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release_us"
+    EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.us.trustpayments.us/js-payments-v3/{RELEASE_TAG}-{CDN_HASH} --sentry_sourcemaps'
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 # local
 
@@ -30,6 +61,7 @@ build-sdk-rr-release:
     BUILD_TYPE: 'dev'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_local"
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 build-sdk-local-review:
   extends:
@@ -50,6 +82,7 @@ build-sdk-local-release:
     BUILD_TYPE: 'mock'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_mock"
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+    NODE_OPTIONS: '--max_old_space_size=4096'
 
 build-sdk-mock-review:
   extends:

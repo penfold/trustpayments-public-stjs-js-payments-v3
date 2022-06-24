@@ -4,6 +4,7 @@ import time
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then
 
+from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from pages.payment_methods_page import format_card_number
 from utils.enums.card import Card
@@ -111,13 +112,18 @@ def step_impl(context):
 
 @step('User will see that "(?P<field>.+)" field is highlighted')
 def step_impl(context, field):
+    tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_highlighted(FieldType[field].name)
+    if field == FieldType.TOKENIZED_SECURITY_CODE.name:
+        tokenized_page.validate_security_code_is_highlighted()
+    else:
+        payment_page.validate_if_field_is_highlighted(FieldType[field].name)
 
 
 @then('User will see that "(?P<field>.+)" field has correct style')
 def step_impl(context, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    tokenized_page = context.page_factory.get_page(Pages.TOKENIZED_JWT_MODULE_PAYMENT_PAGE)
     if field == FieldType.CARD_NUMBER.name:
         payment_page.validate_css_style(FieldType.CARD_NUMBER.name, 'background-color', '100, 149, 237')
     elif field == FieldType.EXPIRATION_DATE.name:
@@ -126,6 +132,8 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.SECURITY_CODE.name, 'background-color', '255, 243, 51')
     if field == FieldType.NOTIFICATION_FRAME.name:
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '248,208,219')
+    if field == FieldType.TOKENIZED_SECURITY_CODE.name:
+        tokenized_page.validate_security_code_css_style('background-color', '255, 243, 51')
 
 
 @step('User will see that (?P<field>.+) input (?:field is|fields are) "(?P<form_status>.+)"')
@@ -281,6 +289,8 @@ def step_impl(context, language):
         'Expiration date': payment_page.validate_expiration_date_iframe_element_text,
         'Expiration date placeholder': payment_page.validate_expiration_date_placeholder_text,
         'Security code': payment_page.validate_security_code_iframe_element_text,
+        'Tokenized security code': payment_page.validate_tokenized_security_code_iframe_element_text,
+        'Tokenized pay button': payment_page.validate_tokenized_submit_btn_specific_translation,
         'Pay': payment_page.validate_submit_btn_specific_translation
     }
     with soft_assertions():
@@ -477,7 +487,9 @@ def step_impl(context, is_supported):
 @then('User will see that operating system is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
+    # TODO Remove this if statement when ios 15 will be added to supported browser/os list
+    if CONFIGURATION.REMOTE_OS_VERSION != '15':
+        payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
 
 
 @step('User clicks (?P<button_type>.+) button on ApplePay popup')

@@ -1,10 +1,25 @@
 {
-  "successRedirectUrl": "successRedirectUrl",
-  "errorRedirectUrl": "errorRedirectUrl",
-  "cancelRedirectUrl": "cancelRedirectUrl",
   "placement": "st-apm",
   "apmList": [
-   "UNIONPAY",
-   "ZIP"
+    "ATA",
+    "ALIPAY",
+    "BANCONTACT",
+    "BITPAY",
+    "EPS",
+    "GIROPAY",
+    "IDEAL",
+    "MULTIBANCO",
+    "MYBANK",
+    "PAYU",
+    "POSTFINANCE",
+    "PRZELEWY24",
+    "REDPAGOS",
+    "SAFETYPAY",
+    "SEPADD",
+    "SOFORT",
+    "TRUSTLY",
+    "UNIONPAY",
+    "WECHATPAY",
+    "ZIP"
   ]
 }

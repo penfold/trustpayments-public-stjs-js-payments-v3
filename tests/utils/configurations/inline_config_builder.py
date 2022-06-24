@@ -8,11 +8,15 @@ class InlineConfigBuilder:
         # current implementation works only for not nested objects
         payload_keys = ['accounttypedescription', 'baseamount', 'billingcountryiso2a', 'billingdob',
                         'billingprefixname', 'billingfirstname', 'billingmiddlename', 'billinglastname',
-                        'billingsuffixname', 'billingemail', 'billingtown', 'billingcounty', 'billingstreet',
-                        'billingpremise', 'billingpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
+                        'billingsuffixname', 'billingemail','billingtelephone', 'billingtown', 'billingcounty', 'billingstreet',
+                        'billingpremise', 'billingpostcode', 'customercountryiso2a', 'customerdob',
+                        'customerprefixname', 'customerfirstname', 'customermiddlename', 'customerlastname',
+                        'customersuffixname', 'customeremail', 'customertown', 'customercounty', 'customerstreet',
+                        'customerpremise', 'customerpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
                         'customercountryiso2a', 'expirydate', 'iban', 'locale',
                         'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
-                        'threedbypasspaymenttypes']
+                        'threedbypasspaymenttypes', 'successfulurlredirect', 'errorurlredirect', 'cancelurlredirect',
+                        'returnurl', 'credentialsonfile', 'parenttransactionreference']
 
         for prop in properties:
             key = prop['key']

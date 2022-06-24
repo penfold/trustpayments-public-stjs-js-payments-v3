@@ -1,0 +1,33 @@
+<section id="tokenized-card-payment">
+  <h2>Tokenized card payment</h2>
+  <form role="form" name="st-form-tokenized" id="st-form-tokenized" action="https://www.example.com"
+        autocomplete="off" novalidate>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Select card</mat-label>
+      <mat-select [(value)]="selectValue"
+                  (selectionChange)="updateJWT($event.value)">
+        <mat-option *ngFor="let option of cardList" [value]="option.value">
+          {{option.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+
+    <fieldset id="st-card-payment">
+      <legend>Credit card details:</legend>
+      <div id="st-tokenized-security-code"></div>
+    </fieldset>
+
+    <div fxLayout="column" fxLayoutGap="10px">
+      <button mat-flat-button
+              color="accent"
+              type="submit"
+              [id]="'tokenized-submit-button'">Pay
+      </button>
+
+    </div>
+
+  </form>
+</section>

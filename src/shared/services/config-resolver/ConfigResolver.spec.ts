@@ -3,7 +3,7 @@ import { ContainerInstance } from 'typedi';
 import { ValidationResult } from 'joi';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
-import { MisconfigurationError } from '../sentry/MisconfigurationError';
+import { MisconfigurationError } from '../sentry/errors/MisconfigurationError';
 import {
   config,
   configResolved,

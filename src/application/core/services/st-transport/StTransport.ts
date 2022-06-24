@@ -9,9 +9,16 @@ import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
+import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants/RequestTimeout';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { IResponseData } from '../../models/IResponseData';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { ISentryMessageEvent, SentryDataFields } from '../../../../shared/services/sentry/models/ISentryData';
+import { EventScope } from '../../models/constants/EventScope';
 
 interface IFetchOptions {
   headers: {
@@ -31,7 +38,7 @@ interface IFetchOptions {
  *     pan: '4111111111111111',
  *     requesttypedescription: 'AUTH',
  *     securitycode: '123',
- *     sitereference: 'test_james38641'
+ *     sitereference: 'test_jsautocardinal91923'
  *   }).then();
  */
 @Service()
@@ -45,7 +52,7 @@ export class StTransport {
   private config: IConfig;
   private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, private messageBus: IMessageBus) {}
 
   /**
    * Perform a JSON API request with ST
@@ -95,16 +102,50 @@ export class StTransport {
   private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
+    const parsedRequestBody = JSON.parse(requestBody);
+    const decodedJwt = this.jwtDecoder.decode(parsedRequestBody.jwt);
+    // sentry filters out messages with "AUTH"
+    const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
+    const requestId: string = parsedRequestBody?.request[0]?.requestid;
+    const sentryMessageEvent: ISentryMessageEvent = {
+      name: SentryDataFields.CurrentRequestId,
+      value: requestId,
+    };
+
+    this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: sentryMessageEvent }, EventScope.ALL_FRAMES);
+
+    this.sentryService.addBreadcrumb(
+      SentryBreadcrumbsCategories.GATEWAY_REQUEST,
+      `requestid: ${requestId}, requesttypedescriptions: ${requestTypeMessage}`
+    );
 
     return this.fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody,
     })
-      .then(response => codec.decode(response, JSON.parse(requestBody)))
-      .catch((error: Error | unknown) => {
-        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { type: TimeoutDetailsType.GATEWAY, requestUrl: gatewayUrl }));
+      .then(response => codec.decode(response, JSON.parse(requestBody))
+        .then(decodedResponse => {
+          const response: IResponseData = decodedResponse?.response as IResponseData;
+          const sentryMessageEvent: ISentryMessageEvent = {
+            name: SentryDataFields.CurrentResponseId,
+            value: String(decodedResponse?.requestreference),
+          };
 
-        if (error instanceof InvalidResponseError) {
+          this.messageBus.publish({ type: PUBLIC_EVENTS.SENTRY_DATA_UPDATED, data: sentryMessageEvent }, EventScope.ALL_FRAMES);
+
+          this.sentryService.addBreadcrumb(
+            SentryBreadcrumbsCategories.GATEWAY_RESPONSE,
+            `errorcode: ${response?.errorcode}, errormessage: ${response?.errormessage}, requestreference: ${decodedResponse?.requestreference}`
+          );
+          return decodedResponse;
+        }))
+      .catch((error: Error | unknown) => {
+        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', {
+          type: TimeoutDetailsType.GATEWAY,
+          requestUrl: gatewayUrl,
+        }));
+
+        if(error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }
 

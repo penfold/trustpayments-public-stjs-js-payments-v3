@@ -18,6 +18,7 @@ module.exports = {
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts'],
     predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
+    ctp: ['./pages/ctp/ctp.ts'],
     ctpVisa: ['./pages/ctp/visa/visa.ts'],
     ctpMastercard: ['./pages/ctp/mastercard/mastercard.ts'],
   },
@@ -57,6 +58,12 @@ module.exports = {
       filename: 'minimal-content-security-header.html',
       template: './pages/minimal/minimal-content-security-header.html',
       chunks: ['minimal'],
+      publicPath: './',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'ctp.html',
+      template: './pages/ctp/ctp.html',
+      chunks: ['ctp'],
       publicPath: './',
     }),
     new HtmlWebpackPlugin({

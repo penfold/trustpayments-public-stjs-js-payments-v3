@@ -1,0 +1,9 @@
+{
+  "placement": "st-apm",
+  "apmList": [
+    {
+      "name": "ATA",
+      "placement": "st-apm-override"
+    }
+  ]
+}

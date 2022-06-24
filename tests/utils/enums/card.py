@@ -69,7 +69,7 @@ class Card(Enum):
     VISA_CMPI_LOOKUP_ERROR_CARD = '4000 0000 0000 0085', '', CardType.VISA, 123
     VISA_PRE_WHITELISTED_VISABASE_CONFIG = '4000 0000 0000 2016', '', CardType.VISA, 123
     VISA_DECLINED_CARD = '4242 4242 4242 4242', '', CardType.VISA, 123
-    VISA_INVALID_CVV = '4111 1100 0000 0211', '', CardType.VISA, 1235
+    VISA_INVALID_CVV = '4111 1100 0000 0211', '', CardType.VISA, 12
     VISA_PASSIVE_AUTH_CARD = '4000 0000 0000 0101', '', CardType.VISA, 123
 
     VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH = '4000 0000 0000 1000', '', CardType.VISA, 123
@@ -269,9 +269,9 @@ class Card(Enum):
     @property
     def expiration_date(self) -> str:
         expiration_date: str = self.__expiration_date
-        if not expiration_date or expiration_date.__eq__('FUTURE'):
+        if not expiration_date or expiration_date == 'FUTURE':
             return self.future_expiration_date
-        elif self.__expiration_date.__eq__('PAST'):
+        elif self.__expiration_date == 'PAST':
             return self.past_expiration_date
         return expiration_date
 
