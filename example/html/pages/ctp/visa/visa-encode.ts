@@ -1,4 +1,5 @@
-import * as jose from 'node-jose';
+import { CompactEncrypt, importJWK } from 'jose';
+import { JWK } from 'jose';
 
 const KID = 'A5CHRN38V3PJ90ACENUH13CCVOyXIL7A8rC9xClvyZyxvMgrE';
 const PUBLIC_KEY = `
@@ -32,41 +33,31 @@ rfGQ+gM8Et4pc1zoi4Jmz5J1YOSOY8KdgYtl0QTE6vyVNo8zkzggUqb0vqd4fR6o
 JweYbZt2x8j75ze/mrDGacQIiRLSI5Em9UYYtW0Wyy+qUwzqgQng2Gxrr2yxShV3
 0tgK
 -----END CERTIFICATE-----`;
+// JWK generated from PEM
+const encryptionKey: JWK = {
+  'kty': 'RSA',
+  'n': 'sZPIusDf7yQnnhBkU9mu14VOO3Crui3b7rAf2KYeobURmXA17b1JX9jg0Cd-vgpmuyTrxBUSc-4b0-UPgSwGFqPWUpx08ExqrwPDOvFojBou2wlyq8bcy0Us-BfeCzSE5lMVdSXTXXXcNqu-qb22jCCCJALpxsArsboMOXsLedh3M4XNQ5XGAtRf7b--uTY5Dr9KLYyUvZKAnY04MKJPEO54YiIFM5DTAhNOms089jdMdx-URIKJjPU2-RpHG1u8LCG028RTIpPsNbRanuS5TAY_zlxDgb1hKJ36YbZENHLg9PXTBhdOMlU90DTLlfcbLTa-D7DgljAaWCuvzLPaGw',
+  'e': 'AQAB',
+};
 
 export async function encode(payload: unknown): Promise<string> {
-  const pem = await readKey(PUBLIC_KEY);
-
-  const keyInput = {
+  const jwk = {
+    e: encryptionKey.e,
+    n: encryptionKey.n,
     kty: 'RSA',
-    e: pem.e, // Public key exponent
-    n: pem.n, // Public key modulus
     kid: KID,
-    use: 'enc',
-    alg: 'RSA-OAEP-256',
-    ext_content: 'payload',
   };
 
-  const key = await jose.JWK.asKey(keyInput);
-  const contentAlg = 'A256GCM';
-  const options = {
-    format: 'compact',
-    contentAlg,
-    fields: {
-      kid: key.kid,
+  const importedJWK = await importJWK(jwk, 'RSA-OAEP-256');
+
+  return new CompactEncrypt(
+    new TextEncoder().encode(JSON.stringify(payload))
+  )
+    .setProtectedHeader({
+      alg: 'RSA-OAEP-256',
+      enc: 'A256GCM',
+      kid: KID,
       typ: 'JOSE',
-      iat: Date.now(),
-      alg: key.alg,
-      enc: contentAlg,
-    },
-  };
-
-  return await jose.JWE.createEncrypt(options, key)
-    .update(JSON.stringify(payload))
-    .final();
-}
-
-export async function readKey(pem: string): Promise<{ n: string, e: string }> {
-  const key = await jose.JWK.asKey(pem, 'pem');
-
-  return key.toJSON();
+    })
+    .encrypt(importedJWK);
 }

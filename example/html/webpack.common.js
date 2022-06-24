@@ -128,7 +128,6 @@ module.exports = {
     }),
     new webpack.SourceMapDevToolPlugin({}),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
   ],
