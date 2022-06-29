@@ -156,7 +156,7 @@ Feature: E2E A2A Payments
 #    When User calls updateJWT function by filling amount field
 #    And User focuses on APM payment methods section
 #    When User chooses ATA from APM list
-#    Then User will see notification frame text: "Invalid acquirer for 3-D Secure"
+#    Then User will see notification frame text: "Bypass"
 #
 #
 #  Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
