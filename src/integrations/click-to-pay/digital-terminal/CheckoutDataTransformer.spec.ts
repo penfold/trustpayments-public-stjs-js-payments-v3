@@ -87,7 +87,7 @@ describe('CheckoutDataTransformer', () => {
           panExpirationYear: '',
         },
       };
-      const encryptionKey: IEncryptionKey = { kid: 'foo', pem: 'bar' };
+      const encryptionKey: IEncryptionKey = { kid: 'foo',jwk: {  } };
       when(srcNameFinderMock.findSrcNameByPan('4111111111111111')).thenReturn(of(SrcName.VISA));
       when(encryptionKeyProviderMock.getEncryptionKey(SrcName.VISA)).thenReturn(of(encryptionKey));
       when(cardEncryptorMock.encrypt(initialCheckoutData.newCardData, encryptionKey)).thenReturn(of('encryptedcard'));

@@ -28,7 +28,7 @@ build-app-html-rr-release:
     - .build-app-html-rr
     - .rules-when-release
   variables:
-    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}'
+    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
     EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
 
 # local
@@ -77,20 +77,38 @@ build-app-html-mock-release:
   variables:
     BUILD_TYPE: 'prod'
 
-build-app-html-smoke-release-eu:
+build-app-html-smoke-latest-release-eu:
   extends:
     - .build-app-html-smoke
     - .rules-when-release
   variables:
     SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.com/js-payments-v3/latest'
     EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/latest'
-    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_eu"
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_latest_eu"
 
-build-app-html-smoke-release-us:
+build-app-html-smoke-latest-release-us:
   extends:
     - .build-app-html-smoke
     - .rules-when-release
   variables:
     SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.us.trustpayments.us/js-payments-v3/latest'
     EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.us.trustpayments.us/js-payments-v3/latest'
-    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_us"
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_latest_us"
+
+build-app-html-smoke-version-release-eu:
+  extends:
+    - .build-app-html-smoke
+    - .rules-when-release
+  variables:
+    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
+    EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.eu.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_version_eu"
+
+build-app-html-smoke-version-release-us:
+  extends:
+    - .build-app-html-smoke
+    - .rules-when-release
+  variables:
+    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.us.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
+    EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.us.trustpayments.dev/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_version_us"

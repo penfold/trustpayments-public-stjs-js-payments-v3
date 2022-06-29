@@ -114,7 +114,7 @@ class ApmModulePaymentPage(BasePage):
 
     def accept_terms_and_confirm_payment(self):
         self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_order_summary_header)
-        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_terms_div)
-        self._actions.click(ApmModulePaymentLocators.zip_terms_div)
+        # self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_terms_div)
+        # self._actions.click(ApmModulePaymentLocators.zip_terms_div)
         self._waits.wait_for_element_to_be_clickable(ApmModulePaymentLocators.zip_confirm_payment_button)
         self._actions.click(ApmModulePaymentLocators.zip_confirm_payment_button)

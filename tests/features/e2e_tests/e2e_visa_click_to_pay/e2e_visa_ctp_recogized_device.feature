@@ -3,7 +3,7 @@ Feature: Visa Click To Pay
   I want to use Visa Click To Pay payment method
   In order to check full digital terminal functionality
 
-# TODO temporarily disabled until problems with Remember me are explained with Visa
+# TODO temporarily disabled until problems with Remember me are explained with Visa - STJS-3479
 #  Scenario: Successful checkout - Registered VISA CTP user on recognized device with saved credit cards
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library authenticated by jwt BASE_JWT with additional attributes

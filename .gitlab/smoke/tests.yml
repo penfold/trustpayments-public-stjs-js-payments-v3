@@ -1,5 +1,4 @@
-e2e-app-html-smoke-eu:
-  stage: smoke-tests
+.e2e-app-html-smoke:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
   variables:
     FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
@@ -8,20 +7,33 @@ e2e-app-html-smoke-eu:
     - .variables
     - .tags-js-docker
     - .e2e-tests
-    - .services-app-html-smoke-eu-merchant
     - .rules-when-release
-  parallel: 27
+  parallel: 26
 
-e2e-app-html-smoke-us:
-  stage: smoke-tests
-  image: ${IMAGE_JS_PAYMENTS_TESTS}
-  variables:
-    FEATURES_DIR: 'tests/features/e2e_tests/e2e_card_payments_tests'
-    PYTHONPATH: "${PYTHONPATH}:tests"
+e2e-app-html-smoke-version-eu:
+  stage: smoke-tests-version
   extends:
-    - .variables
-    - .tags-js-docker
-    - .e2e-tests
-    - .services-app-html-smoke-us-merchant
-    - .rules-when-release
-  parallel: 27
+    - .e2e-app-html-smoke
+    - .services-app-html-smoke-version-eu-merchant
+
+e2e-app-html-smoke-version-us:
+  stage: smoke-tests-version
+  extends:
+    - .e2e-app-html-smoke
+    - .services-app-html-smoke-version-us-merchant
+
+e2e-app-html-smoke-latest-eu:
+  stage: smoke-tests-latest
+  needs:
+    - job: trigger-publish-to-cdn-prod-eu-from-release-latest
+  extends:
+    - .e2e-app-html-smoke
+    - .services-app-html-smoke-latest-eu-merchant
+
+e2e-app-html-smoke-latest-us:
+  stage: smoke-tests-latest
+  needs:
+    - job: trigger-publish-to-cdn-prod-us-from-release-latest
+  extends:
+    - .e2e-app-html-smoke
+    - .services-app-html-smoke-latest-us-merchant
