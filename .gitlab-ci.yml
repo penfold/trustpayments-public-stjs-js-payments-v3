@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 51.0.8
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 51.1.2
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -118,7 +118,6 @@ stages:
   - build
   - post-build
   - build-images-smoke
-  - publish-cdn-smoke
   # Tests
   - smoke-tests-version
   - fast-tests

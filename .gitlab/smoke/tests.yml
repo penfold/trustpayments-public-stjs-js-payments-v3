@@ -25,6 +25,7 @@ e2e-app-html-smoke-version-us:
 e2e-app-html-smoke-latest-eu:
   stage: smoke-tests-latest
   needs:
+    - job: copy-cicd-scripts
     - job: trigger-publish-to-cdn-prod-eu-from-release-latest
   extends:
     - .e2e-app-html-smoke
@@ -33,6 +34,7 @@ e2e-app-html-smoke-latest-eu:
 e2e-app-html-smoke-latest-us:
   stage: smoke-tests-latest
   needs:
+    - job: copy-cicd-scripts
     - job: trigger-publish-to-cdn-prod-us-from-release-latest
   extends:
     - .e2e-app-html-smoke
