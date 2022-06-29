@@ -90,23 +90,3 @@ trigger-publish-sdk-release-to-cdn-prod-us-from-release:
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'
-
-trigger-publish-to-cdn-stage-eu-from-release-version:
-  extends:
-    - .trigger-publish-to-cdn-before-script
-    - .trigger-publish-to-cdn-stage-eu-from-release
-    - .rules-when-release
-  stage: publish-cdn-smoke
-  variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-eu-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_smoke_eu_release/dist/st.js"
-
-trigger-publish-to-cdn-stage-us-from-release-version:
-  extends:
-    - .trigger-publish-to-cdn-before-script
-    - .trigger-publish-to-cdn-stage-us-from-release
-    - .rules-when-release
-  stage: publish-cdn-smoke
-  variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-smoke-us-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_smoke_us_release/dist/st.js"

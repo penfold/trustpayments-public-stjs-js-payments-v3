@@ -3,6 +3,9 @@ validate-cdn-latest-js-payments-v3-url:
     - .validate-file-in-cdn-with-target
     - .rules-when-release
   stage: validate-cdn-latest
+  needs:
+    - job: copy-cicd-scripts
+    - job: trigger-publish-to-cdn-prod-eu-from-release-latest
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
       REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js-payments-v3/latest/st.js"
@@ -14,6 +17,7 @@ validate-cdn-latest-eu:
     - .rules-when-release
   stage: validate-cdn-latest
   needs:
+    - job: copy-cicd-scripts
     - job: trigger-publish-to-cdn-prod-eu-from-release-latest
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
@@ -26,6 +30,7 @@ validate-cdn-latest-us:
     - .rules-when-release
   stage: validate-cdn-latest
   needs:
+    - job: copy-cicd-scripts
     - job: trigger-publish-to-cdn-prod-us-from-release-latest
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
