@@ -11,28 +11,32 @@ import { ErrorTag } from '../constants/ErrorTag';
 import { RequestTimeoutError } from '../errors/RequestTimeoutError';
 import { IStore } from '../../../../application/core/store/IStore';
 import { CommonState } from '../../../../application/core/store/reducers/initial-config/InitialConfigReducer';
+import { PayloadSanitizer } from '../PayloadSanitizer/PayloadSanitizer';
 
 @Service()
 export class SentryEventExtender {
 
-  constructor(private store: IStore<CommonState>) {
+  constructor(private store: IStore<CommonState>,
+              private payloadSanitizer: PayloadSanitizer) {
   }
 
   extendEvent<T extends { event: Event, error: Error }>() {
-    return (source: Observable<T>): Observable<T> => source.pipe(tap(value => this.extendData(value.event, value.error)) );
+    return (source: Observable<T>): Observable<T> => source.pipe(tap(value => this.extendData(value.event, value.error)));
   }
 
-  private extendData(event: Event, originalException: Error | string ): Event {
+  private extendData(event: Event, originalException: Error | string): Event {
 
-    const { initialConfig, sentryData } = this.store.getState();
+    const { initialConfig, sentryData, config } = this.store.getState();
 
     event.extra = {
+      config,
       initialConfig,
       transactionReference: {
-        requestId: sentryData?.currentRequestId  || null,
+        requestId: sentryData?.currentRequestId || null,
         responseId: sentryData?.currentResponseId || null,
       },
-    }
+      jwt: this.payloadSanitizer.maskSensitiveJwtFields(config.jwt),
+    };
 
     switch (true) {
       // case  originalException instanceof GatewayError :
