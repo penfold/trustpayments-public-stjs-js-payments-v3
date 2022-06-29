@@ -10,15 +10,27 @@ import { IApplicationFrameState } from '../../../../application/core/store/state
 import { CommonState } from '../../../../application/core/store/reducers/initial-config/InitialConfigReducer';
 import { FrameCommunicationError } from '../../message-bus/errors/FrameCommunicationError';
 import { PaymentError } from '../../../../application/core/services/payments/error/PaymentError';
+import { PayloadSanitizer } from '../PayloadSanitizer/PayloadSanitizer';
 import { SentryEventExtender } from './SentryEventExtender';
 
 describe('SentryEventExtender', () => {
   let sentryEventExtender: SentryEventExtender;
+  let payloadSanitizer: PayloadSanitizer;
   let randomEvent = eventExceptionMockGenerator();
   let storeMock: IStore<IApplicationFrameState>;
   const originalErrorMock = MOCKED_ERROR_LIST[ErrorTypeName.Error];
   const misconfigurationError = new MisconfigurationError(undefined, originalErrorMock);
   let statePayload: CommonState;
+  const expectedJWT = {
+    iat: 1644400677,
+    iss: '***',
+    payload: {
+      baseamount: '60010',
+      accounttypedescription: 'ECOM',
+      currencyiso3a: 'GBP',
+      sitereference: 'test_jsmanualcardinal91921',
+    },
+  };
 
   const testCases = [
     ...Object.entries(MOCKED_ERROR_LIST).map(([errorName, error]) => {
@@ -69,6 +81,9 @@ describe('SentryEventExtender', () => {
       jwt: 'somejwt',
       storage: {},
       initialConfig: {},
+      config: {
+        jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDQ0MDA2NzcsImlzcyI6ImpzbWFudWFsand0IiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiNjAwMTAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qc21hbnVhbGNhcmRpbmFsOTE5MjEiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.ur6NzW_pTvUrVXvmOPYRMavDRDAIN5Hb4SRH5xccsgQ',
+      },
       sentryData: {
         currentRequestId: 'foo',
         currentResponseId: 'bar',
@@ -76,9 +91,12 @@ describe('SentryEventExtender', () => {
     };
 
     storeMock = mock(Store);
+    payloadSanitizer = mock(PayloadSanitizer);
     when(storeMock.getState()).thenReturn(statePayload);
+    when(payloadSanitizer.maskSensitiveJwtFields(statePayload.config.jwt)).thenReturn(expectedJWT);
 
-    sentryEventExtender = new SentryEventExtender(instance(storeMock));
+    sentryEventExtender = new SentryEventExtender(instance(storeMock), instance(payloadSanitizer));
+
     randomEvent = eventExceptionMockGenerator();
 
   });
@@ -88,6 +106,8 @@ describe('SentryEventExtender', () => {
     it(`Should return ${testCase.message}`, (done) => {
       of(testCase.params).pipe(sentryEventExtender.extendEvent()).subscribe((value) => {
         const expectedEvent = testCase.expected.event;
+        expectedEvent.extra.config = statePayload.config;
+        expectedEvent.extra.jwt = expectedJWT;
         expectedEvent.extra.initialConfig = statePayload.initialConfig;
         expectedEvent.extra.transactionReference = {
           requestId: statePayload.sentryData.currentRequestId,
@@ -101,3 +121,4 @@ describe('SentryEventExtender', () => {
   });
 
 });
+
