@@ -99,6 +99,7 @@ export class SecurityCodeTokenized extends Input {
   private resetInputListener() {
     this.messageBus.subscribeType(PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT, () => {
       this.resetInput();
+      this.sendState();
     });
   }
 
