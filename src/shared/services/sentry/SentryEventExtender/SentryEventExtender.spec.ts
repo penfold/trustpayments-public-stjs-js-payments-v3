@@ -21,16 +21,16 @@ describe('SentryEventExtender', () => {
   const originalErrorMock = MOCKED_ERROR_LIST[ErrorTypeName.Error];
   const misconfigurationError = new MisconfigurationError(undefined, originalErrorMock);
   let statePayload: CommonState;
-  const expectedJWT = {
-    iat: 1644400677,
+  const expectedJWT =   {
+    iat: 1592298893548,
     iss: '***',
     payload: {
-      baseamount: '60010',
+    baseamount: '60010',
       accounttypedescription: 'ECOM',
       currencyiso3a: 'GBP',
-      sitereference: 'test_jsmanualcardinal91921',
-    },
-  };
+      sitereference: 'ddd',
+  },
+  }
 
   const testCases = [
     ...Object.entries(MOCKED_ERROR_LIST).map(([errorName, error]) => {
@@ -82,7 +82,7 @@ describe('SentryEventExtender', () => {
       storage: {},
       initialConfig: {},
       config: {
-        jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDQ0MDA2NzcsImlzcyI6ImpzbWFudWFsand0IiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiNjAwMTAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qc21hbnVhbGNhcmRpbmFsOTE5MjEiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.ur6NzW_pTvUrVXvmOPYRMavDRDAIN5Hb4SRH5xccsgQ',
+        jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTY1OTUwODcsImlzcyI6ImRkZCIsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjYwMDEwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6ImRkZCJ9fQ.xT_CJmDlhoasrztqHUAePm3dN6_3ZaSHPPRyBlkoiFo',
       },
       sentryData: {
         currentRequestId: 'foo',
