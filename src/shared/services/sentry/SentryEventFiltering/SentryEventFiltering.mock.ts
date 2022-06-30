@@ -8,6 +8,7 @@ import { FrameCommunicationError } from '../../message-bus/errors/FrameCommunica
 import { MisconfigurationError } from '../errors/MisconfigurationError';
 import { RequestTimeoutError } from '../errors/RequestTimeoutError';
 import { PaymentError } from '../../../../application/core/services/payments/error/PaymentError';
+import { GatewayFetchError } from '../errors/GatewayFetchError';
 
 export const MOCKED_ERROR_LIST = {
   [ErrorTypeName.Error]: new Error(),
@@ -15,6 +16,7 @@ export const MOCKED_ERROR_LIST = {
   [ErrorTypeName.GatewayError]: new GatewayError(),
   [ErrorTypeName.TimeoutError]: new TimeoutError(),
   [ErrorTypeName.RequestTimeoutError]: new RequestTimeoutError(),
+  [ErrorTypeName.GatewayFetchError]: new GatewayFetchError(),
   [ErrorTypeName.MisconfigurationError]: new MisconfigurationError(),
   [ErrorTypeName.PaymentError]: PaymentError.duringInit(null, null),
   [ErrorTypeName.FrameCommunicationError]: new FrameCommunicationError(null, null, null, null),

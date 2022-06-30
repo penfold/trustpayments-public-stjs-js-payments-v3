@@ -7,4 +7,5 @@ export enum ErrorTypeName {
   MisconfigurationError = 'MisconfigurationError',
   PaymentError = 'PaymentError',
   FrameCommunicationError = 'FrameCommunicationError',
+  GatewayFetchError = 'GatewayFetchError'
 }

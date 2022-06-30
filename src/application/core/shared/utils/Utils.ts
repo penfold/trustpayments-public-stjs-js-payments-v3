@@ -17,12 +17,12 @@ export class Utils {
     return result || null;
   }
 
-  static timeoutPromise(timeout: number, err = new Error()): Promise<never> {
+  static timeoutPromise(timeout: number, err = new Error('Request timeout')): Promise<never> {
     return new Promise((_, reject) => setTimeout(() => reject(err), timeout));
   }
 
-  static promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10, err = new Error()): Promise<T> {
-    return Promise.race([promissory(), Utils.timeoutPromise(timeout, err)]);
+  static promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10): Promise<T> {
+    return Promise.race([promissory(), Utils.timeoutPromise(timeout)]);
   }
 
   static retryPromise<T>(promissory: () => Promise<T>, delay = 0, retries = 5, retryTimeout = 100): Promise<T> {

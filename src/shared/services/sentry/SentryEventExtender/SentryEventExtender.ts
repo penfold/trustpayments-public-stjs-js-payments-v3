@@ -11,6 +11,7 @@ import { ErrorTag } from '../constants/ErrorTag';
 import { RequestTimeoutError } from '../errors/RequestTimeoutError';
 import { IStore } from '../../../../application/core/store/IStore';
 import { CommonState } from '../../../../application/core/store/reducers/initial-config/InitialConfigReducer';
+import { GatewayFetchError } from '../errors/GatewayFetchError';
 
 @Service()
 export class SentryEventExtender {
@@ -46,6 +47,11 @@ export class SentryEventExtender {
       case originalException instanceof MisconfigurationError:
         event.extra.originalError = (originalException as MisconfigurationError)?.previousError;
         event.tags.tag = ErrorTag.MISCONFIGURATION;
+
+        return event;
+
+      case originalException instanceof GatewayFetchError:
+        event.extra.originalErrorMessage = (originalException as GatewayFetchError)?.originalErrorMessage;
 
         return event;
       case originalException instanceof RequestTimeoutError :

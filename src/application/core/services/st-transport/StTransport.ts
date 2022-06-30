@@ -9,9 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { RequestTimeoutError } from '../../../../shared/services/sentry/errors/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
-import { TimeoutDetailsType } from '../../../../shared/services/sentry/constants/RequestTimeout';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IResponseData } from '../../models/IResponseData';
 import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/constants/SentryBreadcrumbsCategories';
@@ -19,6 +17,7 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { ISentryMessageEvent, SentryDataFields } from '../../../../shared/services/sentry/models/ISentryData';
 import { EventScope } from '../../models/constants/EventScope';
+import { GatewayFetchError } from '../../../../shared/services/sentry/errors/GatewayFetchError';
 
 interface IFetchOptions {
   headers: {
@@ -139,11 +138,8 @@ export class StTransport {
           );
           return decodedResponse;
         }))
-      .catch((error: Error | unknown) => {
-        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', {
-          type: TimeoutDetailsType.GATEWAY,
-          requestUrl: gatewayUrl,
-        }));
+      .catch((error: Error) => {
+        this.sentryService.sendCustomMessage(new GatewayFetchError('Gateway Fetch Error', error.message));
 
         if(error instanceof InvalidResponseError) {
           return Promise.reject(error);
