@@ -69,8 +69,8 @@ describe('Utils', () => {
     );
 
     it('should reject with the timeout if it times out', async () => {
-      const err = new Error('Timeout error');
-      await expect(Utils.promiseWithTimeout(() => Utils.timeoutPromise(5), 2, err)).rejects.toEqual(err);
+      const err = new Error('Request timeout');
+      await expect(Utils.promiseWithTimeout(() => Utils.timeoutPromise(5), 2)).rejects.toEqual(err);
     });
   });
 

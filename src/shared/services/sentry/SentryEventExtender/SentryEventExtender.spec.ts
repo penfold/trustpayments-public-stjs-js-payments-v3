@@ -10,6 +10,7 @@ import { IApplicationFrameState } from '../../../../application/core/store/state
 import { CommonState } from '../../../../application/core/store/reducers/initial-config/InitialConfigReducer';
 import { FrameCommunicationError } from '../../message-bus/errors/FrameCommunicationError';
 import { PaymentError } from '../../../../application/core/services/payments/error/PaymentError';
+import { GatewayFetchError } from '../errors/GatewayFetchError';
 import { SentryEventExtender } from './SentryEventExtender';
 
 describe('SentryEventExtender', () => {
@@ -33,6 +34,13 @@ describe('SentryEventExtender', () => {
           originalError: undefined,
           sourceFrame: null,
           targetFrame: null,
+        };
+      }
+
+      if(error instanceof GatewayFetchError) {
+        expectedEvent.extra = {
+          ...expectedEvent.extra,
+          originalErrorMessage: undefined,
         };
       }
 
