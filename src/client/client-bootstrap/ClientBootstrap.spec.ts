@@ -4,7 +4,6 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
 import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
-import { environment } from '../../environments/environment';
 import { IMessageSubscriber } from '../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
@@ -98,12 +97,12 @@ describe('ClientBootstrap', () => {
       expect(result).toBe(st);
     });
 
-    it('initializes the sentry service', () => {
-      clientBootstrap.run(config);
-
-      verify(containerMock.get(SentryService)).once();
-      verify(sentryServiceMock.init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS)).once();
-    });
+    // it('initializes the sentry service', () => {
+    //   clientBootstrap.run(config);
+    //
+    //   verify(containerMock.get(SentryService)).once();
+    //   verify(sentryServiceMock.init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS)).once();
+    // });
 
     it('registers all message subscribers if running the ControlFrame component', () => {
       const messageSubscriberOne = instance(mock<IMessageSubscriber>());
@@ -119,10 +118,10 @@ describe('ClientBootstrap', () => {
     it('logs message and destoys previous instance when initializing the library twice', () => {
       const consoleSpy = spy(console);
       when(consoleSpy.warn(anything())).thenReturn(undefined);
-      
+
       clientBootstrap.run(config);
       clientBootstrap.run(config);
-      
+
       verify(stMock.destroy()).once();
       verify(consoleSpy.warn('The current instance of ST has been destroyed as a result of starting ST again')).once();
     });
