@@ -11,6 +11,7 @@ import { ErrorTag } from '../constants/ErrorTag';
 import { RequestTimeoutError } from '../errors/RequestTimeoutError';
 import { IStore } from '../../../../application/core/store/IStore';
 import { CommonState } from '../../../../application/core/store/reducers/initial-config/InitialConfigReducer';
+import { GatewayError } from '../../../../application/core/services/st-codec/GatewayError';
 
 @Service()
 export class SentryEventExtender {
@@ -35,10 +36,10 @@ export class SentryEventExtender {
     }
 
     switch (true) {
-      // case  originalException instanceof GatewayError :
-      //   // return this.processGatewayError(event, originalException as GatewayError);  @todo  STJS-3014 Before we have the list of gateway errors (errorcodes) that the sentry should log we disable the logging of gateway errors completely.
-      //
-      //   return null;
+      case  originalException instanceof GatewayError :
+        // return this.processGatewayError(event, originalException as GatewayError);  @todo  STJS-3014 Before we have the list of gateway errors (errorcodes) that the sentry should log we disable the logging of gateway errors completely.
+
+        return null;
       case originalException instanceof TimeoutError:
         event.tags.tag = ErrorTag.TIMEOUT;
 
