@@ -17,6 +17,8 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { SentryService } from '../../shared/services/sentry/SentryService';
+import { environment } from '../../environments/environment';
 
 @Service()
 export class ClientBootstrap {
@@ -32,7 +34,7 @@ export class ClientBootstrap {
 
     this.isAlreadyRunning = true;
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
-    // this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);   @todo sentry scoping in the client site STJS-3408
+    this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS, true);  // @todo sentry scoping in the client site STJS-3408
     this.container.get(InterFrameCommunicator).init();
     this.container.get(FramesHub).init();
     this.container.get(MessageBusToken);
