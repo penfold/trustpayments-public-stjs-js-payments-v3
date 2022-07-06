@@ -98,7 +98,8 @@ describe('ClientBootstrap', () => {
       expect(result).toBe(st);
     });
 
-    it('initializes the sentry service', () => {
+    // TODO disabled due to // TODO disabled due to https://securetrading.atlassian.net/browse/STJS-3609
+    it.skip('initializes the sentry service', () => {
       clientBootstrap.run(config);
 
       verify(containerMock.get(SentryService)).once();
@@ -119,10 +120,10 @@ describe('ClientBootstrap', () => {
     it('logs message and destoys previous instance when initializing the library twice', () => {
       const consoleSpy = spy(console);
       when(consoleSpy.warn(anything())).thenReturn(undefined);
-      
+
       clientBootstrap.run(config);
       clientBootstrap.run(config);
-      
+
       verify(stMock.destroy()).once();
       verify(consoleSpy.warn('The current instance of ST has been destroyed as a result of starting ST again')).once();
     });

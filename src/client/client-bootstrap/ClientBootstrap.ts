@@ -1,8 +1,6 @@
 import { ContainerInstance, Service } from 'typedi';
 import { first } from 'rxjs/operators';
-import { SentryService } from '../../shared/services/sentry/SentryService';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { environment } from '../../environments/environment';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
 import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
 import { ST } from '../st/ST';
@@ -34,7 +32,8 @@ export class ClientBootstrap {
 
     this.isAlreadyRunning = true;
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
-    this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);
+    // TODO disabled due to https://securetrading.atlassian.net/browse/STJS-3609
+    // this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);
     this.container.get(InterFrameCommunicator).init();
     this.container.get(FramesHub).init();
     this.container.get(MessageBusToken);
