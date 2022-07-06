@@ -33,6 +33,8 @@ export class SentryService {
   }
 
   init(dsn: string | null, whitelistUrls: string[] = []): void {
+    //TODO disabled due to https://securetrading.atlassian.net/browse/STJS-3609
+    return
     if(!dsn) {
       return;
     }
