@@ -7,6 +7,8 @@ import { IConfig } from '../../model/config/IConfig';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext/SentryContext';
 import { SentryEventScrubber } from './SentryEventScrubber/SentryEventScrubber';
@@ -30,6 +32,7 @@ describe('SentryService', () => {
   let payloadSanitizerMock: PayloadSanitizer;
   let sentryEventExtender: SentryEventExtender;
   let sentryEventFilteringService: SentryEventFilteringService;
+  let simpleMessageBus: IMessageBus;
   const jwtPayloadChangesMock = new BehaviorSubject<IStJwtPayload>({ sitereference: 'test-site-reference' });
   let config$: Subject<IConfig>;
 
@@ -41,6 +44,7 @@ describe('SentryService', () => {
     payloadSanitizerMock = mock(PayloadSanitizer);
     sentryEventExtender = mock(SentryEventExtender);
     sentryEventFilteringService =  mock(SentryEventFilteringService);
+    simpleMessageBus = new SimpleMessageBus();
 
     when(sentryMock.setExtra(anything(), anything())).thenCall((...args) => console.log(args));
     eventScrubberMock = mock(SentryEventScrubber);
@@ -55,6 +59,7 @@ describe('SentryService', () => {
     when(jwtProviderMock.getJwtPayload()).thenReturn(jwtPayloadChangesMock);
 
     sentryService = new SentryService(
+      simpleMessageBus,
       instance(configProviderMock),
       instance(sentryMock),
       instance(sentryContextMock),

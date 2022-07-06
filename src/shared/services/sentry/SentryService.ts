@@ -45,14 +45,15 @@ export class SentryService {
   }
 
   init(dsn: string | null, whitelistUrls: string[] = [], onClientSite?: boolean): void {
-    if(onClientSite){
-      this.onClientSite = true;
-        window.addEventListener('error', (error:ErrorEvent)=>{
-          this.sendCustomMessage(error.error)
-        });
+    if(!dsn) {
+      return;
     }
 
-    if(!dsn || onClientSite) {
+    if(onClientSite){
+      this.onClientSite = true;
+      window.addEventListener('error', (error:ErrorEvent)=>{
+        this.sendCustomMessage(error.error)
+      });
       return;
     }
 
@@ -78,7 +79,6 @@ export class SentryService {
         if(!error.data){
           return
         }
-
         this.sendCustomMessage(deserializeError(error.data));
       });
     }
@@ -105,7 +105,6 @@ export class SentryService {
 
   sendCustomMessage(err: Error): void {
     this.sentry.captureException(err);
-
     if(this.onClientSite){
       this.messageBus.publish(
         {
