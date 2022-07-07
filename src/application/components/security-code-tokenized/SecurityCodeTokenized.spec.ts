@@ -138,7 +138,7 @@ autocorrect="off" spellcheck="false" inputmode="numeric" required="">
     jwt: 'test',
     [TokenizedCardPaymentConfigName]: {
       placeholder: 'CVC',
-      style: {
+      styles: {
         'color-asterisk': 'yellow',
         'outline-input': '20',
         'isLinedUp': 'true',

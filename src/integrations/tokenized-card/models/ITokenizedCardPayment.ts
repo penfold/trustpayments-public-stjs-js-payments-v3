@@ -5,7 +5,7 @@ export interface ITokenizedCardPaymentConfig {
   securityCodeSlotId?: string;
   formId?: string;
   placeholder?: string;
-  style?: IStyle;
+  styles?: IStyle;
 }
 
 export interface ITokenizedCardPayGatewayRequest {

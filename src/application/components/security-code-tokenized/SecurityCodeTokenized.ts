@@ -105,7 +105,7 @@ export class SecurityCodeTokenized extends Input {
 
   private initInputStyle() {
     this.configProvider.getConfig$(true).subscribe((config: IConfig) => {
-      const inputStyle: IStyle = config[TokenizedCardPaymentConfigName]?.style || config?.styles?.securityCode;
+      const inputStyle: IStyle = config[TokenizedCardPaymentConfigName]?.styles || config?.styles?.securityCode;
       this.setAttributes({
         pattern: TOKENIZED_SECURITY_CODE_PATTERN,
         placeholder: config[TokenizedCardPaymentConfigName]?.placeholder,
