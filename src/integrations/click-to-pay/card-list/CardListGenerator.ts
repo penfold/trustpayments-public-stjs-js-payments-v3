@@ -26,6 +26,9 @@ export class CardListGenerator {
   private readonly iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/ctp-visa.svg')],
   ]);
+  private readonly defaultCardArt: Map<string, string> = new Map([
+    ['visa', require('../../../application/core/services/icon/images/ctp-visa-fallback-card-art.svg')],
+  ]);
 
   constructor(
     private digitalTerminal: DigitalTerminal,
@@ -53,6 +56,7 @@ export class CardListGenerator {
       } else {
         cardRow.addEventListener('click', () => this.handleClick(card.srcDigitalCardId));
       }
+      this.setFallbackCartArt(cardRow.querySelector('img[data-card-src]'), card);
       container.appendChild(cardRow);
     });
 
@@ -70,6 +74,15 @@ export class CardListGenerator {
     this.fillUpExpiryMonth();
     this.fillUpExpiryYear();
     this.addEventHandlers(formId);
+  }
+
+  private setFallbackCartArt(cardArdImg: HTMLImageElement, card: ICorrelatedMaskedCard) {
+    cardArdImg.addEventListener('error', event => {
+      const defaultCardArtSrc = this.defaultCardArt.get(card.srcName.toLowerCase());
+      if (cardArdImg.src !== defaultCardArtSrc) {
+        cardArdImg.src = defaultCardArtSrc;
+      }
+    });
   }
 
   displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
@@ -108,39 +121,39 @@ export class CardListGenerator {
 
   private addCardContent(): string {
     return `
-      <div class="st-add-card__label">
-        <span class="st-add-card__label st-add-card__button" id="st-add-card__button">
+      <div class='st-add-card__label'>
+        <span class='st-add-card__label st-add-card__button' id='st-add-card__button'>
           +&emsp;${this.translator.translate('Add a card')}
         </span>
-        <span class="st-add-card__label st-add-card__title" id="st-add-card__title">
+        <span class='st-add-card__label st-add-card__title' id='st-add-card__title'>
           ${this.translator.translate('Add new card')}
         </span>
       </div>
-      <div class="st-add-card__details">
-        ${this.translator.translate('Card number')} <span class="st-add-card__details-asterix"></span>
-        <input id="vctp-pan" type="text" autocomplete="off" name="${NewCardFieldName.pan}">
-        <div id="vctp-pan-validation-status" class="st-add-card__pan-validation"></div>
+      <div class='st-add-card__details'>
+        ${this.translator.translate('Card number')} <span class='st-add-card__details-asterix'></span>
+        <input id='vctp-pan' type='text' autocomplete='off' name='${NewCardFieldName.pan}'>
+        <div id='vctp-pan-validation-status' class='st-add-card__pan-validation'></div>
       </div>
-      <div class="st-add-card__details">
-        <span class="st-add-card__details-element">
-          ${this.translator.translate('Expiry date')} <span class="st-add-card__details-asterix"></span>
-          <select id="vctp-expiryDateMonthId" autocomplete="off" name="${NewCardFieldName.expiryMonth}"></select>
+      <div class='st-add-card__details'>
+        <span class='st-add-card__details-element'>
+          ${this.translator.translate('Expiry date')} <span class='st-add-card__details-asterix'></span>
+          <select id='vctp-expiryDateMonthId' autocomplete='off' name='${NewCardFieldName.expiryMonth}'></select>
         </span>
-        <span class="st-add-card__details-element">
-          <select id="vctp-expiryDateYearId" autocomplete="off" name="${NewCardFieldName.expiryYear}"></select>
+        <span class='st-add-card__details-element'>
+          <select id='vctp-expiryDateYearId' autocomplete='off' name='${NewCardFieldName.expiryYear}'></select>
         </span>
       </div>
-      <div class="st-add-card__details">
-        ${this.translator.translate('Security code')} <span class="st-add-card__details-asterix"></span><br>
-        <input id="vctp-cvv" maxlength="3" autocomplete="off" name="${NewCardFieldName.securityCode}" type="text">
+      <div class='st-add-card__details'>
+        ${this.translator.translate('Security code')} <span class='st-add-card__details-asterix'></span><br>
+        <input id='vctp-cvv' maxlength='3' autocomplete='off' name='${NewCardFieldName.securityCode}' type='text'>
       </div>
     `;
   }
 
   private viewAllCards(): string {
     return `
-      <div class="st-add-card__label">
-        <span class="st-add-card__label" id="st-view-all-card__button">
+      <div class='st-add-card__label'>
+        <span class='st-add-card__label' id='st-view-all-card__button'>
           ${this.translator.translate('View all cards')}
         </span>
       </div>
@@ -161,11 +174,11 @@ export class CardListGenerator {
 
   private addUserInformationContent(emailAddress: string): string {
     return `
-      <div class="st-ctp-enabled-by">
-        <img src="${logo}" class="st-ctp-prompt__logo-img" alt="">
+      <div class='st-ctp-enabled-by'>
+        <img src='${logo}' class='st-ctp-prompt__logo-img' alt=''>
       </div>
-      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
-        ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details-not-you">${this.translator.translate('Not you?')}</span>
+      <div id='st-ctp-user-details__wrapper' class='st-ctp-user-details__wrapper'>
+        ${emailAddress} <span id='st-ctp-user-details__not--you' class='st-ctp-user-details-not-you'>${this.translator.translate('Not you?')}</span>
       </div>
     `;
   }
@@ -197,7 +210,7 @@ export class CardListGenerator {
     }
 
     return `
-      <span class="st-card__checkbox">${
+      <span class='st-card__checkbox'>${
       card.isActive
         ? '<label><input id="radio' +
         card.srcDigitalCardId +
@@ -208,15 +221,15 @@ export class CardListGenerator {
         '><span class="st-card__checkbox-radio"></span></label>'
         : ''
     }</span>
-      <span class="st-card__image">
-        <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
+      <span class='st-card__image'>
+        <img src='${card.digitalCardData.artUri}' alt='' style='width: 60px; height: 40px' data-card-src='${card.srcName}'>
       </span>
-      <span class="st-card__description">
+      <span class='st-card__description'>
         ${card.srcName}<br>
         ..${card.panLastFour}
       </span>
-      <span class="st-card__logo">
-          <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
+      <span class='st-card__logo'>
+          <img src='${this.iconMap.get(card.srcName.toLowerCase())}' alt=''>
       </span>
     `;
   }
