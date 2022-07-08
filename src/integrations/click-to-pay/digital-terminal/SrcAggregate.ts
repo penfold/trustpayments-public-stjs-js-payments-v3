@@ -18,6 +18,7 @@ import { ISrcProvider } from './ISrcProvider';
 import { IIdentityLookupResult } from './interfaces/IIdentityLookupResult';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { CardAggregator } from './CardAggregator';
+import { logTimer } from './log-timer/log-timer.operator';
 
 @Service()
 export class SrcAggregate {
@@ -35,13 +36,15 @@ export class SrcAggregate {
     });
 
     return this.forkJoinSrcs(src => src.init(initData)).pipe(
+      logTimer('init'),
       tap(v => console.log('INIT', v)),
       mapTo(undefined),
     );
   }
 
   isRecognized(): Observable<IIsRecognizedResponse> {
-    return this.forkJoinSrcs(src => src.isRecognized()).pipe(
+      return this.forkJoinSrcs(src => src.isRecognized()).pipe(
+      logTimer('isRecognized'),
       tap(v => console.log('IS RECOGNIZED', v)),
       map(result => Object.values(result).reduce((acc, next) => ({
         recognized: acc.recognized || next.recognized,
@@ -52,6 +55,7 @@ export class SrcAggregate {
 
   getSrcProfile(idTokens: string[]): Observable<IAggregatedProfiles> {
     return this.forkJoinSrcs(src => src.getSrcProfile(idTokens)).pipe(
+      logTimer('getSrcProfile'),
       map(result => ({
         srcProfiles: result,
         aggregatedCards: this.cardAggregator.aggregate(result),
@@ -69,6 +73,7 @@ export class SrcAggregate {
     };
 
     return this.forkJoinSrcs(src => src.identityLookup(consumerIdentity)).pipe(
+      logTimer('identityLookup'),
       tap(v => console.log('IDENTITY LOOKUP', v)),
       map(result => Object.entries(result).reduce(reductorFunc, { consumerPresent: false, srcNames: [] })),
     );
@@ -76,13 +81,13 @@ export class SrcAggregate {
 
   initiateIdentityValidation(srcName: SrcName): Observable<IInitiateIdentityValidationResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.initiateIdentityValidation())),
+      switchMap(src => from(src.initiateIdentityValidation()).pipe(logTimer('initiateIdentityValidation'))),
     );
   }
 
   completeIdentityValidation(srcName: SrcName, validationData: string): Observable<ICompleteIdValidationResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.completeIdentityValidation(validationData))),
+      switchMap(src => from(src.completeIdentityValidation(validationData)).pipe(logTimer('completeIdentityValidation'))),
     );
   }
 
