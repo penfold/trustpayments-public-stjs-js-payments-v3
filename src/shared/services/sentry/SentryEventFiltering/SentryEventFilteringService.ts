@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { Exception, StackFrame } from '@sentry/browser';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { ErrorTypeList } from '../constants/ErrorTypeList';
 import { SENTRY_EVENT_FILTERING_CONFIG } from './SentryEventFilteringConfig';
 import { ErrorFilter, ExceptionString } from './SentryEventFiltering.model';
 
@@ -55,11 +56,7 @@ export class SentryEventFilteringService {
       return true;
     }
 
-    if(errorTypeName === 'TimeoutError') {
-      return error?.constructor?.name === errorTypeName || error?.constructor?.name === 'TimeoutErrorImpl';
-    }
-
-    return error?.constructor?.name === errorTypeName;
+    return error instanceof ErrorTypeList[errorTypeName]
   }
 
   private hasFileName(fileNameList: ExceptionString[], event: Event): boolean {
