@@ -64,7 +64,10 @@ import {
   TokenizedCardPaymentConfigName,
   TokenizedCardPaymentMethodName,
 } from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
-import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
+import {
+  ITokenizedCardPaymentConfig,
+  ITokenizedCardPaymentConfigDeprecated,
+} from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
 import { DefaultConfig } from '../../application/core/models/constants/config-resolver/DefaultConfig';
 
 declare const ST_VERSION: string | undefined;
@@ -303,7 +306,7 @@ export class ST {
     });
   }
 
-  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter> {
+  TokenizedCardPayment(jwtCard: string, tokenizedCardPaymentConfig?: ITokenizedCardPaymentConfigDeprecated | ITokenizedCardPaymentConfig): Promise<TokenizedCardPaymentAdapter> {
     if (!jwtCard) {
       return;
     }
@@ -313,6 +316,16 @@ export class ST {
       ...this.config[TokenizedCardPaymentConfigName],
       ...tokenizedCardPaymentConfig,
     };
+
+    if ((tokenizedCardPaymentConfig as ITokenizedCardPaymentConfigDeprecated)?.style) {
+      (tokenizedCardPaymentConfig as ITokenizedCardPaymentConfig).styles = {
+        ...(tokenizedCardPaymentConfig as ITokenizedCardPaymentConfig).styles,
+        ...(tokenizedCardPaymentConfig as ITokenizedCardPaymentConfigDeprecated).style,
+      };
+
+      delete (tokenizedCardPaymentConfig as ITokenizedCardPaymentConfigDeprecated).style;
+      console.warn('tokenizedCardPaymentConfig.style is deprecated');
+    }
 
     this.configService.updateProp(TokenizedCardPaymentConfigName, tokenizedCardPaymentConfig);
 

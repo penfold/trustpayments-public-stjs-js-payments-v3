@@ -8,6 +8,10 @@ export interface ITokenizedCardPaymentConfig {
   styles?: IStyle;
 }
 
+export interface ITokenizedCardPaymentConfigDeprecated extends Omit<ITokenizedCardPaymentConfig, 'styles'> {
+  style?: IStyle;
+}
+
 export interface ITokenizedCardPayGatewayRequest {
   formId: string;
   securitycode: string
