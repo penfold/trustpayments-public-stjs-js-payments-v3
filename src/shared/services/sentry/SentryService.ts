@@ -49,10 +49,10 @@ export class SentryService {
       return;
     }
 
-    if(onClientSite){
+    if(onClientSite) {
       this.onClientSite = true;
-      window.addEventListener('error', (error:ErrorEvent)=>{
-        this.sendCustomMessage(error.error)
+      window.addEventListener('error', (error: ErrorEvent) => {
+        this.sendCustomMessage(error.error);
       });
       return;
     }
@@ -74,10 +74,10 @@ export class SentryService {
       }
     );
 
-    if(window.name === CONTROL_FRAME_IFRAME){
-      this.messageBus.pipe(ofType(PUBLIC_EVENTS.SENTRY_ERROR)).subscribe((error)=>{
-        if(!error.data){
-          return
+    if(window.name === CONTROL_FRAME_IFRAME) {
+      this.messageBus.pipe(ofType(PUBLIC_EVENTS.SENTRY_ERROR)).subscribe((error) => {
+        if(!error.data) {
+          return;
         }
         this.sendCustomMessage(deserializeError(error.data));
       });
@@ -104,8 +104,13 @@ export class SentryService {
   }
 
   sendCustomMessage(err: Error): void {
+    if(!err) {
+      return;
+    }
+
     this.sentry.captureException(err);
-    if(this.onClientSite){
+
+    if(this.onClientSite) {
       this.messageBus.publish(
         {
           type: PUBLIC_EVENTS.SENTRY_ERROR,
@@ -155,6 +160,6 @@ export class SentryService {
       map((value: { event: Event, error: Error }) => {
         return value.event;
       })
-    ))
+    ));
   }
 }

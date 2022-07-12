@@ -19,8 +19,7 @@ import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
 import { SentryEventExtender } from './SentryEventExtender/SentryEventExtender';
 import { SentryEventFilteringService } from './SentryEventFiltering/SentryEventFilteringService';
 
-// TODO disabled due to https://securetrading.atlassian.net/browse/STJS-3609
-describe.skip('SentryService', () => {
+describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
   const config = ({ errorReporting: true } as unknown) as IConfig;
 
