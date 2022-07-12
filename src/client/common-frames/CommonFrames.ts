@@ -66,6 +66,7 @@ export class CommonFrames {
       this.styles = this.getControlFrameStyles(config.styles);
 
       if(!this.form){
+        console.warn(`Form with id: "${this.formId}" does not exist`);
         return
       }
 
