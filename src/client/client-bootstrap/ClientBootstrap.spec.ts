@@ -102,7 +102,7 @@ describe('ClientBootstrap', () => {
       clientBootstrap.run(config);
 
       verify(containerMock.get(SentryService)).once();
-      verify(sentryServiceMock.init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS)).once();
+      verify(sentryServiceMock.init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS, true)).once();
     });
 
     it('registers all message subscribers if running the ControlFrame component', () => {
