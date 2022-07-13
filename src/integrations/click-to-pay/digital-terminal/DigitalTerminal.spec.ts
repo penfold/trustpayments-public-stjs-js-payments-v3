@@ -1,7 +1,6 @@
 import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { of, switchMap } from 'rxjs';
 import faker from '@faker-js/faker';
-import { environment } from '../../../environments/environment';
 import { DigitalTerminal } from './DigitalTerminal';
 import { SrcAggregate } from './SrcAggregate';
 import { CheckoutDataTransformer } from './CheckoutDataTransformer';
@@ -48,7 +47,6 @@ describe('DigitalTerminal', () => {
               ...dpaTransactionOptions,
               dpaLocale: 'fr_FR',
             },
-            srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
             srciTransactionId: anyString(),
           }))).once();
           done();

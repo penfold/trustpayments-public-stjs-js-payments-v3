@@ -2,7 +2,6 @@ import { Observable, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { Uuid } from '../../../application/core/shared/uuid/Uuid';
-import { environment } from '../../../environments/environment';
 import { Locale } from '../../../application/core/shared/translator/Locale';
 import { SrcAggregate } from './SrcAggregate';
 import { IInitData } from './interfaces/IInitData';
@@ -37,7 +36,6 @@ export class DigitalTerminal {
 
     return this.srcAggregate.init({
       srciDpaId: data.srciDpaId,
-      srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
       srciTransactionId: this.srciTransactionId,
       dpaTransactionOptions: {
         ...data.dpaTransactionOptions,

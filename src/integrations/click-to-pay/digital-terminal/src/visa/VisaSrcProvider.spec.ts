@@ -1,24 +1,17 @@
 import { instance, mock, when } from 'ts-mockito';
 import { of } from 'rxjs';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
-import { environment } from '../../../../environments/environment';
-import { SrcName } from '../SrcName';
+import { ConfigProvider } from '../../../../../shared/services/config-provider/ConfigProvider';
+import { DomMethods } from '../../../../../application/core/shared/dom-methods/DomMethods';
+import { environment } from '../../../../../environments/environment';
+import { SrcName } from '../../SrcName';
 import { VisaSrcProvider } from './VisaSrcProvider';
+import { VisaSrcWrapper } from './VisaSrcWrapper';
+jest.mock('./VisaSrcWrapper');
 import spyOn = jest.spyOn;
-
-class VisaSrciAdapterMock {
-
-}
 
 describe('VisaSrcProvider', () => {
   let configProviderMock: ConfigProvider;
   let visaSrcProvider: VisaSrcProvider;
-
-  beforeAll(() => {
-    // @ts-ignore
-    window.vAdapters = { VisaSRCI: VisaSrciAdapterMock };
-  });
 
   beforeEach(() => {
     configProviderMock = mock<ConfigProvider>();
@@ -60,9 +53,9 @@ describe('VisaSrcProvider', () => {
       });
     });
 
-    it('returns a new instance of SRC', done => {
+    it('returns a new instance of SRC wrapper', done => {
       visaSrcProvider.getSrc().subscribe(src => {
-        expect(src).toBeInstanceOf(VisaSrciAdapterMock);
+        expect(src).toBeInstanceOf(VisaSrcWrapper);
         done();
       });
     });

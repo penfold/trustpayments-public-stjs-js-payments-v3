@@ -14,7 +14,7 @@ import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/mod
 import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 import { GooglePayClientInitializer } from '../integrations/google-pay/google-pay-client-initializer/GooglePayClientInitializer';
-import { VisaSrcProvider } from '../../integrations/click-to-pay/digital-terminal/src/VisaSrcProvider';
+import { VisaSrcProvider } from '../../integrations/click-to-pay/digital-terminal/src/visa/VisaSrcProvider';
 import { SentryBreadcrumbsSender } from '../../application/core/services/sentry-breadcrumbs-sender/SentryBreadcrumbsSender';
 import { AnalyticsEventSender } from '../../application/core/services/analytics-event-sender/AnalyticsEventSender';
 import { TokenizedCardClientInitializer } from '../../integrations/tokenized-card/client/TokenizedCardClientInitializer';

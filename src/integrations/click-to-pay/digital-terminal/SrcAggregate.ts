@@ -29,12 +29,12 @@ export class SrcAggregate {
   ) {
   }
 
-  init(initData: ISrcInitData): Observable<void> {
+  init(initData: ISrcInitData | Partial<ISrcInitData>): Observable<void> {
     this.srcProviders.forEach(srcProvider => {
       this.srcs.set(srcProvider.getSrcName(), srcProvider.getSrc());
     });
 
-    return this.forkJoinSrcs(src => src.init(initData)).pipe(
+    return this.forkJoinSrcs(src => src.init(initData as ISrcInitData)).pipe(
       tap(v => console.log('INIT', v)),
       mapTo(undefined),
     );
