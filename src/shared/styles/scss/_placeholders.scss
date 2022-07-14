@@ -55,6 +55,12 @@
   &:-ms-input-placeholder {
     color: $color-input-placeholder;
   }
+
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 0.35rem $border-color-input;
+    ;
+  }
 }
 
 %input--readonly {
@@ -96,7 +102,7 @@
   z-index: -1;
   overflow: hidden;
 
-  > input {
+  >input {
     appearance: none;
     height: 0;
     width: 0;
