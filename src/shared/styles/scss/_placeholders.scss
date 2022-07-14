@@ -39,6 +39,7 @@
 %input {
   box-sizing: border-box;
   width: 100%;
+  outline: none;
   font-size: $font-size-input; // @param
   line-height: $line-height-input; // @param
   color: $color-input; // @param
