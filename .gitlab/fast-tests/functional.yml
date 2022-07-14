@@ -109,7 +109,7 @@ e2e-apms-tests-release:
   parallel: 20
 
 #Visa Click to Pay E2E Tests Headless
-.e2e-vctp-tests-review:
+e2e-vctp-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -120,7 +120,7 @@ e2e-apms-tests-release:
     PYTHONPATH: "${PYTHONPATH}:tests"
   parallel: 6
 
-.e2e-vctp-tests-release:
+e2e-vctp-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
