@@ -190,6 +190,7 @@ module.exports = {
           path.join(__dirname, 'node_modules/buffer'),
           path.join(__dirname, 'node_modules/pako'),
           path.join(__dirname, 'node_modules/jose'),
+          path.join(__dirname, 'node_modules/@sentry'),
         ],
       },
       {
