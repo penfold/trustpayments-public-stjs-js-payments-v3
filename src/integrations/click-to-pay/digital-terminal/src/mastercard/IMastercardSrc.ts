@@ -1,4 +1,4 @@
-import { ISrcInitData } from '../../ISrc';
+import { IIsRecognizedResponse, ISrcInitData } from '../../ISrc';
 
 export interface IMastercardSrc {
   // TODO update this interface based on Mastercard documentation
@@ -7,4 +7,5 @@ export interface IMastercardSrc {
   // will be easier to maintain
   // remove this comment eventually
   init(initData: ISrcInitData): Promise<void>;
+  isRecognized(): Promise<IIsRecognizedResponse>;
 }

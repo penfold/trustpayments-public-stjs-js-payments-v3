@@ -57,13 +57,8 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3509
   isRecognized(): Promise<IIsRecognizedResponse> {
-    // TODO this is mocked so CTP is still working
-    return Promise.resolve({
-      recognized: false,
-      idTokens: [],
-    });
+    return this.mastercardSrc.isRecognized();
   }
 
   // TODO implement in https://securetrading.atlassian.net/browse/STJS-3515
