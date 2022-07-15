@@ -1,6 +1,10 @@
 @import '../../../shared/styles/scss/placeholders';
 @import '../../../shared/styles/scss/variables';
 // TODO remove nested declarations, use proper BEM selectors
+
+$ctp-radio-size: 22px;
+$ctp-green: #18b760;
+
 .st-add-card__pan-validation {
   @extend %message;
   visibility: visible;
@@ -82,9 +86,9 @@
 
   .st-card__checkbox {
     display: flex;
-    height: 27px;
+    height: $ctp-radio-size;
     margin-right: 10px;
-    width: 27px;
+    width: $ctp-radio-size;
   }
 
   .st-card__logo {
@@ -92,7 +96,7 @@
     padding-right: 10px;
 
     img {
-      height: 20px;
+      height: 14px;
     }
 
   }
@@ -182,19 +186,19 @@
 }
 
 .st-card__checkbox-radio {
-  accent-color: green;
+  accent-color: $ctp-green;
   appearance: none;
-  border-radius: 27px;
-  border: 4px solid green;
+  border-radius: $ctp-radio-size;
+  border: 4px solid $ctp-green;
   display: inline-block;
-  height: 27px;
+  height: $ctp-radio-size;
   box-sizing: border-box;
   position: relative;
-  width: 27px;
+  width: $ctp-radio-size;
 }
 
 .st-card__checkbox-input:checked + .st-card__checkbox-radio {
-  background: green;
+  background: $ctp-green;
 }
 
 .st-card__checkbox-input:checked + .st-card__checkbox-radio::after {
@@ -203,7 +207,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   content: "\2713";
-  font-size: 20px;
+  font-size: 14px;
   color: white;
 }
 
@@ -211,8 +215,8 @@
   align-items: baseline;
   color: #848484;
   display: flex;
-  justify-content: flex-start;
-  line-height: 32px;
+  justify-content: space-between;
+  margin: 22px 0 44px;
 }
 
 .st-ctp-user-details__image {
