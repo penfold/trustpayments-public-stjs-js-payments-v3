@@ -58,7 +58,7 @@
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0.35rem $border-color-input;
+    border-width: calc($border-size-input * 1.5);
   }
 }
 
