@@ -18,6 +18,7 @@ import { VisaSrcProvider } from '../../integrations/click-to-pay/digital-termina
 import { SentryBreadcrumbsSender } from '../../application/core/services/sentry-breadcrumbs-sender/SentryBreadcrumbsSender';
 import { AnalyticsEventSender } from '../../application/core/services/analytics-event-sender/AnalyticsEventSender';
 import { TokenizedCardClientInitializer } from '../../integrations/tokenized-card/client/TokenizedCardClientInitializer';
+import { MastercardSrcProvider } from '../../integrations/click-to-pay/digital-terminal/src/mastercard/MastercardSrcProvider';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -41,4 +42,4 @@ if (environment.testEnvironment) {
   Container.set({ id: HttpClient, type: HttpClient });
 }
 
-Container.import([VisaSrcProvider]);
+Container.import([VisaSrcProvider, MastercardSrcProvider]);

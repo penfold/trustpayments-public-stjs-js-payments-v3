@@ -2,6 +2,7 @@ import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 
 export const srcProfilesMock: Record<SrcName, ISrcProfileList> = {
+  MASTERCARD: undefined,
   VISA: {
     profiles: [
       {
