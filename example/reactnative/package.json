@@ -31,7 +31,7 @@
     "@react-native-community/eslint-config": "3.0.3",
     "@types/jest": "27.5.2",
     "@types/react-native": "0.66.11",
-    "@types/react-test-renderer": "17.0.1",
+    "@types/react-test-renderer": "18.0.0",
     "@typescript-eslint/eslint-plugin": "5.30.4",
     "@typescript-eslint/parser": "5.30.4",
     "babel-jest": "27.5.1",
@@ -41,7 +41,7 @@
     "react-test-renderer": "17.0.2"
   },
   "resolutions": {
-    "@types/react": "^17"
+    "@types/react": "^18.0.0"
   },
   "jest": {
     "preset": "react-native",
