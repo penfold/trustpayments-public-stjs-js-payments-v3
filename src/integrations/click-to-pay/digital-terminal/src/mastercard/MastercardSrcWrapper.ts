@@ -1,7 +1,8 @@
 import {
+  ConsumerIdentityMasterCardType,
   ICheckoutData,
   ICheckoutResponse,
-  ICompleteIdValidationResponse, IConsumerIdentity,
+  ICompleteIdValidationResponse, IConsumerIdentity, IConsumerIdentityMasterCard,
   IIdentityLookupResponse, IInitiateIdentityValidationResponse, IIsRecognizedResponse,
   ISrc, ISrcInitData, ISrcProfileList, IUnbindAppInstanceResponse,
 } from '../../ISrc';
@@ -44,12 +45,8 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3511
   identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse> {
-    // TODO this is mocked so CTP is still working
-    return Promise.resolve({
-      consumerPresent: false,
-    });
+    return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity));
   }
 
   // TODO implement in https://securetrading.atlassian.net/browse/STJS-3512
@@ -69,5 +66,11 @@ export class MastercardSrcWrapper implements ISrc {
   // TODO implement in https://securetrading.atlassian.net/browse/STJS-3515
   unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
     return Promise.resolve(undefined);
+  }
+
+  private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IConsumerIdentityMasterCard{
+    return { ...consumerIdentity,
+      type: ConsumerIdentityMasterCardType[consumerIdentity.type],
+    }
   }
 }

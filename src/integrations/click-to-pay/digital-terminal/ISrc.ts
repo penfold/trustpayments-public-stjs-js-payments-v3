@@ -1,3 +1,8 @@
+export enum ConsumerIdentityMasterCardType {
+  EMAIL = 'EMAIL_ADDRESS',
+  MOBILE_NUMBER = 'MOBILE_PHONE_NUMBER',
+}
+
 export interface IIsRecognizedResponse {
   recognized: boolean;
   idTokens?: string[];
@@ -61,6 +66,10 @@ export interface IConsumerIdentity {
   identityProvider?: string;
   identityValue: string;
   type: 'EMAIL' | 'MOBILE_NUMBER' | 'CUSTOM_IDENTIFIER';
+}
+
+export interface IConsumerIdentityMasterCard extends Omit<IConsumerIdentity, 'type'> {
+  type: 'EMAIL_ADDRESS' | 'MOBILE_PHONE_NUMBER';
 }
 
 export interface IPhoneNumber {
