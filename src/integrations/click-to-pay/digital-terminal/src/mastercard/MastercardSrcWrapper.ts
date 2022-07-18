@@ -18,14 +18,14 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   init(initData: ISrcInitData | Partial<ISrcInitData>): Promise<void> {
-    const visaInitData: Partial<ISrcInitData> = {
-      srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
+    const mastercardInitData: Partial<ISrcInitData> = {
+      srcInitiatorId: environment.CLICK_TO_PAY.MASTERCARD.SRC_INITIATOR_ID,
     };
     //@ts-ignore
 
     return this.mastercardSrc.init({
       ...initData,
-      ...visaInitData,
+      ...mastercardInitData,
     } as ISrcInitData);
 
   }
@@ -35,9 +35,8 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3513
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse> {
-    return Promise.resolve(undefined);
+    return this.mastercardSrc.completeIdentityValidation(validationData);
   }
 
   // TODO implement in  https://securetrading.atlassian.net/browse/STJS-3510
@@ -46,12 +45,11 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse> {
-    return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity));
+     return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity));
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3512
   initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse> {
-    return Promise.resolve(undefined);
+    return this.mastercardSrc.initiateIdentityValidation();
   }
 
   // TODO implement in https://securetrading.atlassian.net/browse/STJS-3509
@@ -69,8 +67,11 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IConsumerIdentityMasterCard{
-    return { ...consumerIdentity,
-      type: ConsumerIdentityMasterCardType[consumerIdentity.type],
+    return {
+      consumerIdentity:{
+        ...consumerIdentity,
+        identityType: ConsumerIdentityMasterCardType[consumerIdentity.type],
+      },
     }
   }
 }

@@ -68,8 +68,12 @@ export interface IConsumerIdentity {
   type: 'EMAIL' | 'MOBILE_NUMBER' | 'CUSTOM_IDENTIFIER';
 }
 
-export interface IConsumerIdentityMasterCard extends Omit<IConsumerIdentity, 'type'> {
-  type: 'EMAIL_ADDRESS' | 'MOBILE_PHONE_NUMBER';
+export interface IConsumerIdentityMasterCard {
+  consumerIdentity: {
+    identityProvider?: string;
+    identityValue: string;
+    identityType: 'EMAIL_ADDRESS' | 'MOBILE_PHONE_NUMBER'
+  };
 }
 
 export interface IPhoneNumber {
