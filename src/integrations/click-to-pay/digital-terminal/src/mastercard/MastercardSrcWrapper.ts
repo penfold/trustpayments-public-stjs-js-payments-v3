@@ -66,8 +66,8 @@ export class MastercardSrcWrapper implements ISrc {
     });
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3515
-  unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
-    return Promise.resolve(undefined);
+  async unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
+    const unbindAppInstanceResponse = await this.mastercardSrc.unbindAppInstance();
+    return Promise.resolve({ srcCorrelatedId: unbindAppInstanceResponse.srcCorrelationId });
   }
 }
