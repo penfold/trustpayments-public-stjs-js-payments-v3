@@ -1,13 +1,14 @@
 import {
-  ConsumerIdentityMasterCardType,
   ICheckoutData,
   ICheckoutResponse,
-  ICompleteIdValidationResponse, IConsumerIdentity, IConsumerIdentityMasterCard,
+  ICompleteIdValidationResponse, IConsumerIdentity,
   IIdentityLookupResponse, IInitiateIdentityValidationResponse, IIsRecognizedResponse,
   ISrc, ISrcInitData, ISrcProfileList, IUnbindAppInstanceResponse,
 } from '../../ISrc';
 import { environment } from '../../../../../environments/environment';
 import { IMastercardSrc } from './IMastercardSrc';
+import { IConsumerIdentityMasterCard } from './IConsumerIdentityMasterCard';
+import { ConsumerIdentityMasterCardType } from './ConsumerIdentityMasterCardType';
 
 export class MastercardSrcWrapper implements ISrc {
   private mastercardSrc: IMastercardSrc;

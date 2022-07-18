@@ -1,10 +1,10 @@
 import {
   ICompleteIdValidationResponse,
-  IConsumerIdentityMasterCard,
   IIdentityLookupResponse,
   IInitiateIdentityValidationResponse,
   ISrcInitData,
 } from '../../ISrc';
+import { IConsumerIdentityMasterCard } from './IConsumerIdentityMasterCard';
 
 export interface IMastercardSrc {
   // TODO update this interface based on Mastercard documentation
