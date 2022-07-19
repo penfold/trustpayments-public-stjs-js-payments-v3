@@ -39,7 +39,6 @@
 %input {
   box-sizing: border-box;
   width: 100%;
-  outline: none;
   font-size: $font-size-input; // @param
   line-height: $line-height-input; // @param
   color: $color-input; // @param
@@ -58,7 +57,7 @@
 
   &:focus {
     outline: none;
-    border-width: calc($border-size-input * 1.5);
+    border-width: $border-size-input * 1.5;
   }
 }
 
