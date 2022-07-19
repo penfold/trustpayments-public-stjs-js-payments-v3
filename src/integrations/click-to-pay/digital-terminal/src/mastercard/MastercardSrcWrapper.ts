@@ -66,8 +66,7 @@ export class MastercardSrcWrapper implements ISrc {
     });
   }
 
-  async unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
-    const unbindAppInstanceResponse = await this.mastercardSrc.unbindAppInstance();
-    return Promise.resolve({ srcCorrelatedId: unbindAppInstanceResponse.srcCorrelationId });
+  unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
+    return this.mastercardSrc.unbindAppInstance().then(({ srcCorrelationId })=>({ srcCorrelatedId: srcCorrelationId }))
   }
 }
