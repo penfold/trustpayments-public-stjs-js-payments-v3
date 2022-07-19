@@ -2,13 +2,16 @@ import {
   ICheckoutData,
   ICheckoutResponse,
   ICompleteIdValidationResponse, IConsumerIdentity,
-  IIdentityLookupResponse, IInitiateIdentityValidationResponse, IIsRecognizedResponse,
+  IIsRecognizedResponse,
   ISrc, ISrcInitData, ISrcProfileList, IUnbindAppInstanceResponse,
 } from '../../ISrc';
 import { environment } from '../../../../../environments/environment';
-import { IMastercardSrc } from './IMastercardSrc';
-import { IConsumerIdentityMasterCard } from './IConsumerIdentityMasterCard';
-import { ConsumerIdentityMasterCardType } from './ConsumerIdentityMasterCardType';
+import {
+  IMastercardConsumerIdentity, IMastercardIdentityLookupResponse,
+  IMastercardInitiateIdentityValidationResponse,
+  IMastercardSrc,
+  MasterCardIdentityType,
+} from './IMastercardSrc';
 
 export class MastercardSrcWrapper implements ISrc {
   private mastercardSrc: IMastercardSrc;
@@ -45,11 +48,11 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse> {
+  identityLookup(consumerIdentity: IConsumerIdentity): Promise<IMastercardIdentityLookupResponse> {
      return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity));
   }
 
-  initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse> {
+  initiateIdentityValidation(): Promise<IMastercardInitiateIdentityValidationResponse> {
     return this.mastercardSrc.initiateIdentityValidation();
   }
 
@@ -67,11 +70,11 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IConsumerIdentityMasterCard{
+  private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IMastercardConsumerIdentity{
     return {
       consumerIdentity:{
         ...consumerIdentity,
-        identityType: ConsumerIdentityMasterCardType[consumerIdentity.type],
+        identityType: MasterCardIdentityType[consumerIdentity.type],
       },
     }
   }
