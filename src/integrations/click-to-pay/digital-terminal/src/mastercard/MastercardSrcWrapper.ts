@@ -1,14 +1,14 @@
+import { omit } from 'lodash';
 import {
   ICheckoutData,
   ICheckoutResponse,
-  ICompleteIdValidationResponse, IConsumerIdentity,
+  ICompleteIdValidationResponse, IConsumerIdentity, IIdentityLookupResponse, IInitiateIdentityValidationResponse,
   IIsRecognizedResponse,
   ISrc, ISrcInitData, ISrcProfileList, IUnbindAppInstanceResponse,
 } from '../../ISrc';
 import { environment } from '../../../../../environments/environment';
 import {
-  IMastercardConsumerIdentity, IMastercardIdentityLookupResponse,
-  IMastercardInitiateIdentityValidationResponse,
+  IMastercardConsumerIdentity, IMastercardIdentityLookupResponse, IMastercardInitiateIdentityValidationResponse,
   IMastercardSrc,
   MasterCardIdentityType,
 } from './IMastercardSrc';
@@ -18,7 +18,7 @@ export class MastercardSrcWrapper implements ISrc {
 
   constructor() {
     //@ts-ignore
-    this.mastercardSrc =  new window.SRCSDK_MASTERCARD();
+    this.mastercardSrc = new window.SRCSDK_MASTERCARD();
   }
 
   init(initData: ISrcInitData | Partial<ISrcInitData>): Promise<void> {
@@ -48,12 +48,16 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  identityLookup(consumerIdentity: IConsumerIdentity): Promise<IMastercardIdentityLookupResponse> {
-     return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity));
+  identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse> {
+    return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity)).then((identityLookupResponse: IMastercardIdentityLookupResponse) => {
+      return omit(identityLookupResponse, 'lastUsedCardTimestamp');
+    });
   }
 
-  initiateIdentityValidation(): Promise<IMastercardInitiateIdentityValidationResponse> {
-    return this.mastercardSrc.initiateIdentityValidation();
+  initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse> {
+    return this.mastercardSrc.initiateIdentityValidation().then((initiateIdentityValidation: IMastercardInitiateIdentityValidationResponse) => {
+      return omit(initiateIdentityValidation, ['validationMessage', 'supportedValidationChannels']);
+    });
   }
 
   // TODO implement in https://securetrading.atlassian.net/browse/STJS-3509
@@ -70,12 +74,12 @@ export class MastercardSrcWrapper implements ISrc {
     return Promise.resolve(undefined);
   }
 
-  private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IMastercardConsumerIdentity{
+  private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IMastercardConsumerIdentity {
     return {
-      consumerIdentity:{
+      consumerIdentity: {
         ...consumerIdentity,
         identityType: MasterCardIdentityType[consumerIdentity.type],
       },
-    }
+    };
   }
 }
