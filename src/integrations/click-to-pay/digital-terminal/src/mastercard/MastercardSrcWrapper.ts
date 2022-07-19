@@ -17,13 +17,13 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   init(initData: ISrcInitData | Partial<ISrcInitData>): Promise<void> {
-    const visaInitData: Partial<ISrcInitData> = {
+    const mastercardInitData: Partial<ISrcInitData> = {
       srcInitiatorId: environment.CLICK_TO_PAY.MASTERCARD.SRC_INITIATOR_ID,
     };
 
     return this.mastercardSrc.init({
       ...initData,
-      ...visaInitData,
+      ...mastercardInitData,
     } as ISrcInitData);
 
   }
