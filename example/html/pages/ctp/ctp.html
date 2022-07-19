@@ -681,7 +681,6 @@
         if (event.target.value) {
           const cardType = adapterInstance.getSrcName(event.target.value);
           cardType.then(function(srcName) {
-            console.log('DEBUG BCIM srcName', srcName)
             if(srcName === 'VISA' || srcName === 'MASTERCARD') {
               showCheckToRegisterSection()
             } else {
