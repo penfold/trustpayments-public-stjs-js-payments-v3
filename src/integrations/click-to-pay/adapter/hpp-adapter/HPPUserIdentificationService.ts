@@ -74,11 +74,11 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
         return this.translator.translate('OTP code could not be sent.');
       case 'RETRIES_EXCEEDED':
         return this.translator.translate('The number of retries for generating the OTP exceeded the limit.');
-      case 'ID_INVALID':
+      case 'ID_INVALID' || 'SESSION_ID_INVALID':
         return this.translator.translate('Invalid email. Use correct email and try again');
       case 'CONSUMER_ID_MISSING':
         return this.translator.translate('Consumer identity is missing in the request.');
-      case 'VALIDATION_DATA_MISSING':
+      case 'VALIDATION_DATA_MISSING' || 'VALDATA_MISSING' :
         return this.translator.translate('Validation data missing.');
       case 'ID_FORMAT_UNSUPPORTED':
         return this.translator.translate('Email is not in valid format.');
