@@ -1,4 +1,4 @@
-import { forkJoin, mapTo, Observable, Subject, takeUntil } from 'rxjs';
+import { forkJoin, mapTo, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -15,16 +15,22 @@ import { TransportServiceGatewayClient } from '../../../application/core/service
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
 import { IApplePayValidateMerchantRequest } from '../client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayConfigObject } from '../client/services/config/IApplePayConfigObject';
-import { IApplePayProcessPaymentResponse } from './services/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import {
+  RequestProcessingInitializer,
+} from '../../../application/core/services/request-processor/RequestProcessingInitializer';
+import {
+  IRequestProcessingService,
+} from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayConfigObject, IRequestTypeResponse> {
+  private requestProcessingService: Observable<IRequestProcessingService>;
+
   constructor(
-    private requestProcessingService: NoThreeDSRequestProcessingService,
+    private requestProcessingInitializer: RequestProcessingInitializer,
     private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
     private applePayResponseHandlerService: ApplePayResponseHandlerService,
@@ -36,13 +42,14 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
   }
 
   init(config: IConfig): Observable<void> {
+    this.requestProcessingService = this.requestProcessingInitializer.initialize();
     const initClientQueryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT,
       data: config,
     };
 
     return forkJoin([
-      this.requestProcessingService.init(null),
+      this.requestProcessingService,
       this.frameQueryingService.query(initClientQueryEvent, MERCHANT_PARENT_FRAME),
     ]).pipe(mapTo(undefined));
   }
@@ -80,7 +87,9 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
   private authorizePayment(
     request: IApplePayGatewayRequest,
     merchantUrl: string
-  ): Observable<IApplePayProcessPaymentResponse> {
-    return this.requestProcessingService.process(request, merchantUrl) as Observable<IApplePayProcessPaymentResponse>;
+  ): Observable<IRequestTypeResponse> {
+    return this.requestProcessingService.pipe(
+      switchMap(requestProcessingService => requestProcessingService.process(request, merchantUrl))
+    );
   }
 }
