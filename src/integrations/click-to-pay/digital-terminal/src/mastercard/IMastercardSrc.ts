@@ -1,4 +1,5 @@
 import {
+  IIsRecognizedResponse,
   ICompleteIdValidationResponse, IIdentityLookupResponse,
   IInitiateIdentityValidationResponse,
   ISrcInitData,
@@ -46,4 +47,6 @@ export interface IMastercardSrc {
   identityLookup(consumerIdentity: IMastercardConsumerIdentity): Promise<IMastercardIdentityLookupResponse>;
 
   init(initData: ISrcInitData): Promise<void>;
+
+  isRecognized(): Promise<IIsRecognizedResponse>;
 }
