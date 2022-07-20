@@ -22,7 +22,7 @@ describe('SrcNameFinder', () => {
         SrcName.VISA,
         SrcName.VISA,
         null,
-        null,
+        SrcName.MASTERCARD,
       ]);
       done();
     });
