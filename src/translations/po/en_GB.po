@@ -176,6 +176,9 @@ msgstr "Email address"
 msgid "Continue"
 msgstr "Continue"
 
+msgid "Pay another way"
+msgstr "Pay another way"
+
 msgid "Pay with confidence with trusted brands"
 msgstr "Pay with confidence with trusted brands"
 

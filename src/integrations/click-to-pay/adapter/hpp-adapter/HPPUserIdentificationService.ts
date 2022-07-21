@@ -8,10 +8,15 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IUserIdentificationService } from '../../digital-terminal/interfaces/IUserIdentificationService';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
+import {
+  IMastercardInitiateIdentityValidationResponse,
+} from '../../digital-terminal/src/mastercard/IMastercardSrc';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
 import { CTPSingInEmail } from './ctp-sing-in/CTPSingInEmail';
 import { CTPSIgnInOTP } from './ctp-sing-in/CTPSingInOTP';
+import { MastercardCTPSIgnInOTP } from './ctp-sing-in/mastercard/MastercardCTPSingInOTP';
+import { VisaCTPSIgnInOTP } from './ctp-sing-in/visa/VisaCTPSingInOTP';
 
 @Service()
 export class HPPUserIdentificationService implements IUserIdentificationService {
@@ -19,18 +24,48 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   private emailPrompt: CTPSingInEmail;
   private otpPrompt: CTPSIgnInOTP;
   private repeatTrigger$ = new BehaviorSubject(false);
+  private identityType$ = new BehaviorSubject('' );
 
   constructor(private translator: ITranslator,
               private messageBus: IMessageBus,
               private hppUpdateViewCallback: HPPUpdateViewCallback) {
     this.emailPrompt = new CTPSingInEmail(this.translator);
-    this.otpPrompt = new CTPSIgnInOTP(this.translator);
+
   }
 
   setInitParams(initParams: IHPPClickToPayAdapterInitParams) {
     this.initParams = initParams;
     this.emailPrompt.setContainer(this.initParams.signInContainerId);
+  }
+
+  initOtpPrompt(srcName: SrcName) {
+    this.otpPrompt = (srcName === SrcName.MASTERCARD) ? new MastercardCTPSIgnInOTP(this.translator) : new VisaCTPSIgnInOTP(this.translator);
+
     this.otpPrompt.setContainer(this.initParams.signInContainerId);
+
+    this.otpPrompt.onCancel(() => {
+      this.identityType$.next('');
+      this.repeatTrigger$.next(true);
+    });
+
+    if(srcName === SrcName.MASTERCARD){
+      (this.otpPrompt as MastercardCTPSIgnInOTP).onPayAnotherWay((value: string) => {
+        if(value === ''){
+          this.hppUpdateViewCallback.callUpdateViewCallback({
+            displayCardForm: true,
+            displaySubmitButton: true,
+            displayMaskedCardNumber: null,
+            displayCardType: null,
+          });
+
+          this.emailPrompt.close()
+        }else{
+          this.identityType$.next(value)
+        }
+
+      } )
+    }
+
   }
 
   identifyUser(
@@ -91,7 +126,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     }
   }
 
-  private getSrcNameForEmail(emailSource: Observable<string>, srcAggregate: SrcAggregate, captureErrors: boolean): Observable<SrcName> {
+  private getSrcNameForEmail(emailSource: Observable<string>, srcAggregate: SrcAggregate, captureErrors: boolean ): Observable<SrcName> {
     return emailSource.pipe(
       switchMap(email => srcAggregate.unbindAppInstance().pipe(mapTo(email))),
       switchMap(email =>
@@ -123,13 +158,13 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
   private completeIdentification(srcName: SrcName, srcAggregate: SrcAggregate): Observable<ICompleteIdValidationResponse> {
     const codeSendTrigger = new BehaviorSubject<boolean>(true);
 
-    return combineLatest([of(srcName), codeSendTrigger])
+    return combineLatest([of(srcName), codeSendTrigger, this.identityType$])
       .pipe(
         map(([srcName, trigger]) => srcName),
         switchMap(srcName =>
-          srcAggregate.initiateIdentityValidation(srcName)
+          srcAggregate.initiateIdentityValidation(srcName, this.identityType$.value)
             .pipe(
-              switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger)),
+              switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger, srcName)),
               switchMap(code => srcAggregate.completeIdentityValidation(srcName, code)
                 .pipe(
                   tap(() => this.emailPrompt.close()),
@@ -157,7 +192,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     return this.emailPrompt.show();
   }
 
-  private askForCode(validationResponse: IInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>): Observable<string> {
+  private askForCode(validationResponse: IInitiateIdentityValidationResponse | IMastercardInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>, srcName: SrcName): Observable<string> {
     const resultSubject = new ReplaySubject<string>();
 
     this.hppUpdateViewCallback.callUpdateViewCallback({
@@ -168,7 +203,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     });
     this.emailPrompt.close();
 
-    this.otpPrompt.onCancel(() => this.repeatTrigger$.next(true));
+    this.initOtpPrompt(srcName);
 
     this.otpPrompt.show(validationResponse, resultSubject, resendSubject);
     return resultSubject;

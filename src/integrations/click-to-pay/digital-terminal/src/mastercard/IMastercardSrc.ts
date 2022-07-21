@@ -10,6 +10,10 @@ export enum MasterCardIdentityType {
   MOBILE_NUMBER = 'MOBILE_PHONE_NUMBER',
 }
 
+export interface IMastercardInitiateIdentityValidationParams {
+  requestedValidationChannelId?: string;
+}
+
 export interface IMastercardIdentityLookupResponse extends IIdentityLookupResponse {
   lastUsedCardTimestamp?: string;
 }
@@ -42,7 +46,7 @@ export interface IMastercardSrc {
   // remove this comment eventually
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
 
-  initiateIdentityValidation(): Promise<IMastercardInitiateIdentityValidationResponse>;
+  initiateIdentityValidation(params: IMastercardInitiateIdentityValidationParams): Promise<IMastercardInitiateIdentityValidationResponse>;
 
   identityLookup(consumerIdentity: IMastercardConsumerIdentity): Promise<IMastercardIdentityLookupResponse>;
 

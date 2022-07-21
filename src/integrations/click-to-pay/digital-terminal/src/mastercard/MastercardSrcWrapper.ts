@@ -2,9 +2,8 @@ import { omit } from 'lodash';
 import {
   ICheckoutData,
   ICheckoutResponse,
-  ICompleteIdValidationResponse, IConsumerIdentity, IIdentityLookupResponse, IInitiateIdentityValidationResponse,
-  IIsRecognizedResponse,
-  ISrc, ISrcInitData, ISrcProfileList, IUnbindAppInstanceResponse,
+  ICompleteIdValidationResponse, IConsumerIdentity, IIdentityLookupResponse, IIsRecognizedResponse, ISrc, ISrcInitData,
+  ISrcProfileList, IUnbindAppInstanceResponse,
 } from '../../ISrc';
 import { environment } from '../../../../../environments/environment';
 import {
@@ -53,10 +52,8 @@ export class MastercardSrcWrapper implements ISrc {
     });
   }
 
-  initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse> {
-    return this.mastercardSrc.initiateIdentityValidation().then((initiateIdentityValidation: IMastercardInitiateIdentityValidationResponse) => {
-      return omit(initiateIdentityValidation, ['validationMessage', 'supportedValidationChannels']);
-    });
+  initiateIdentityValidation(requestedValidationChannelId?: string): Promise<IMastercardInitiateIdentityValidationResponse> {
+    return this.mastercardSrc.initiateIdentityValidation({ requestedValidationChannelId });
   }
 
   isRecognized(): Promise<IIsRecognizedResponse> {
@@ -72,7 +69,7 @@ export class MastercardSrcWrapper implements ISrc {
     return {
       consumerIdentity: {
         ...consumerIdentity,
-        identityType: MasterCardIdentityType[consumerIdentity.type],
+        identityType: MasterCardIdentityType[consumerIdentity.type] || consumerIdentity.type,
       },
     };
   }

@@ -200,7 +200,7 @@ export interface ISrc {
 
   identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse>;
 
-  initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse>;
+  initiateIdentityValidation(_?: string): Promise<IInitiateIdentityValidationResponse>;
 
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
 

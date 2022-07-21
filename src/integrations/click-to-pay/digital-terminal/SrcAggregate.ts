@@ -18,6 +18,7 @@ import { ISrcProvider } from './ISrcProvider';
 import { IIdentityLookupResult } from './interfaces/IIdentityLookupResult';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { CardAggregator } from './CardAggregator';
+import { IMastercardInitiateIdentityValidationResponse } from './src/mastercard/IMastercardSrc';
 
 @Service()
 export class SrcAggregate {
@@ -74,9 +75,9 @@ export class SrcAggregate {
     );
   }
 
-  initiateIdentityValidation(srcName: SrcName): Observable<IInitiateIdentityValidationResponse> {
+  initiateIdentityValidation(srcName: SrcName, identityType?: string): Observable<IInitiateIdentityValidationResponse | IMastercardInitiateIdentityValidationResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.initiateIdentityValidation())),
+      switchMap(src => from(src.initiateIdentityValidation(identityType))),
     );
   }
 
