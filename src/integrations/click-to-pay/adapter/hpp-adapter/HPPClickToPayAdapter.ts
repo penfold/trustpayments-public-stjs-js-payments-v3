@@ -1,15 +1,6 @@
 import { Service } from 'typedi';
-import {
-  BehaviorSubject,
-  distinctUntilKeyChanged,
-  firstValueFrom,
-  from,
-  NEVER,
-  Observable,
-  of,
-  throwError,
-} from 'rxjs';
-import { catchError, filter, mapTo, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, distinctUntilKeyChanged, firstValueFrom, from, NEVER, Observable, of } from 'rxjs';
+import { filter, mapTo, switchMap, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -85,7 +76,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
         );
         this.cardListGenerator.displayUserInformation(this.initParams.cardListContainerId, cardList.srcProfiles);
       }),
-      catchError(error => throwError(() => new Error('SRCProfiles are not available')))
+      // catchError(error => throwError(() => new Error('SRCProfiles are not available')))
     ));
   }
 
