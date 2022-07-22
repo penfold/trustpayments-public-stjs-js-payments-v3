@@ -44,7 +44,6 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     this.otpPrompt.setContainer(this.initParams.signInContainerId);
 
     this.otpPrompt.onCancel(() => {
-      this.identityType$.next('');
       this.repeatTrigger$.next(true);
     });
 

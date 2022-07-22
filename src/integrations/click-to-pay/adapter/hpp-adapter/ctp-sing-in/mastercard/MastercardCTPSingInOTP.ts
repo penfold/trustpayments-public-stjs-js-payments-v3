@@ -10,8 +10,10 @@ const logo = require('../../../../../../application/core/services/icon/images/cl
 
 const header = (closeButtonId, logo) =>
   `<div class='st-ctp-prompt__header'>
-    <img src='${logo}' class='st-ctp-prompt__logo--otp' alt=''>
-    <span>Click To Pay</span>
+    <span>
+      <img src='${logo}' class='st-ctp-prompt__logo--otp' alt=''>
+      <span>Click To Pay</span>
+    </span>
     <span class='st-ctp-prompt__close st-ctp-prompt__close--otp' id='${closeButtonId}'>&times;</span>
    </div>`;
 
@@ -89,14 +91,17 @@ export class MastercardCTPSIgnInOTP extends CTPSIgnInOTP {
     this.supportedValidationChannels.innerHTML = `
      <div class='st-ctp-prompt__otp-wrapper'>
         ${header(this.closeButtonId, logo)}
-        ${supportedChannels?.map((channel: IMastercardIdentityValidationChannel, index: number) => {
-         return `<div><input type='radio' id='${channel.identityType}' name='channel' value='${channel.identityType}' ${!index ? 'checked' : ''}>
-                      <label for='${channel.identityType}'>${channel.maskedValidationChannel}</label>
-                 </div>`})}
-        <div>
-          <input type='radio' id='anotherWay' name='channel' value=''>
-          <label for='anotherWay'>${this.translator.translate('Pay another way')}</label>
-        </div>
+        <div class='st-ctp-prompt__otg-radioList'>
+         ${supportedChannels?.map((channel: IMastercardIdentityValidationChannel, index: number) => {
+           return `<div class='st-ctp-prompt__otg-radio'>
+                    <input class='st-ctp-prompt__otp-input--radio' type='radio' id='${channel.identityType}' name='channel' value='${channel.identityType}' ${!index ? 'checked' : ''}>
+                    <label class='st-ctp-prompt__otp-input--radio-label' for='${channel.identityType}'>${this.translator.translate('Send another code to')} ${channel.maskedValidationChannel}</label>
+                   </div>`}).join(' ')}
+          <div class='st-ctp-prompt__otg-radio'>
+            <input class='st-ctp-prompt__otp-input--radio' type='radio' id='anotherWay' name='channel' value=''>
+            <label class='st-ctp-prompt__otp-input--radio-label' for='anotherWay'>${this.translator.translate('Pay another way')}</label>
+          </div>
+         </div>
         <button type='submit' class='st-hpp-prompt__button'>
           ${this.translator.translate('Continue')}
         </button>

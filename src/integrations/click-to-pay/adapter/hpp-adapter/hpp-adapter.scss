@@ -198,6 +198,59 @@ input.st-ctp-prompt__otp-input {
   margin-right: 6px;
 }
 
+.st-ctp-prompt__otg-radioList {
+  width: 100%;
+  margin: 30px 0 50px;
+  background: #fff;
+}
+
+
+.st-ctp-prompt__otp-input--radio {
+  display: none;
+}
+
+.st-ctp-prompt__otg-radio {
+  border: solid 1px #000;
+  margin-top: -1px;
+  padding: 4px;
+}
+
+
+.st-ctp-prompt__otp-input--radio-label {
+  position: relative;
+  width: 100%;
+  display: block;
+  padding-right: 30px;
+  min-height: 30px;
+  line-height: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  &:hover:after {
+    background: #000;
+  }
+
+  &:after {
+    position: absolute;
+    content: '';
+    border: solid 2px #000;
+    border-radius: 100%;
+    width: 22px;
+    height: 22px;
+    display: block;
+    box-sizing: border-box;
+    background: #fff;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+}
+
+.st-ctp-prompt__otp-input--radio:checked + .st-ctp-prompt__otp-input--radio-label:after {
+  background: #000;
+}
+
 .st-tooltip {
   background-color: #fff;
   border-radius: 5px;
