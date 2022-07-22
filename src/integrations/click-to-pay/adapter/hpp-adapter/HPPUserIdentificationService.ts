@@ -86,6 +86,8 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
         return this.translator.translate('Consumer email could not be recognized.');
       case 'FRAUD':
         return this.translator.translate('The user account was locked or disabled.');
+      case 'UNRECOGNIZED_EMAIL':
+        return this.translator.translate('The email address you have entered is not registered for Click to Pay.');
       default:
         return hasErrorDetails ? errorResponse.error.details.map(e => e.message).join('\n') : defaultUnknownErrorMessage;
     }
@@ -101,8 +103,8 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
           identityValue: email,
         }).pipe(
           tap(result => {
-            if (result?.consumerPresent === false) {
-              this.emailPrompt.showError(this.getUnrecognizedEmailErrorMessage());
+            if(result?.consumerPresent === false) {
+              throw { error: { reason: 'UNRECOGNIZED_EMAIL' } };
             }
           }),
           filter(result => result?.consumerPresent),
@@ -172,9 +174,5 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
 
     this.otpPrompt.show(validationResponse, resultSubject, resendSubject);
     return resultSubject;
-  }
-
-  private getUnrecognizedEmailErrorMessage(): string {
-    return this.translator.translate('The email address you have entered is not registered for Click to Pay.');
   }
 }

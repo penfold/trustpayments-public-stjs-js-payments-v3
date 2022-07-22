@@ -534,6 +534,7 @@
     var params = new URLSearchParams(window.location.search.substring(1));
     var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
     var jwt = params.get('jwt') || '';
+    var userEmail = params.get('userEmail') || '';
 
     Promise.all([getConfig()])
       .then(function(configValues) {
@@ -603,7 +604,6 @@
         })
         .then(function(adapter) {
           printLogs('CTP adapter is initialized');
-          setLookupMyCardsClickListener(adapter);
           checkIfUserIsRecognized(adapter);
           getSrcName(adapter);
         })
@@ -640,14 +640,57 @@
       return st;
     }
 
-    function setLookupMyCardsClickListener(adapterInstance) {
+    function checkIfUserIsRecognized(adapter) {
+      adapter.isRecognized().then(function(isRecognized) {
+        if (isRecognized) {
+          printLogs('CTP - user recognized flow initialized');
+          adapter.showCardList().catch(error => {
+            console.error(error);
+          });
+        } else {
+          if (userEmail) {
+            triggerPiiDataPassedFlow(adapter)
+          } else {
+            triggerUserNotRecognizedFlow(adapter);
+          }
+        }
+      }).catch(error => {
+        console.error(error);
+        triggerUserNotRecognizedFlow(adapter);
+      });
+    }
+
+    function triggerPiiDataPassedFlow(adapter) {
+      printLogs('CTP - PII data passed flow initialized');
+      adapter.identifyUser({email: userEmail})
+        .then(function(result) {
+          printLogs('CTP - user identified: ');
+          printLogs(JSON.stringify(result, null, 2));
+          if (result.isSuccessful) {
+            adapter.showCardList().catch(error => {
+              console.error(error);
+            });
+          } else {
+            triggerUserNotRecognizedFlow(adapter);
+          }
+        })
+        .catch(function(e) {
+          console.error(e);
+          triggerUserNotRecognizedFlow(adapter);
+        });
+    }
+
+    function triggerUserNotRecognizedFlow(adapter) {
+      printLogs('CTP - user not recognized flow initialized');
+      enableClickToPayForNotRecognizedUser();
+
       document.querySelector('#st-ctp-lookup-btn').addEventListener('click', function() {
-        adapterInstance.identifyUser()
+        adapter.identifyUser()
           .then(function(result) {
             printLogs('CTP - user identified: ');
             printLogs(JSON.stringify(result, null, 2));
             if (result.isSuccessful) {
-              adapterInstance.showCardList().catch(error => {
+              adapter.showCardList().catch(error => {
                 console.error(error);
               });
             }
@@ -658,28 +701,14 @@
       });
     }
 
-    function checkIfUserIsRecognized(adapterInstance) {
-      adapterInstance.isRecognized().then(function(isRecognized) {
-        if (isRecognized) {
-          adapterInstance.showCardList().catch(error => {
-            console.error(error);
-          });
-        } else {
-          enableClickToPayForNotRecognizedUser();
-        }
-      }).catch(error => {
-        console.error(error);
-      });
+    function getSrcName(adapter) {
+      document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapter));
     }
 
-    function getSrcName(adapterInstance) {
-      document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
-    }
-
-    function inputHandler(adapterInstance) {
+    function inputHandler(adapter) {
       return function(event) {
         if (event.target.value) {
-          const cardType = adapterInstance.getSrcName(event.target.value);
+          const cardType = adapter.getSrcName(event.target.value);
           cardType.then(function(srcName) {
             if(srcName === 'VISA' || srcName === 'MASTERCARD') {
               showCheckToRegisterSection()
