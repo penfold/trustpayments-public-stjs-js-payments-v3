@@ -12,7 +12,12 @@ export class CardAggregator {
   private collectAndCorrelateCards(srcProfiles: Partial<Record<SrcName, ISrcProfileList>>): ICorrelatedMaskedCard[] {
     const cards: ICorrelatedMaskedCard[] = [];
 
-    Object.entries(srcProfiles).forEach(([srcName, { srcCorrelationId, profiles }]) => {
+    Object.entries(srcProfiles)
+      .filter(([srcName, profile]) => !!profile)
+      .forEach(([srcName, {
+      srcCorrelationId,
+      profiles,
+    }]) => {
       profiles.forEach(profile => {
         profile.maskedCards.forEach(maskedCard => {
           cards.push({
