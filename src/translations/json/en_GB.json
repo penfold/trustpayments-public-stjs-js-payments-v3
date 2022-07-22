@@ -61,5 +61,9 @@
   "Enter the code sent to {{validationChannel}} to checkout with Click to Pay.": "Enter the code sent to {{validationChannel}} to checkout with Click to Pay.",
   "Resend": "Resend",
   "Verify": "Verify",
-  "Selected card is not currently supported for Click to Pay":"Selected card is not currently supported for Click to Pay"
+  "Selected card is not currently supported for Click to Pay":"Selected card is not currently supported for Click to Pay",
+  "Looks like you have a Click to Pay profile":"Looks like you have a Click to Pay profile",
+  "Enter the code sent to {{validationChannel}} ": "Enter the code sent to {{validationChannel}} ",
+  "Send another code to": "Send another code to",
+  "Continue another way": "Continue another way"
 }

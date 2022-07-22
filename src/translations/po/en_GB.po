@@ -176,9 +176,6 @@ msgstr "Email address"
 msgid "Continue"
 msgstr "Continue"
 
-msgid "Pay another way"
-msgstr "Pay another way"
-
 msgid "Pay with confidence with trusted brands"
 msgstr "Pay with confidence with trusted brands"
 
@@ -217,3 +214,21 @@ msgstr "Verify"
 
 msgid "Selected card is not currently supported for Click to Pay"
 msgstr "Selected card is not currently supported for Click to Pay"
+
+msgid "Looks like you have a Click to Pay profile"
+msgstr "Looks like you have a Click to Pay profile"
+
+msgid "Enter the code sent to {{validationChannel}} "
+msgstr "Enter the code sent to {{validationChannel}} "
+
+msgid "Pay another way"
+msgstr "Pay another way"
+
+msgid "Send another code to"
+msgstr "Send another code to"
+
+msgid "Continue another way"
+msgstr "Continue another way"
+
+
+
