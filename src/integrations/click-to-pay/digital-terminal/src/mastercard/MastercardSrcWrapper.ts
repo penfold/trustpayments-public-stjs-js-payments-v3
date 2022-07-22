@@ -43,7 +43,7 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse> {
-    return this.mastercardSrc.completeIdentityValidation(validationData);
+    return this.mastercardSrc.completeIdentityValidation({ validationData });
   }
 
   getSrcProfile(idTokens: string[]): Promise<ISrcProfileList> {
