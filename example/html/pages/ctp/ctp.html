@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Trust Payments Visa CTP Form</title>
+  <title>Trust Payments CTP Form</title>
   <meta name="description" content="Trust Payments example page with form">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
@@ -18,7 +18,7 @@
     <figure class="st-header__logo">
       <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
     </figure>
-    <h1 class="st-header__title">Visa CTP Form</h1>
+    <h1 class="st-header__title">CTP Form</h1>
   </header>
   <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="on">
     <div class="st-form__fieldset-wrapper">
@@ -514,7 +514,7 @@
             <button type="submit" class="st-form__button" id="merchant-submit-button">
               Pay securely
             </button>
-            <label id="merchant-submit-label">We accept VISA</label>
+            <label id="merchant-submit-label">We accept VISA and MASTERCARD</label>
           </div>
         </div>
       </div>
@@ -681,7 +681,11 @@
         if (event.target.value) {
           const cardType = adapterInstance.getSrcName(event.target.value);
           cardType.then(function(srcName) {
-            srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
+            if(srcName === 'VISA' || srcName === 'MASTERCARD') {
+              showCheckToRegisterSection()
+            } else {
+              hideCheckToRegisterSection()
+            }
           });
         } else {
           showCheckToRegisterSection();
@@ -729,10 +733,6 @@
       } else {
         submitElement.classList.add('hidden');
       }
-    }
-
-    function onCheckout(checkoutResult) {
-      console.log('CTP - cecheckout result: ', checkoutResult);
     }
 
     function onCheckout(checkoutResult) {

@@ -38,6 +38,10 @@ export interface IMastercardInitiateIdentityValidationResponse extends IInitiate
   supportedValidationChannels: IMastercardIdentityValidationChannel[];
 }
 
+export interface IMastercardUnbindAppInstanceResponse {
+  srcCorrelationId: string;
+}
+
 export interface IMastercardSrc {
   // TODO update this interface based on Mastercard documentation
   // if data types in parameters or returned values are different, create new types or use generic types
@@ -53,4 +57,6 @@ export interface IMastercardSrc {
   init(initData: ISrcInitData): Promise<void>;
 
   isRecognized(): Promise<IIsRecognizedResponse>;
+
+  unbindAppInstance(idToken?: string): Promise<IMastercardUnbindAppInstanceResponse>;
 }

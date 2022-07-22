@@ -60,9 +60,8 @@ export class MastercardSrcWrapper implements ISrc {
     return this.mastercardSrc.isRecognized();
   }
 
-  // TODO implement in https://securetrading.atlassian.net/browse/STJS-3515
   unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
-    return Promise.resolve(undefined);
+    return this.mastercardSrc.unbindAppInstance().then(({ srcCorrelationId })=>({ srcCorrelatedId: srcCorrelationId }))
   }
 
   private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IMastercardConsumerIdentity {

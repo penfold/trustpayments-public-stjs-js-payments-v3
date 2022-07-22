@@ -11,6 +11,8 @@ export class SrcNameFinder {
     switch (lookupResult.type) {
       case 'VISA':
         return of(SrcName.VISA);
+      case 'MASTERCARD':
+        return of(SrcName.MASTERCARD);
       default:
         return of(null);
     }
