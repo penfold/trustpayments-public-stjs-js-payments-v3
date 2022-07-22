@@ -3,12 +3,17 @@ import {
   ICheckoutData,
   ICheckoutResponse,
   ICompleteIdValidationResponse, IConsumerIdentity, IIdentityLookupResponse, IIsRecognizedResponse, ISrc, ISrcInitData,
-  ISrcProfileList, IUnbindAppInstanceResponse,
+ ISrcProfile,
+  ISrcProfileList,
+  IUnbindAppInstanceResponse,
 } from '../../ISrc';
 import { environment } from '../../../../../environments/environment';
 import {
-  IMastercardConsumerIdentity, IMastercardIdentityLookupResponse, IMastercardInitiateIdentityValidationResponse,
+  IMastercardConsumerIdentity,
+  IMastercardIdentityLookupResponse,
+  IMastercardInitiateIdentityValidationResponse,
   IMastercardSrc,
+  IMastercardSrcProfile,
   MasterCardIdentityType,
 } from './IMastercardSrc';
 
@@ -41,13 +46,19 @@ export class MastercardSrcWrapper implements ISrc {
     return this.mastercardSrc.completeIdentityValidation(validationData);
   }
 
-  // TODO implement in  https://securetrading.atlassian.net/browse/STJS-3510
   getSrcProfile(idTokens: string[]): Promise<ISrcProfileList> {
-    return Promise.resolve(undefined);
+    const srcResponse = idTokens ? this.mastercardSrc.getSrcProfile({ idTokens }) : this.mastercardSrc.getSrcProfile();
+
+    return srcResponse.then((response) => {
+      return {
+        profiles: response.profiles.map(profile => this.mapSrcProfile(profile, 'xd')),
+        srcCorrelationId: response.scrCorrelationId,
+      };
+    });
   }
 
   identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse> {
-    return this.mastercardSrc.identityLookup(this.consumerIdentityMapper(consumerIdentity)).then((identityLookupResponse: IMastercardIdentityLookupResponse) => {
+    return this.mastercardSrc.identityLookup({ consumerIdentity: this.consumerIdentityMapper(consumerIdentity) }).then((identityLookupResponse: IMastercardIdentityLookupResponse) => {
       return omit(identityLookupResponse, 'lastUsedCardTimestamp');
     });
   }
@@ -61,15 +72,34 @@ export class MastercardSrcWrapper implements ISrc {
   }
 
   unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse> {
-    return this.mastercardSrc.unbindAppInstance().then(({ srcCorrelationId })=>({ srcCorrelatedId: srcCorrelationId }))
+    return this.mastercardSrc.unbindAppInstance().then(({ srcCorrelationId }) => ({ srcCorrelatedId: srcCorrelationId }));
   }
 
   private consumerIdentityMapper(consumerIdentity: IConsumerIdentity): IMastercardConsumerIdentity {
     return {
-      consumerIdentity: {
-        ...consumerIdentity,
-        identityType: MasterCardIdentityType[consumerIdentity.type] || consumerIdentity.type,
+      ...consumerIdentity,
+      identityType: MasterCardIdentityType[consumerIdentity.type],
+    };
+
+  }
+
+  private mapSrcProfile(profile: IMastercardSrcProfile, idToken: string): ISrcProfile {
+    return {
+      idToken: profile.authorization,
+      maskedCards: profile.maskedCards,
+      maskedConsumer: {
+        emailAddress: profile.maskedConsumer.maskedEmailAddress,
+        languageCode: profile.maskedConsumer.languageCode,
+        fullName: profile.maskedConsumer.maskedFullName,
+        lastName: profile.maskedConsumer.maskedLastName,
+        firstName: profile.maskedConsumer.maskedFirstName,
+        countryCode: profile.maskedConsumer.countryCode,
+        mobileNumber: {
+          countryCode: profile.maskedConsumer.maskedMobileNumber?.countryCode,
+          phoneNumber: profile.maskedConsumer.maskedMobileNumber?.maskedPhoneNumber,
+        },
       },
     };
+
   }
 }

@@ -19,11 +19,9 @@ export interface IMastercardIdentityLookupResponse extends IIdentityLookupRespon
 }
 
 export interface IMastercardConsumerIdentity {
-  consumerIdentity: {
-    identityProvider?: string;
-    identityValue: string;
-    identityType: MasterCardIdentityType;
-  };
+  identityProvider?: string;
+  identityValue: string;
+  identityType: MasterCardIdentityType;
 }
 
 export interface IMastercardIdentityValidationChannel {
@@ -42,6 +40,39 @@ export interface IMastercardUnbindAppInstanceResponse {
   srcCorrelationId: string;
 }
 
+// TODO replace any with proper types
+export interface IMastercardSrcProfile {
+  maskedConsumer?: IMastercardMaskedConsumer;
+  maskedCards: any[];
+  maskedShippingAddresses: any[];
+  authorization: string;
+}
+
+export interface IMastercardMaskedConsumer {
+  srcConsumerId: string;
+  maskedConsumerIdentity: IMastercardConsumerIdentity;
+  maskedEmailAddress: string;
+  maskedMobileNumber: {
+    countryCode: string,
+    maskedPhoneNumber: string
+  };
+  maskedNationalIdentifier: string;
+  complianceSettings: any;
+  countryCode: string;
+  languageCode: string;
+  status: 'ACTIVE' | 'SUSPENDED' | 'LOCKED',
+  maskedFirstName: string;
+  maskedLastName: string;
+  maskedFullName: string;
+  dateConsumerAdded: number;
+  dateConsumerLastUsed: number;
+}
+
+export interface IMastercardSrcProfileList {
+  scrCorrelationId: string;
+  profiles: IMastercardSrcProfile[];
+}
+
 export interface IMastercardSrc {
   // TODO update this interface based on Mastercard documentation
   // if data types in parameters or returned values are different, create new types or use generic types
@@ -50,13 +81,16 @@ export interface IMastercardSrc {
   // remove this comment eventually
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
 
+  getSrcProfile(data?: { idTokens: string[] }): Promise<IMastercardSrcProfileList>;
+
   initiateIdentityValidation(params: IMastercardInitiateIdentityValidationParams): Promise<IMastercardInitiateIdentityValidationResponse>;
 
-  identityLookup(consumerIdentity: IMastercardConsumerIdentity): Promise<IMastercardIdentityLookupResponse>;
+  identityLookup({ consumerIdentity: IMastercardConsumerIdentity }): Promise<IMastercardIdentityLookupResponse>;
 
   init(initData: ISrcInitData): Promise<void>;
 
   isRecognized(): Promise<IIsRecognizedResponse>;
 
   unbindAppInstance(idToken?: string): Promise<IMastercardUnbindAppInstanceResponse>;
+
 }

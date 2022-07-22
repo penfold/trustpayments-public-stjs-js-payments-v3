@@ -79,9 +79,12 @@ export class CardListGenerator {
   private setFallbackCartArt(cardArdImg: HTMLImageElement, card: ICorrelatedMaskedCard) {
     cardArdImg.addEventListener('error', event => {
       const defaultCardArtSrc = this.defaultCardArt.get(card.srcName.toLowerCase());
-      if (cardArdImg.src !== defaultCardArtSrc) {
-        cardArdImg.src = defaultCardArtSrc;
+      if (cardArdImg.hasAttribute('data-default-img')) {
+        return;
       }
+
+      cardArdImg.src = defaultCardArtSrc;
+      cardArdImg.setAttribute('data-default-img', 'true');
     });
   }
 

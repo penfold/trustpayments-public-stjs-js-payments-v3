@@ -64,7 +64,9 @@ export class DigitalTerminal {
   identifyUser(userIdentificationService: IUserIdentificationService, identificationData: IIdentificationData): Observable<IIdentificationResult> {
     return userIdentificationService.identifyUser(this.srcAggregate, identificationData).pipe(
       tap(result => {
-        this.idTokens.push(result.idToken);
+        if (result.idToken) {
+          this.idTokens.push(result.idToken);
+        }
       }),
       map(result => ({
         // TODO According to documentation should be Boolean(result.idToken), but sometimes idToken is returned empty from VISA

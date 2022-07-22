@@ -26,7 +26,7 @@ export class SrcAggregate {
 
   constructor(
     @InjectMany(SrcProviderToken) private srcProviders: ISrcProvider[],
-    private cardAggregator: CardAggregator,
+    private cardAggregator: CardAggregator
   ) {
   }
 
@@ -37,7 +37,7 @@ export class SrcAggregate {
 
     return this.forkJoinSrcs(src => src.init(initData as ISrcInitData)).pipe(
       tap(v => console.log('INIT', v)),
-      mapTo(undefined),
+      mapTo(undefined)
     );
   }
 
@@ -47,8 +47,8 @@ export class SrcAggregate {
       map(result => Object.values(result).reduce((acc, next) => ({
         recognized: acc.recognized || next.recognized,
         idTokens: [...acc.idTokens, ...(next.idTokens || [])],
-      }), { recognized: false, idTokens: [] })),
-    )
+      }), { recognized: false, idTokens: [] }))
+    );
   }
 
   getSrcProfile(idTokens: string[]): Observable<IAggregatedProfiles> {
@@ -71,13 +71,13 @@ export class SrcAggregate {
 
     return this.forkJoinSrcs(src => src.identityLookup(consumerIdentity)).pipe(
       tap(v => console.log('IDENTITY LOOKUP', v)),
-      map(result => Object.entries(result).reduce(reductorFunc, { consumerPresent: false, srcNames: [] })),
+      map(result => Object.entries(result).reduce(reductorFunc, { consumerPresent: false, srcNames: [] }))
     );
   }
 
   initiateIdentityValidation(srcName: SrcName, identityType?: string): Observable<IInitiateIdentityValidationResponse | IMastercardInitiateIdentityValidationResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.initiateIdentityValidation(identityType))),
+      switchMap(src => from(src.initiateIdentityValidation(identityType)))
     );
   }
 
@@ -89,7 +89,7 @@ export class SrcAggregate {
 
   checkout(srcName: SrcName, data: ICheckoutData): Observable<ICheckoutResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.checkout(data))),
+      switchMap(src => from(src.checkout(data)))
     );
   }
 
@@ -102,7 +102,7 @@ export class SrcAggregate {
 
     this.srcs.forEach((src$, srcName) => {
       sources[srcName] = src$.pipe(
-        switchMap(src => from(callback(src))),
+        switchMap(src => from(callback(src)))
       );
     });
 
