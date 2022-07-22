@@ -2,7 +2,7 @@ import {
   ICompleteIdValidationResponse,
   IIdentityLookupResponse,
   IInitiateIdentityValidationResponse,
-  IIsRecognizedResponse,
+  IIsRecognizedResponse, IMaskedAddress, IMaskedCard,
   ISrcInitData,
 } from '../../ISrc';
 
@@ -37,11 +37,10 @@ export interface IMastercardUnbindAppInstanceResponse {
   srcCorrelationId: string;
 }
 
-// TODO replace any with proper types
 export interface IMastercardSrcProfile {
   maskedConsumer?: IMastercardMaskedConsumer;
-  maskedCards: any[];
-  maskedShippingAddresses: any[];
+  maskedCards: IMaskedCard[];
+  maskedShippingAddresses: IMaskedAddress[];
   authorization: string;
 }
 
@@ -54,7 +53,26 @@ export interface IMastercardMaskedConsumer {
     maskedPhoneNumber: string
   };
   maskedNationalIdentifier: string;
-  complianceSettings: any;
+  complianceSettings: {
+    communications: {
+      communicationsOptIn: boolean
+    },
+    cookie: {
+      acceptedVersion: string,
+      latestVersion: string,
+      latestVersionUri: string,
+    },
+    privacy: {
+      acceptedVersion: string,
+      latestVersion: string,
+      latestVersionUri: string,
+    },
+    tnc: {
+      acceptedVersion: string,
+      latestVersion: string,
+      latestVersionUri: string,
+    }
+  },
   countryCode: string;
   languageCode: string;
   status: 'ACTIVE' | 'SUSPENDED' | 'LOCKED',

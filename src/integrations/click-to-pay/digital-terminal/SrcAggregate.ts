@@ -83,7 +83,6 @@ export class SrcAggregate {
   completeIdentityValidation(srcName: SrcName, validationData: string): Observable<ICompleteIdValidationResponse> {
     return this.srcs.get(srcName).pipe(
       switchMap(src => from(src.completeIdentityValidation(validationData))),
-      tap(x => console.log(x))
     );
   }
 

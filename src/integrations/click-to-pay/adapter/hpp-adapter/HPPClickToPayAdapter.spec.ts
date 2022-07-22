@@ -260,7 +260,6 @@ describe('HPPClickToPayAdapter', () => {
 
           sut.init(initParams).then(adapterInstance => {
             checkoutResultSubject.pipe(first()).subscribe((result) => {
-              console.log(result)
               verify(digitalTerminalMock.getSrcProfiles()).once();
               verify(cardListGeneratorMock.displayCards(initParams.formId, initParams.cardListContainerId, srcProfilesMock.aggregatedCards)).once();
               done();

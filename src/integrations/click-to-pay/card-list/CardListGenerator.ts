@@ -25,6 +25,7 @@ export class CardListGenerator {
 
   private readonly iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/ctp-visa.svg')],
+    ['mastercard', require('../../../application/core/services/icon/images/ctp-mastercard.svg')],
   ]);
   private readonly defaultCardArt: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/ctp-visa-fallback-card-art.svg')],
@@ -232,7 +233,7 @@ export class CardListGenerator {
         ..${card.panLastFour}
       </span>
       <span class='st-card__logo'>
-          <img src='${this.iconMap.get(card.srcName.toLowerCase())}' alt=''>
+          <img src='${this.iconMap.get(card.srcName.toLowerCase())}' alt='${card.srcName.toLowerCase()} logo' data-src-name='${card.srcName.toLowerCase()}'>
       </span>
     `;
   }

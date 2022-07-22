@@ -73,7 +73,7 @@ export class DigitalTerminal {
         // but getSrcProfiles returns correct result event with no tokens
         isSuccessful: Object.prototype.hasOwnProperty.call(result, 'idToken'),
         failureReason: IdentificationFailureReason.OTHER,
-      }))
+      })),
     );
   }
 

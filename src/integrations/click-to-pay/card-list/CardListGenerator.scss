@@ -94,11 +94,17 @@ $ctp-green: #18b760;
   .st-card__logo {
     display: flex;
     padding-right: 10px;
+    width: 76px;
+  }
 
-    img {
-      height: 14px;
-    }
+  .st-card__logo img {
+    height: 14px;
+  }
 
+  .st-card__logo img[data-src-name="mastercard"] {
+    // Mastercard icon has padding, Visa has no padding
+    // 1.125 is factor that equalizes them in height
+    height: 14px * 1.125;
   }
 
   span.st-card__image {

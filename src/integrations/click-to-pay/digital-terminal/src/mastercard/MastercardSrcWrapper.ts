@@ -58,7 +58,7 @@ export class MastercardSrcWrapper implements ISrc {
 
     return srcResponse.then((response) => {
       return {
-        profiles: response.profiles.map(profile => this.mapSrcProfile(profile, 'xd')),
+        profiles: response.profiles.map(profile => this.mapSrcProfile(profile)),
         srcCorrelationId: response.scrCorrelationId,
       };
     });
@@ -92,7 +92,7 @@ export class MastercardSrcWrapper implements ISrc {
 
   }
 
-  private mapSrcProfile(profile: IMastercardSrcProfile, idToken: string): ISrcProfile {
+  private mapSrcProfile(profile: IMastercardSrcProfile): ISrcProfile {
     return {
       idToken: profile.authorization,
       maskedCards: profile.maskedCards,
