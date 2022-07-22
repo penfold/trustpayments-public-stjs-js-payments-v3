@@ -434,7 +434,8 @@
       <legend>Payment details:</legend>
       <div id="st-ctp-login"></div>
       <div id="st-ctp-cards"></div>
-      <div class="st-form__section st-form__section" id="st-card-details-section">
+      <div id="stp-loader"></div>
+      <div class="st-form__section st-form__section ctp-add-card-section hidden" id="st-card-details-section">
         <div class="st-form__field">
           <label for="st-form-card-number" class="st-form__label">
             Card number:
@@ -508,7 +509,7 @@
           </div>
         </div>
       </div>
-      <div class="st-form__section st-form__section" id="st-ctp-submit-section">
+      <div class="st-form__section st-form__section ctp-submit-section hidden" id="st-ctp-submit-section">
         <div class="st-form__actions--wrapper">
           <div class="st-form__group st-form__group--submit">
             <button type="submit" class="st-form__button" id="merchant-submit-button">
@@ -582,6 +583,9 @@
         formId: 'st-form',
         cardListContainerId: 'st-ctp-cards',
         signInContainerId: 'st-ctp-login',
+        loaderId:'stp-loader',
+        cardDetailsSectionId:'st-card-details-section',
+        ctpSubmitSectionId:'st-ctp-submit-section',
         srciDpaId: 'TrustPayments-test-merchant',
         dpaTransactionOptions: {
           consumerNameRequested: true,
@@ -602,6 +606,7 @@
           return adapter.init(clickToPayAdapterInitParams);
         })
         .then(function(adapter) {
+          showLoader(adapter);
           printLogs('CTP adapter is initialized');
           setLookupMyCardsClickListener(adapter);
           checkIfUserIsRecognized(adapter);
@@ -659,12 +664,14 @@
     }
 
     function checkIfUserIsRecognized(adapterInstance) {
-      adapterInstance.isRecognized().then(function(isRecognized) {
+      adapterInstance.isRecognized().then(function(isRecognized) { 
         if (isRecognized) {
           adapterInstance.showCardList().catch(error => {
             console.error(error);
           });
         } else {
+          hideLoader(adapterInstance);
+          displayCardAddSection(adapterInstance);
           enableClickToPayForNotRecognizedUser();
         }
       }).catch(error => {
@@ -672,6 +679,18 @@
       });
     }
 
+    function showLoader(adapterInstance){
+      adapterInstance.showLoader();
+    }
+
+    function hideLoader(adapterInstance){
+      adapterInstance.hideLoader();
+    }
+
+    function displayCardAddSection(adapterInstance){
+      adapterInstance.displayCardAddSection();
+    }
+    
     function getSrcName(adapterInstance) {
       document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
     }

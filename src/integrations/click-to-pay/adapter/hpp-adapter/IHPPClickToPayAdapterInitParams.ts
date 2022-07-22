@@ -6,6 +6,9 @@ export interface IHPPClickToPayAdapterInitParams extends IClickToPayAdapterInitP
   formId: string;
   cardListContainerId: string;
   signInContainerId: string;
+  loaderId:string;
+  cardDetailsSectionId:string,
+  ctpSubmitSectionId:string,
   onUpdateView: (data: IUpdateView) => void;
   onCheckout: (data: ICheckoutResponse) => void;
 }

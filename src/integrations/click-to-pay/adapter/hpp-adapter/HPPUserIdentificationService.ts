@@ -1,6 +1,7 @@
 import { BehaviorSubject, combineLatest, NEVER, Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { Service } from 'typedi';
 import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
+import { PreLoader } from '../../pre-loader/PreLoader';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 import { SrcAggregate } from '../../digital-terminal/SrcAggregate';
 import { ICompleteIdValidationResponse, IInitiateIdentityValidationResponse } from '../../digital-terminal/ISrc';
@@ -12,7 +13,6 @@ import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitPara
 import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
 import { CTPSingInEmail } from './ctp-sing-in/CTPSingInEmail';
 import { CTPSIgnInOTP } from './ctp-sing-in/CTPSingInOTP';
-
 @Service()
 export class HPPUserIdentificationService implements IUserIdentificationService {
   private initParams: IHPPClickToPayAdapterInitParams;
@@ -22,7 +22,8 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
 
   constructor(private translator: ITranslator,
               private messageBus: IMessageBus,
-              private hppUpdateViewCallback: HPPUpdateViewCallback) {
+              private hppUpdateViewCallback: HPPUpdateViewCallback,
+              private preLoaderService: PreLoader) {
     this.emailPrompt = new CTPSingInEmail(this.translator);
     this.otpPrompt = new CTPSIgnInOTP(this.translator);
   }
@@ -120,6 +121,11 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     );
   }
 
+  private showLoader(): void  {
+    this.preLoaderService.showLoader(this.initParams.loaderId)
+    catchError(error => throwError(() => new Error('Loader is not available')))
+  }
+
   private completeIdentification(srcName: SrcName, srcAggregate: SrcAggregate): Observable<ICompleteIdValidationResponse> {
     const codeSendTrigger = new BehaviorSubject<boolean>(true);
 
@@ -131,8 +137,11 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
             .pipe(
               switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger)),
               switchMap(code => srcAggregate.completeIdentityValidation(srcName, code)
-                .pipe(
-                  tap(() => this.emailPrompt.close()),
+                .pipe(                  
+                  tap(() => {
+                    this.emailPrompt.close()
+                    this.showLoader();
+                  }),
                   catchError(error => this.handleInvalidOTPCode(error))
                 )
               )

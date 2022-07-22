@@ -10,6 +10,8 @@ import {
   throwError,
 } from 'rxjs';
 import { catchError, filter, mapTo, switchMap, tap } from 'rxjs/operators';
+import { logTimer } from '../../log-timer/log-timer.operator';
+import { PreLoader } from '../../pre-loader/PreLoader';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -50,7 +52,8 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     private srcNameFinder: SrcNameFinder,
     private cardListGenerator: CardListGenerator,
     private hppCheckoutDataProvider: HPPCheckoutDataProvider,
-    private hppUpdateViewCallback: HPPUpdateViewCallback
+    private hppUpdateViewCallback: HPPUpdateViewCallback,
+    private preLoaderService: PreLoader
   ) {
   }
 
@@ -59,6 +62,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.hppUpdateViewCallback.init(initParams.onUpdateView);
     this.hppUpdateViewCallback.getUpdateViewState()
       .pipe(
+        logTimer('CTP-Adaptor-init'),
         distinctUntilKeyChanged<IUpdateView>('displayCardForm'),
         untilDestroy<IUpdateView>(this.messageBus)
       ).subscribe(updateData => this.disableHiddenFormFields(updateData));
@@ -77,16 +81,32 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   showCardList(): Promise<IAggregatedProfiles> {
     return firstValueFrom(this.digitalTerminal.getSrcProfiles().pipe(
+      logTimer('showCardList'),
       tap(cardList => {
         this.cardListGenerator.displayCards(
           this.initParams.formId,
           this.initParams.cardListContainerId,
-          cardList.aggregatedCards
+          cardList.aggregatedCards,
+          this.initParams.loaderId
         );
         this.cardListGenerator.displayUserInformation(this.initParams.cardListContainerId, cardList.srcProfiles);
       }),
       catchError(error => throwError(() => new Error('SRCProfiles are not available')))
     ));
+  }
+
+  showLoader(): void  {
+    this.preLoaderService.showLoader(this.initParams.loaderId),
+    catchError(error => throwError(() => new Error('Show Loader is not available')))
+  }
+
+  hideLoader(): void {
+    this.preLoaderService.hideLoader(this.initParams.loaderId),
+    catchError(error => throwError(() => new Error('Hide Loader is not available')))
+  }
+
+  displayCardAddSection(): void {
+    this.preLoaderService.displayCardAddSection(this.initParams)
   }
 
   getSrcName(pan: string): Promise<SrcName | null> {
@@ -114,6 +134,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       (event: IMessageBusEvent<IHPPClickToPayAdapterInitParams>) => {
         return this.initAdapter(event.data)
           .pipe(
+            logTimer('completePaymentMethodInit'),
             tap(() => initialized.next(true))
           );
       }
@@ -125,6 +146,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   private initAdapter(initParams: IHPPClickToPayAdapterInitParams): Observable<void> {
     return this.digitalTerminal.init(initParams).pipe(
+      logTimer('initAdaptor'),
       tap(() => {
         this.hppCheckoutDataProvider.getCheckoutData(initParams.formId).subscribe(data => this.checkout(data));
       })

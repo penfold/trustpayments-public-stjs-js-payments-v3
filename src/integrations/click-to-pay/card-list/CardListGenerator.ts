@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, first } from 'rxjs/operators';
+import { PreLoader } from '../pre-loader/PreLoader';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
@@ -34,11 +35,12 @@ export class CardListGenerator {
     private digitalTerminal: DigitalTerminal,
     private translator: ITranslator,
     private srcNameFinder: SrcNameFinder,
-    private hppUpdateViewCallback: HPPUpdateViewCallback
+    private hppUpdateViewCallback: HPPUpdateViewCallback,
+    private preLoaderService: PreLoader
   ) {
   }
 
-  displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
+  displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[],loaderId:any): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
     container.innerHTML = '';
@@ -60,6 +62,7 @@ export class CardListGenerator {
       container.appendChild(cardRow);
     });
 
+    this.hideLoader(loaderId);
     const viewAllCards = document.createElement('div');
     viewAllCards.classList.add('st-view-all-cards');
     viewAllCards.innerHTML = this.viewAllCards();
@@ -158,6 +161,10 @@ export class CardListGenerator {
         </span>
       </div>
     `;
+  }
+
+  hideLoader(loaderId: any): void {
+    this.preLoaderService.hideLoader(loaderId)
   }
 
   private addEventHandlers(formId: string): void {
