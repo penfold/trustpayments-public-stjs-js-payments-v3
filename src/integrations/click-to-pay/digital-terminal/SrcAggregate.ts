@@ -92,12 +92,12 @@ export class SrcAggregate {
 
   checkout(srcName: SrcName, data: ICheckoutData): Observable<ICheckoutResponse> {
     return this.srcs.get(srcName).pipe(
-      switchMap(src => from(src.checkout(data))),
+      switchMap(src => from(src.checkout(data)).pipe(logTimer('checkout'))),
     );
   }
 
   unbindAppInstance(): Observable<undefined> {
-    return this.forkJoinSrcs(src => src.unbindAppInstance()).pipe(mapTo(undefined));
+    return this.forkJoinSrcs(src => src.unbindAppInstance()).pipe( logTimer('unbindAppInstance'),mapTo(undefined));
   }
 
   private forkJoinSrcs<T>(callback: (src: ISrc) => Promise<T>): Observable<Partial<Record<SrcName, T>>> {
