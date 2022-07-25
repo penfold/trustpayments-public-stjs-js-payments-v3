@@ -1,3 +1,13 @@
+qa-manual-verification:
+  image: ${IMAGE_PIPELINE}
+  extends:
+    - .variables
+    - .tags-js-docker
+    - .rules-when-release-manual-required
+  stage: qa-manual-verification
+  script:
+    - echo "Verified, proceeding with pipeline"
+
 trigger-publish-to-cdn-prod-eu-from-release-latest:
   extends:
     - .trigger-publish-to-cdn-prod-eu-from-release
