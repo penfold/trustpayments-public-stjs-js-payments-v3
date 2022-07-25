@@ -1,4 +1,4 @@
-import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anyString, anything, deepEqual, instance, mock, objectContaining, verify, when } from 'ts-mockito';
 import { of, switchMap } from 'rxjs';
 import faker from '@faker-js/faker';
 import { DigitalTerminal } from './DigitalTerminal';
@@ -157,6 +157,9 @@ describe('DigitalTerminal', () => {
     };
     const transformedCheckoutData: ICheckoutData = {
       srcCorrelationId: 'correlationid',
+      dpaTransactionOptions: {
+        dpaLocale: 'en_GB',
+      },
     };
     const checkoutResponse: ICheckoutResponse = {
       checkoutResponse: 'checkoutResponse',
@@ -182,7 +185,7 @@ describe('DigitalTerminal', () => {
 
     it('runs checkout process on proper SRC using transformed checkout data', done => {
       digitalTerminal.checkout(initialCheckoutData).subscribe(result => {
-        verify(srcAggregateMock.checkout(SrcName.VISA, transformedCheckoutData)).once();
+        verify(srcAggregateMock.checkout(SrcName.VISA, objectContaining(transformedCheckoutData))).once();
         expect(result).toBe(checkoutResponse);
         done();
       });

@@ -7,13 +7,14 @@ import { SrcAggregate } from './SrcAggregate';
 import { IInitData } from './interfaces/IInitData';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
-import { DcfActionCode, ICheckoutResponse } from './ISrc';
+import { DcfActionCode, ICheckoutResponse, IDpaTransactionOptions } from './ISrc';
 import { CheckoutDataTransformer } from './CheckoutDataTransformer';
 import { IdentificationFailureReason } from './IdentificationFailureReason';
 import { IIdentificationResult } from './interfaces/IIdentificationResult';
 import { IIdentificationData } from './interfaces/IIdentificationData';
 import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
 import { LocaleProvider } from './LocaleProvider';
+import { SrcNameAndCheckoutData } from './interfaces/SrcNameAndCheckoutData';
 
 @Service()
 export class DigitalTerminal {
@@ -37,10 +38,7 @@ export class DigitalTerminal {
     return this.srcAggregate.init({
       srciDpaId: data.srciDpaId,
       srciTransactionId: this.srciTransactionId,
-      dpaTransactionOptions: {
-        ...data.dpaTransactionOptions,
-        dpaLocale: data.dpaTransactionOptions.dpaLocale || this.locale || 'en_GB',
-      },
+      dpaTransactionOptions: this.setFallbackDpaLocale(data.dpaTransactionOptions),
     });
   }
 
@@ -73,12 +71,21 @@ export class DigitalTerminal {
         // but getSrcProfiles returns correct result event with no tokens
         isSuccessful: Object.prototype.hasOwnProperty.call(result, 'idToken'),
         failureReason: IdentificationFailureReason.OTHER,
-      })),
+      }))
     );
   }
 
   checkout(data: IInitialCheckoutData): Observable<ICheckoutResponse> {
     return this.checkoutDataTransformer.transform(data, this.srciTransactionId, this.srcProfiles).pipe(
+      map(({ srcName,checkoutData }) => {
+        return {
+          srcName,
+          checkoutData: {
+            ...checkoutData,
+            dpaTransactionOptions: this.setFallbackDpaLocale(checkoutData.dpaTransactionOptions),
+          },
+        } as SrcNameAndCheckoutData;
+      }),
       switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData)),
       tap((response: ICheckoutResponse) => {
         // TODO consider moving that to HPPClickToPayAdapter
@@ -88,6 +95,13 @@ export class DigitalTerminal {
         }
       })
     );
+  }
+
+  private setFallbackDpaLocale(data: IDpaTransactionOptions): IDpaTransactionOptions {
+    return {
+      ...data,
+      dpaLocale: data?.dpaLocale || this.locale || 'en_GB',
+    };
   }
 
   unbindAppInstance(): Observable<undefined> {

@@ -69,6 +69,7 @@ export const environment = {
       },
       SRC_INITIATOR_ID: 'GSTIDU1J8I2NQRWAU7EL21puifGrG2BzgnL9XfBjMzwo9wmtM',
       ENCRYPTION_KID: 'A5CHRN38V3PJ90ACENUH13CCVOyXIL7A8rC9xClvyZyxvMgrE',
+      DPA_ID: 'TrustPayments-test-merchant',
     },
     MASTERCARD: {
       SRC_SDK_URL: {
@@ -77,6 +78,7 @@ export const environment = {
       },
       SRC_INITIATOR_ID: 'f621a412-9acc-4186-9c60-84f272090b60',
       ENCRYPTION_KID: '149123-src-fpan-encryption',
+      DPA_ID: 'TestMerchant',
     },
   },
 };

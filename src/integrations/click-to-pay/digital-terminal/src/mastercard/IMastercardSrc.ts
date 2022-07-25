@@ -1,4 +1,5 @@
 import {
+  ICheckoutData, ICheckoutResponse,
   ICompleteIdValidationResponse,
   IIdentityLookupResponse,
   IInitiateIdentityValidationResponse,
@@ -94,7 +95,7 @@ export interface IMastercardSrc {
   // this interface should have exact same types as per Mastercard dev documentation, so mapping in MastercardSrcWrapper
   // will be easier to maintain
   // remove this comment eventually
-  completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
+  completeIdentityValidation({ validationData: string }): Promise<ICompleteIdValidationResponse>;
 
   getSrcProfile(data?: { idTokens: string[] }): Promise<IMastercardSrcProfileList>;
 
@@ -107,5 +108,7 @@ export interface IMastercardSrc {
   isRecognized(): Promise<IIsRecognizedResponse>;
 
   unbindAppInstance(idToken?: string): Promise<IMastercardUnbindAppInstanceResponse>;
+
+  checkout(data: ICheckoutData): Promise<ICheckoutResponse>;
 
 }

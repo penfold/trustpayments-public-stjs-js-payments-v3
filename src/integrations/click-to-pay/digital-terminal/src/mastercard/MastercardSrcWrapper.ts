@@ -35,6 +35,7 @@ export class MastercardSrcWrapper implements ISrc {
   init(initData: ISrcInitData | Partial<ISrcInitData>): Promise<void> {
     const mastercardInitData: Partial<ISrcInitData> = {
       srcInitiatorId: environment.CLICK_TO_PAY.MASTERCARD.SRC_INITIATOR_ID,
+      srciDpaId: environment.CLICK_TO_PAY.MASTERCARD.DPA_ID,
     };
 
     return this.mastercardSrc.init({
@@ -44,13 +45,12 @@ export class MastercardSrcWrapper implements ISrc {
 
   }
 
-  // TODO implement https://securetrading.atlassian.net/browse/STJS-3514
   checkout(data: ICheckoutData): Promise<ICheckoutResponse> {
-    return Promise.resolve(undefined);
+    return this.mastercardSrc.checkout(data);
   }
 
   completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse> {
-    return this.mastercardSrc.completeIdentityValidation(validationData);
+    return this.mastercardSrc.completeIdentityValidation({ validationData });
   }
 
   getSrcProfile(idTokens: string[]): Promise<ISrcProfileList> {
