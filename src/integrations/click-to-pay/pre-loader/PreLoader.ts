@@ -24,8 +24,9 @@ export class PreLoader {
   hideLoader(loaderId: string):void {
     try {
       const list = document.getElementById(loaderId);
-      list.hasChildNodes() && list.removeChild(list.children[0]);
+      list && list.hasChildNodes() && list.removeChild(list.children[0]);
     } catch (error) {
+      console.error(error);      
       throw new Error('Hide Loader Error');
     }
   }
@@ -35,6 +36,7 @@ export class PreLoader {
         document.querySelector('.ctp-add-card-section').classList.remove('hidden');
         document.querySelector('.ctp-submit-section').classList.remove('hidden');
     } catch (error) {
+        console.error(error);   
         throw new Error('Display Card Add Section Error');
     }
   }
