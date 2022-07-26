@@ -1,5 +1,5 @@
-import jwt
 import json
+import jwt
 
 
 def decode_jwt(jwt_string):
@@ -11,10 +11,10 @@ def decode_jwt(jwt_string):
     return json.loads(json.dumps(decoded))
 
 
-jwt_src = "TYPE_JWT_HERE"
+JWT_SRC = "TYPE_JWT_HERE"
 
 # DECODE AND READ JSON
-json_file = decode_jwt(jwt_src)
+json_file = decode_jwt(JWT_SRC)
 
 # SAVE TIMESTAMP
 timestamp = json_file["payload"]["response"][0]["transactionstartedtimestamp"]
@@ -30,9 +30,7 @@ checkout_response = json.loads(json.dumps(jwt.decode(response,
 correlation_id = checkout_response["srcCorrelationId"]
 transaction_id = checkout_response["srciTransactionId"]
 
-
 # PRINT DATA
 print("transactionstartedtimestamp: " + timestamp)
 print("srcCorrelationId: " + correlation_id)
 print("srciTransactionId: " + transaction_id)
-
