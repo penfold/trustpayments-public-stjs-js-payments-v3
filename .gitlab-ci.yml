@@ -130,6 +130,7 @@ stages:
   - scheduled-renovate-trigger
   # Release package
   - release
+  - qa-manual-verification
   - post-release
   # Smoke tests
   - validate-cdn-latest
