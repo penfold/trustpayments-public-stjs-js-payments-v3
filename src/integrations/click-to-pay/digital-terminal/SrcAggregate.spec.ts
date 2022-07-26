@@ -183,7 +183,7 @@ describe('SrcAggregate', () => {
     it('calls initiateIdentityValidation() on selected SRC', done => {
       const response = { maskedValidationChannel: '***@***.net' };
 
-      when(srcMock1.initiateIdentityValidation()).thenResolve(response);
+      when(srcMock1.initiateIdentityValidation(undefined)).thenResolve(response);
 
       srcAggregate.initiateIdentityValidation('foo' as SrcName).subscribe(result => {
         expect(result).toBe(response);
